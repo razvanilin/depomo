@@ -1,9 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import './index.css';
+import { Rerender } from 'jumpsuit'
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
+import index from './root'
+export default index
+
+if (module.hot) {
+  module.hot.accept('./root', Rerender)
+}

@@ -2,4 +2,4 @@ language: node_js
 node_js:
   - "7"
 services: mongodb
-script: cd server && npm install && npm test
+script: cd server && npm install && npm test && cd ../client && npm install && npm test
