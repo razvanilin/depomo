@@ -28,18 +28,25 @@ app.get('/', function(req, res, next) {
 });
 
 // Connect to mongodb
-mongoose.connect(app.settings.dbhost);
+var mongoDB = mongoose.connect(app.settings.dbhost);
 mongoose.connection.once('open', function() {
-  // Load the models
-  app.models = require('./models/index');
 
-  // Load the routes
-  var routes = require('./routes');
-  _.each(routes, function(controller, route) {
-    app.use(route, controller(app, route));
-  })
-
-  http.listen(app.settings.port, function() {
-    console.log('Listening on port ' + app.settings.port);
-  });
 });
+
+// Load the models
+app.models = require('./models/index');
+
+// Load the routes
+var routes = require('./routes');
+_.each(routes, function(controller, route) {
+  app.use(route, controller(app, route));
+})
+
+var server = app.listen(app.settings.port, function() {
+  console.log('Listening on port ' + app.settings.port);
+});
+
+module.exports = {
+  server: server,
+  db: mongoDB
+};
