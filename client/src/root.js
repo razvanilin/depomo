@@ -7,8 +7,8 @@ import states from './state'
 // Containers
 import App from './containers/App'
 // Screens
-import Home from './screens/Home'
-import Counter from './screens/Counter'
+import Home from './components/Home'
+import Counter from './components/Counter'
 
 // Simple Routing
 Render(states, (
