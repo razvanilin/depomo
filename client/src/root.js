@@ -6,6 +6,8 @@ import '../node_modules/grommet/scss/vanilla/index.scss';
 import states from './state'
 // Containers
 import App from './containers/App'
+import Login from './containers/Login'
+
 // Screens
 import Home from './components/Home'
 import Counter from './components/Counter'
@@ -16,6 +18,7 @@ Render(states, (
     <Route path='/' component={App}>
       <IndexRoute component={Home} />
       <Route path='counter' component={Counter} />
+      <Route path='login' component={Login} />
     </Route>
   </Router>
 ))
