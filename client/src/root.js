@@ -1,5 +1,5 @@
 import React from 'react'
-import { Render, Router, Route, IndexRoute } from 'jumpsuit'
+import { Render, Router, Route } from 'jumpsuit'
 // Styles
 import '../node_modules/grommet/scss/vanilla/index.scss';
 // State
@@ -9,16 +9,16 @@ import App from './containers/App'
 import Login from './containers/Login'
 
 // Screens
-import Home from './components/Home'
-import Counter from './components/Counter'
+// import Home from './components/Home'
+// import Counter from './components/Counter'
 
 // Simple Routing
 Render(states, (
   <Router>
     <Route path='/' component={App}>
-      <IndexRoute component={Home} />
-      <Route path='counter' component={Counter} />
       <Route path='login' component={Login} />
     </Route>
   </Router>
 ))
+
+// <Route path='counter' component={Counter} />

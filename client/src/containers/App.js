@@ -1,5 +1,5 @@
 import React from 'react'
-//
+import { Link } from 'jumpsuit';
 
 import './App.scss';
 import '../index.scss';
@@ -9,20 +9,13 @@ import HeaderImage from '../images/header1.png';
 import App from 'grommet/components/App'
 import Article from 'grommet/components/Article'
 import Header from 'grommet/components/Header'
-import Title from 'grommet/components/Title'
 import Hero from 'grommet/components/Hero'
-import Tiles from 'grommet/components/Tiles'
-import Tile from 'grommet/components/Tile'
-import Card from 'grommet/components/Card'
 import Section from 'grommet/components/Section'
 import Menu from 'grommet/components/Menu'
 import Box from 'grommet/components/Box'
 import Anchor from 'grommet/components/Anchor'
-import Actions from 'grommet/components/icons/base/Actions'
-import Search from 'grommet/components/Search'
 import GrommetIcon from 'grommet/components/icons/base/BrandGrommetOutline';
 import SearchIcon from 'grommet/components/icons/base/Search';
-import Edit from 'grommet/components/icons/base/Edit';
 import Button from 'grommet/components/Button';
 import Heading from 'grommet/components/Heading';
 import Image from 'grommet/components/Image';
@@ -71,7 +64,7 @@ export default React.createClass({
 
             <Box direction="row" justify="center" align="center">
               <Box pad="small">
-                <Button label='Login' href='#' primary={true} />
+                <Link to="login"><Button label='Login' primary={true} /></Link>
               </Box>
 
               <Box pad="small">
@@ -79,19 +72,9 @@ export default React.createClass({
               </Box>
             </Box>
           </Hero>
-          <Section></Section>
-
-          <Tiles>
-            <Tile>
-              <Card></Card>
-            </Tile>
-            <Tile>
-              <Card></Card>
-            </Tile>
-            <Tile>
-              <Card></Card>
-            </Tile>
-          </Tiles>
+          <Section>
+            {this.props.children}
+          </Section>
         </Article>
       </App>
     )
