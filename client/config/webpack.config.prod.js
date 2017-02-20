@@ -7,7 +7,7 @@ var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 var url = require('url');
 var paths = require('./paths');
 var getClientEnvironment = require('./env');
-
+var path = require('path');
 
 
 function ensureSlash(path, needsSlash) {
@@ -165,9 +165,12 @@ module.exports = {
         }
       },
       {
-        test: /\.scss$/,
-        loader: 'style!css!sass?outputStyle=compressed'
-      }
+          test: /\.scss$/,
+          loader: 'style!css!sass?outputStyle=expanded&' +
+            'includePaths[]=' +
+            (encodeURIComponent(path.resolve('./node_modules'))) +
+            '&includePaths[]=' + encodeURIComponent(path.resolve('./src'))
+      },
     ]
   },
   sassLoader: {
