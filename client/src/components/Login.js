@@ -12,14 +12,16 @@ import CloseIcon from 'grommet/components/icons/base/Close';
 export default React.createClass({
   render() {
     return(
-      <Layer closer={true}>
-      <Box pad="medium" align="end" justify="end" alignContent="end">
-        <Link to="/"><CloseIcon /></Link>
-      </Box>
-      <LoginForm
-        title='Login'
-        forgotPassword={<Anchor href='#'
-        label='Forgot password?' />} />
+      <Layer closer={true} flush={true}>
+        <Box pad="medium" align="end" justify="start" alignContent="end">
+          <Link to="/"><CloseIcon /></Link>
+        </Box>
+        <Box>
+        <LoginForm
+          title='Login'
+          forgotPassword={<Anchor href='#'
+          label='Forgot password?' />} />
+          </Box>
       </Layer>
     )
   }

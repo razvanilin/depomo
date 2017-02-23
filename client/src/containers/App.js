@@ -64,7 +64,9 @@ export default React.createClass({
 
             <Box direction="row" justify="center" align="center">
               <Box pad="small">
-                <Link to="login"><Button label='Login' primary={true} /></Link>
+                <Link to="login">
+                <Button onClick={function() {console.log("hello");}} label='Login' primary={true} />
+                </Link>
               </Box>
 
               <Box pad="small">

@@ -6,7 +6,7 @@ import '../node_modules/grommet/scss/vanilla/index.scss';
 import states from './state'
 // Containers
 import App from './containers/App'
-import Login from './containers/Login'
+import Login from './components/Login'
 
 // Screens
 // import Home from './components/Home'
