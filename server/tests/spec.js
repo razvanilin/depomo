@@ -30,12 +30,45 @@ describe('loading express', () => {
       .expect(200, done);
   });
 
-  // create a new user
+  /** POST to /user **/
   it('responds to POST /user', function testSlash(done) {
     request(server)
       .post('/user')
+      .send({
+        email: "raz@razvanilin.com",
+        password: "password"
+      })
       .expect(200, done);
   });
+
+  it('misses the email field on POST /user', function testSlash(done) {
+    request(server)
+    .post('/user')
+    .send({
+      password: "password"
+    })
+    .expect(400, done);
+  });
+
+  it('misses the password field on POST /user', function testSlash(done) {
+    request(server)
+    .post('/user')
+    .send({
+      email: "raz@razvanilin.com"
+    })
+    .expect(400, done);
+  });
+
+  it('must be longer than 6 characters on POST /user', (done) => {
+    request(server)
+    .post('/user')
+    .send({
+      email: "raz@razvanilin.com",
+      password: "pass"
+    })
+    .expect(400, done);
+  });
+  // -----------------------------------------------------
 
   it('doesn\'t find the controller', function testSlash(done) {
     request(server)

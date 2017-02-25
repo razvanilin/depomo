@@ -38,10 +38,6 @@ export default React.createClass({
                 <Anchor href="#">About Us</Anchor>
                 <Anchor href="#">Support</Anchor>
               </Menu>
-
-              <Box flex="grow" align="end">
-                <SearchIcon />
-              </Box>
             </Box>
           </Header>
           <Hero background={<Image src={HeaderImage}
@@ -65,7 +61,7 @@ export default React.createClass({
             <Box direction="row" justify="center" align="center">
               <Box pad="small">
                 <Link to="login">
-                <Button onClick={function() {console.log("hello");}} label='Login' primary={true} />
+                  <Button onClick={function() {console.log("hello");}} label='Login' primary={true} />
                 </Link>
               </Box>
 
