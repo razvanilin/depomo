@@ -68,6 +68,35 @@ describe('loading express', () => {
     })
     .expect(400, done);
   });
+
+  it('logs the user in', (done) => {
+    request(server)
+    .post('/user/login')
+    .send({
+      email: "raz@razvanilin.com",
+      password: "password"
+    })
+    .expect(200, done);
+  });
+
+  it("fails to log in the user because the password is wrong", (done) => {
+    request(server)
+    .post('/user/login')
+    .send({
+      email: "raz@razvanilin.com",
+      password: "wrongpassword"
+    }).expect(401, done);
+  });
+
+  it("fails to log in the user because the email is wrong", (done) => {
+    request(server)
+    .post("/user/login")
+    .send({
+      email: "something@razvanilin.com",
+      password: "password"
+    })
+    .expect(401, done);
+  });
   // -----------------------------------------------------
 
   it('doesn\'t find the controller', function testSlash(done) {

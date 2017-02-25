@@ -45,6 +45,31 @@ module.exports = (app, route) => {
     });
     // return res.status(200).send("works");
   });
+  // ----------------------------------------------------------
+
+  /** Route to login a user **/
+  app.post('/user/login', (req, res) => {
+    if (!req.body.email) return res.status(400).send("Request is missing the email field.");
+    if (!req.body.password) return res.status(400).send("Request is missing the password field.");
+
+    User.findOne({
+      email: req.body.email
+    }, (err, user) => {
+      if (err || user === null) {
+        return res.status(401).send("Wrong email or password.");
+      }
+
+      // check the password
+      user.comparePassword(req.body.password, user.password, (isMatch) => {
+        if (!isMatch) {
+          console.log("Failed to log in with " + req.body.email);
+          return res.status(401).send("Wrong email or password.");
+        }
+
+        return res.status(200).send(user);
+      });
+    });
+  });
 
   return (req, res, next) => {
     next();

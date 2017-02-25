@@ -16,9 +16,11 @@ var UserSchema = new mongoose.Schema({
 
 UserSchema.plugin(timestamp);
 
-UserSchema.methods.comparePassword = (candidatePassword, cb) => {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    if (err) return cb(err);
+UserSchema.methods.comparePassword = (candidatePassword, password, cb) => {
+  bcrypt.compare(candidatePassword, password, (err, isMatch) => {
+    if (err) {
+      return cb(err);
+    }
     cb(isMatch);
   });
 };
