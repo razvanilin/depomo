@@ -15,7 +15,6 @@ import Menu from 'grommet/components/Menu'
 import Box from 'grommet/components/Box'
 import Anchor from 'grommet/components/Anchor'
 import GrommetIcon from 'grommet/components/icons/base/BrandGrommetOutline';
-import SearchIcon from 'grommet/components/icons/base/Search';
 import Button from 'grommet/components/Button';
 import Heading from 'grommet/components/Heading';
 import Image from 'grommet/components/Image';
