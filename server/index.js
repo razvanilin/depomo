@@ -5,12 +5,10 @@ const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const _ = require('lodash');
 const cors = require('cors');
-const morgan = require('morgan');
 
 var app = express();
 var http = require('http').Server(app);
 
-app.use(morgan('combined'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
