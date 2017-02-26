@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 const SALT_WORK_FACTOR = 10;
 
 module.exports = (app, route) => {
@@ -65,6 +67,12 @@ module.exports = (app, route) => {
           console.log("Failed to log in with " + req.body.email);
           return res.status(401).send("Wrong email or password.");
         }
+
+        let token = jwt.sign(user, app.settings.secret, {
+          expiresIn: 604800 // a week
+        });
+
+        user.token = token;
 
         return res.status(200).send(user);
       });
