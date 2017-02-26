@@ -95,7 +95,7 @@ module.exports = (app, route) => {
 
           if (err) return res.status(400).send("Could not process your user information. Try again later.")
 
-          if (user._id == decoded._doc._id || user.isAdmin) {
+          if (user._id == req.params.id || user.isAdmin) {
             req.decoded = decoded;
             next();
           } else {

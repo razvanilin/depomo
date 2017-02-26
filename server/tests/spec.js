@@ -5,6 +5,7 @@ describe('loading express', () => {
   var server;
   var db;
   var currentUser = {};
+  var otherUser = {};
 
   beforeEach(() => {
     delete require.cache[require.resolve('../index')];
@@ -34,7 +35,7 @@ describe('loading express', () => {
   });
 
   /** POST to /user **/
-  it('responds to POST /user', function testSlash(done) {
+  it('creates first user', function testSlash(done) {
     request(server)
       .post('/user')
       .send({
@@ -44,7 +45,17 @@ describe('loading express', () => {
       .expect(200, done);
   });
 
-  it('misses the email field on POST /user', function testSlash(done) {
+  it('creates other user', (done) => {
+    request(server)
+    .post('/user')
+    .send({
+      email: "otherRaz@razvanilin.com",
+      password: "password"
+    })
+    .expect(200, done);
+  });
+
+  it('misses the email field user creation', function testSlash(done) {
     request(server)
     .post('/user')
     .send({
@@ -53,7 +64,7 @@ describe('loading express', () => {
     .expect(400, done);
   });
 
-  it('misses the password field on POST /user', function testSlash(done) {
+  it('misses the password field on user creation', function testSlash(done) {
     request(server)
     .post('/user')
     .send({
@@ -62,7 +73,7 @@ describe('loading express', () => {
     .expect(400, done);
   });
 
-  it('must be longer than 6 characters on POST /user', (done) => {
+  it('must be longer than 6 characters on user creation', (done) => {
     request(server)
     .post('/user')
     .send({
@@ -83,6 +94,21 @@ describe('loading express', () => {
       assert.equal(result.statusCode, "200")
       assert.equal(result.body.email, "raz@razvanilin.com");
       currentUser = result.body;
+      done();
+    });
+  });
+
+  it('logs other user in', (done) => {
+    request(server)
+    .post('/user/login')
+    .send({
+      email: "otherRaz@razvanilin.com",
+      password: "password"
+    })
+    .end( (err, result) => {
+      assert.equal(result.statusCode, "200");
+      assert.equal(result.body.email, "otherRaz@razvanilin.com")
+      otherUser = result.body;
       done();
     });
   });
@@ -119,7 +145,14 @@ describe('loading express', () => {
     .get('/user/' + currentUser._id)
     .query({token: "notValid:("})
     .expect(401, done);
-  })
+  });
+
+  it('restricts access from other user details', (done) => {
+    request(server)
+    .get('/user/' + currentUser._id)
+    .query({token: otherUser.token})
+    .expect(401, done);
+  });
   // -----------------------------------------------------
 
 
