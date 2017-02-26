@@ -15,7 +15,7 @@ module.exports = (app, route) => {
   });
 
   /** Route to get a user **/
-  app.get('/user/:id', (req, res) => {
+  app.get('/user/:id', verifyOwner, (req, res) => {
     return res.status(200).send("GET /user/:id works");
   });
 
@@ -72,12 +72,31 @@ module.exports = (app, route) => {
           expiresIn: 604800 // a week
         });
 
-        user.token = token;
+        var userResponse = {
+          _id: user._id,
+          email: user.email,
+          token: token
+        }
 
-        return res.status(200).send(user);
+        return res.status(200).send(userResponse);
       });
     });
   });
+
+  function verifyOwner(req, res, next) {
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+    if (token) {
+      jwt.verify(token, app.settings.secret, (err, decoded) => {
+        if (err) return res.status(401).send("Unauthorized access.");
+
+        req.decoded = decoded;
+        next();
+      });
+    } else {
+      return res.status(401).send("Token is missing.");
+    }
+  }
 
   return (req, res, next) => {
     next();

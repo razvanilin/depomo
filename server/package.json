@@ -23,6 +23,7 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
+    "assert": "^1.4.1",
     "mocha": "^3.2.0",
     "really-need": "^1.9.2",
     "supertest": "^3.0.0"

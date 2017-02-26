@@ -1,8 +1,11 @@
 var request = require('supertest');
+const assert = require('assert');
 //require = require('really-need');
 describe('loading express', () => {
   var server;
   var db;
+  var currentUser = {};
+
   beforeEach(() => {
     delete require.cache[require.resolve('../index')];
     var index = require("../index");
@@ -24,10 +27,10 @@ describe('loading express', () => {
   });
 
   // get specific user
-  it('responds to GET /user/:id', function testSlash(done) {
+  it('is not allowed access to route', function testSlash(done) {
     request(server)
       .get('/user/1')
-      .expect(200, done);
+      .expect(401, done);
   });
 
   /** POST to /user **/
@@ -76,7 +79,12 @@ describe('loading express', () => {
       email: "raz@razvanilin.com",
       password: "password"
     })
-    .expect(200, done);
+    .end( (err, result) => {
+      assert.equal(result.statusCode, "200")
+      assert.equal(result.body.email, "raz@razvanilin.com");
+      currentUser = result.body;
+      done();
+    });
   });
 
   it("fails to log in the user because the password is wrong", (done) => {
@@ -97,7 +105,23 @@ describe('loading express', () => {
     })
     .expect(401, done);
   });
+
+  // get specific user
+  it('is allowed to get its own user information', function testSlash(done) {
+    request(server)
+      .get('/user/' + currentUser._id)
+      .query({token: currentUser.token})
+      .expect(200, done);
+  });
+
+  it('is not allowed access to its own user information because the token is not valid', (done) => {
+    request(server)
+    .get('/user/' + currentUser._id)
+    .query({token: "notValid:("})
+    .expect(401, done);
+  })
   // -----------------------------------------------------
+
 
   it('doesn\'t find the controller', function testSlash(done) {
     request(server)

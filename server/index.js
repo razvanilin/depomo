@@ -43,7 +43,7 @@ _.each(routes, function(controller, route) {
 })
 
 var server = app.listen(app.settings.port, function() {
-  console.log('Listening on port ' + app.settings.port);
+  //console.log('Listening on port ' + app.settings.port);
 });
 
 module.exports = {
