@@ -89,9 +89,19 @@ module.exports = (app, route) => {
     if (token) {
       jwt.verify(token, app.settings.secret, (err, decoded) => {
         if (err) return res.status(401).send("Unauthorized access.");
+        User.findOne({
+          _id: decoded._doc._id
+        }, (err, user) => {
 
-        req.decoded = decoded;
-        next();
+          if (err) return res.status(400).send("Could not process your user information. Try again later.")
+
+          if (user._id == decoded._doc._id || user.isAdmin) {
+            req.decoded = decoded;
+            next();
+          } else {
+            return res.status(401).send("Not authorized to access resource.");
+          }
+        });
       });
     } else {
       return res.status(401).send("Token is missing.");
