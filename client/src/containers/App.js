@@ -30,7 +30,7 @@ export default React.createClass({
               pad={{horizontal: 'medium'}} flex="grow">
               <GrommetIcon colorIndex="brand" size="large" />
               <Box pad="small" />
-              <Menu label="Label" inline={true} direction="row" flex="grow">
+              <Menu label="Menu" inline={true} direction="row" flex="grow">
                 <Anchor href="#">Solutions</Anchor>
                 <Anchor href="#">Services</Anchor>
                 <Anchor href="#">Products</Anchor>
@@ -60,12 +60,14 @@ export default React.createClass({
             <Box direction="row" justify="center" align="center">
               <Box pad="small">
                 <Link to="login">
-                  <Button onClick={function() {console.log("hello");}} label='Login' primary={true} />
+                  <Button onClick={function() {console.log("login");}} label='Login' primary={true} />
                 </Link>
               </Box>
 
               <Box pad="small">
-                <Button label='Signup' href='#' primary={true} />
+                <Link to="signup">
+                  <Button onClick={function() {console.log("signup");}} label='Signup' primary={true} />
+                </Link>
               </Box>
             </Box>
           </Hero>
