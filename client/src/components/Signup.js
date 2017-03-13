@@ -58,7 +58,6 @@ export default Component({
               this.errors.password = "Please enter a password that's longer than 6 characters.";
               this.loading = false;
             }
-            console.log(this.credentials.agree);
             if (!this.credentials.agree) {
               this.errors.agree = " ";
               this.loading = false;
@@ -111,6 +110,5 @@ export default Component({
     )
   }
 }, state => ({
-  user: state.user,
-  routing: state.routing
+  user: state.user
 }));
