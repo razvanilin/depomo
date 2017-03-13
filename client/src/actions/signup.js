@@ -7,7 +7,7 @@ import userState from '../state/user'
 export default function signup(user) {
   console.log("sign in function");
   if (!user.email || !user.password || !user.name) {
-    userState.signup(false);
+    return userState.signup(false);
   }
 
   let signupOpt = {
@@ -20,15 +20,16 @@ export default function signup(user) {
   };
 
   request(signupOpt, (error, resp, body) => {
-    if (error) userState.signup(false);
+    if (error) return userState.signup(false);
 
     try {
       userState.signup(JSON.parse(body).ops[0]);
       Goto({
         path: "/login"
       });
+      return;
     } catch (e) {
-      userState.signup(false);
+      return userState.signup(false);
     }
   });
 }
