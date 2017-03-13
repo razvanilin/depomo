@@ -11,6 +11,8 @@ import Heading from 'grommet/components/Heading';
 import Footer from 'grommet/components/Footer';
 import Button from 'grommet/components/Button';
 import CheckBox from 'grommet/components/CheckBox';
+import Columns from 'grommet/components/Columns';
+import Spinning from 'grommet/components/icons/Spinning';
 
 // grommet icons
 import CloseIcon from 'grommet/components/icons/base/Close';
@@ -21,6 +23,7 @@ import signup from '../actions/signup';
 export default Component({
   componentWillMount() {
     this.errors = {};
+    this.loading = false;
     if (this.props.user && this.props.user.user && this.props.user.user._id) {
       Goto({
         path: "/"
@@ -42,17 +45,23 @@ export default Component({
             var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
             this.errors = {};
+            this.loading = true;
+
             if (!credentials.name || credentials.name.length < 1) {
               this.errors.name = "Please enter your name.";
+              this.loading = false;
             }
             if (!credentials.email || !credentials.email.match(mailformat)) {
               this.errors.email = "Please enter a valid email.";
+              this.loading = false;
             }
             if (!credentials.password || credentials.password.length < 6) {
               this.errors.password = "Please enter a password that's longer than 6 characters.";
+              this.loading = false;
             }
             if (!credentials.agree) {
               this.errors.agree = " ";
+              this.loading = false;
             }
 
             signup(credentials);
@@ -80,12 +89,20 @@ export default Component({
             </FormField>
 
             <Footer pad={{"vertical": "medium"}} justify="center">
-              <Button label='Join depomo'
-                type='submit'
-                primary={true}
-                align="center"
-                style={{width:"100%"}}
-                onClick={function() { console.log("join");}} />
+              <Columns justify="center">
+                <Box justify="center">
+                  <Button label='Join depomo'
+                    type='submit'
+                    primary={true}
+                    align="center"
+                    style={{width:"100%"}}
+                    onClick={function() { console.log("join");}}>
+
+                  </Button>
+                </Box>
+
+                {this.loading && <Box justify="center" align="center" pad="small"><Spinning align="center" /></Box>}
+              </Columns>
             </Footer>
           </Form>
         </Box>
