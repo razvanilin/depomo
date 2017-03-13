@@ -24,6 +24,7 @@ export default Component({
   componentWillMount() {
     this.errors = {};
     this.loading = false;
+    this.credentials = {};
     if (this.props.user && this.props.user.user && this.props.user.user._id) {
       Goto({
         path: "/"
@@ -31,7 +32,6 @@ export default Component({
     }
   },
   render() {
-    let credentials = {};
     return(
       <Layer closer={true} flush={true}>
         <Box pad="medium" align="end" justify="start" alignContent="end">
@@ -46,25 +46,25 @@ export default Component({
 
             this.errors = {};
             this.loading = true;
-
-            if (!credentials.name || credentials.name.length < 1) {
+            if (!this.credentials.name || this.credentials.name.length < 1) {
               this.errors.name = "Please enter your name.";
               this.loading = false;
             }
-            if (!credentials.email || !credentials.email.match(mailformat)) {
+            if (!this.credentials.email || !this.credentials.email.match(mailformat)) {
               this.errors.email = "Please enter a valid email.";
               this.loading = false;
             }
-            if (!credentials.password || credentials.password.length < 6) {
+            if (!this.credentials.password || this.credentials.password.length < 6) {
               this.errors.password = "Please enter a password that's longer than 6 characters.";
               this.loading = false;
             }
-            if (!credentials.agree) {
+            console.log(this.credentials.agree);
+            if (!this.credentials.agree) {
               this.errors.agree = " ";
               this.loading = false;
             }
 
-            signup(credentials);
+            signup(this.credentials);
           }}>
             <Header align="center" justify="center">
               <Heading strong={true} align="center">
@@ -73,19 +73,20 @@ export default Component({
             </Header>
 
             <FormField label="Name" error={this.errors.name}>
-              <TextInput name="name" onDOMChange={event => {credentials.name = event.target.value}}/>
+              <TextInput name="name" onDOMChange={event => {this.credentials.name = event.target.value}}/>
             </FormField>
             <FormField label="Email" error={this.errors.email}>
-              <TextInput name="email" onDOMChange={event => {credentials.email = event.target.value}}/>
+              <TextInput name="email" onDOMChange={event => {this.credentials.email = event.target.value}}/>
             </FormField>
             <FormField label="Password" error={this.errors.password}>
-              <TextInput type="password" name="password" onDOMChange={event => {credentials.password = event.target.value}}/>
+              <TextInput type="password" name="password" onDOMChange={event => {this.credentials.password = event.target.value}}/>
             </FormField>
 
             <FormField error={this.errors.agree}>
               <CheckBox id='agree'
                 name='agree'
-                label='I agree with the Terms & Conditions' />
+                label='I agree with the Terms & Conditions'
+                onChange={event => {this.credentials.agree = event.target.value}} />
             </FormField>
 
             <Footer pad={{"vertical": "medium"}} justify="center">
@@ -101,7 +102,7 @@ export default Component({
                   </Button>
                 </Box>
 
-                {this.loading && <Box justify="center" align="center" pad="small"><Spinning align="center" /></Box>}
+                {this.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
               </Columns>
             </Footer>
           </Form>

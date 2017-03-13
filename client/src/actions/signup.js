@@ -6,7 +6,7 @@ import userState from '../state/user'
 
 export default function signup(user) {
   console.log("sign in function");
-  if (!user.email || !user.password || !user.name) {
+  if (!user.email || !user.password || !user.name || !user.agree) {
     return userState.signup(false);
   }
 
