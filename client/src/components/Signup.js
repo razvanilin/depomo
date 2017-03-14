@@ -25,7 +25,7 @@ export default Component({
     this.errors = {};
     this.loading = false;
     this.credentials = {};
-    if (this.props.user && this.props.user.user && this.props.user.user._id) {
+    if (this.props.user && this.props.user._id) {
       Goto({
         path: "/"
       });

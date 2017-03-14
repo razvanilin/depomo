@@ -5,15 +5,9 @@ export default State({
     user: {}
   },
   signup (state, user) {
-    console.log("signing in");
-    return {user: user};
+    return user;
   },
   login (state, user) {
-    return {user: loginUser(user)};
+    return user;
   }
 });
-
-
-function loginUser(user) {
-
-}
