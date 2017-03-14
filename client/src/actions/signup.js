@@ -22,7 +22,8 @@ export default function signup(user) {
   request(signupOpt, (error, resp, body) => {
     if (error) return userState.signup({error: error});
 
-    if (resp.statusCode == 200) {
+    if (resp.statusCode === 200) {
+      userState.signup({signup: true});
       Goto({
         path: "/login"
       });
