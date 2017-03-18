@@ -11,6 +11,7 @@ import Dashboard from './containers/Dashboard'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import Activities from './components/Activities'
+import AddActivity from './components/AddActivity'
 
 // Screens
 // import Home from './components/Home'
@@ -24,7 +25,9 @@ Render(states, (
       <Route path='signup' component={Signup} />
     </Route>
     <Route path='/dashboard' component={Dashboard}>
-      <Route path='activities' component={Activities} />
+      <Route path='activities' component={Activities}>
+      <Route path='add' component={AddActivity} />
+      </Route>
     </Route>
   </Router>
 ))

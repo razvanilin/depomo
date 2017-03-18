@@ -1,5 +1,5 @@
 import React from 'react'
-import { Component } from 'jumpsuit';
+import { Component, Link } from 'jumpsuit';
 
 import Section from 'grommet/components/Section'
 import Header from 'grommet/components/Header'
@@ -12,10 +12,11 @@ export default Component({
     return(
       <Section>
         <Header justify="center">
-          <Button label="Add a new activity" icon={<AddIcon />} size="large" primary={true}
+          <Link to='/dashboard/activities/add'><Button label="Add a new activity" icon={<AddIcon />} size="large" primary={true}
             onClick={ () => { console.log("add"); }}
-          />
+          /></Link>
         </Header>
+        {this.props.children}
       </Section>
     )
   }
