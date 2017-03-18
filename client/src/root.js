@@ -1,13 +1,16 @@
 import React from 'react'
 import { Render, Router, Route } from 'jumpsuit'
 // Styles
-import '../node_modules/grommet/scss/vanilla/index.scss';
+import '../node_modules/grommet/scss/aruba/index.scss';
 // State
 import states from './state'
+
 // Containers
 import App from './containers/App'
+import Dashboard from './containers/Dashboard'
 import Login from './components/Login'
 import Signup from './components/Signup'
+import Activities from './components/Activities'
 
 // Screens
 // import Home from './components/Home'
@@ -19,6 +22,9 @@ Render(states, (
     <Route path='/' component={App}>
       <Route path='login' component={Login} />
       <Route path='signup' component={Signup} />
+    </Route>
+    <Route path='/dashboard' component={Dashboard}>
+      <Route path='activities' component={Activities} />
     </Route>
   </Router>
 ))

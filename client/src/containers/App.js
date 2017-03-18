@@ -41,6 +41,7 @@ export default React.createClass({
           </Header>
           <Hero background={<Image src={HeaderImage}
             fit='cover'
+            full={true}
             align={{"top": true}} />}
             backgroundColorIndex='dark'
             size='large'>
