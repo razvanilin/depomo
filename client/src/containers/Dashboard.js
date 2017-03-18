@@ -21,7 +21,11 @@ import PlanIcon from 'grommet/components/icons/base/Plan'
 
 export default Component({
   componentWillMount() {
-    console.log(this.props.user);
+    if (window.location.pathname === "/dashboard") {
+      Goto({
+        path: "/dashboard/activities"
+      });
+    }
     if (!this.props.user || !this.props.user._id) {
       Goto({
         path: "/login"
@@ -50,7 +54,7 @@ export default Component({
 
             <Footer pad="medium">
               <UserIcon />
-              <Menu responsive={true} inline={false} label={this.props.user.email} icon={<UserIcon />} primary={true}>
+              <Menu responsive={true} inline={false} label={this.props.user.name} icon={<UserIcon />} primary={true}>
                 <Anchor href="">Profile Settings</Anchor>
                 <Anchor href="">Log Out</Anchor>
               </Menu>

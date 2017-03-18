@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Component, Goto } from 'jumpsuit';
+import { Link, Component } from 'jumpsuit';
 // grommet
 import Layer from 'grommet/components/Layer';
 import Anchor from 'grommet/components/Anchor';
@@ -18,11 +18,11 @@ export default Component({
     this.errors = {};
     this.loading = false;
 
-    if (this.props.user && this.props.user._id) {
-      Goto({
-        path: "/dashboard"
-      });
-    }
+    // if (this.props.user && this.props.user._id) {
+    //   Goto({
+    //     path: "/dashboard"
+    //   });
+    // }
   },
   render() {
     return(

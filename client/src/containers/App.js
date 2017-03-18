@@ -1,5 +1,8 @@
 import React from 'react'
 import { Link } from 'jumpsuit';
+import cookie from 'react-cookie';
+
+import login from "../actions/login";
 
 import './App.scss';
 import '../index.scss';
@@ -20,6 +23,11 @@ import Heading from 'grommet/components/Heading';
 import Image from 'grommet/components/Image';
 
 export default React.createClass({
+  componentWillMount() {
+    if (cookie.load("token")) {
+      login(null, cookie.load("token"));
+    }
+  },
   render() {
     return (
       <App centered={false}>

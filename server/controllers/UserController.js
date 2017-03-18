@@ -83,6 +83,25 @@ module.exports = (app, route) => {
       });
     });
   });
+  // ----------------------------------------------------------
+
+  /** Route used to relog the users that have a valid token **/
+  app.post("/user/relog", (req, res, next) => {
+    if (!req.body.token) return res.status(400).send("Token is missing");
+
+    jwt.verify(req.body.token, app.settings.secret, (err, decoded) => {
+      if (err) return res.status(401).send("Unauthorized access.");
+      User.findOne({
+        _id: decoded._doc._id
+      }, (err, user) => {
+
+        if (err) return res.status(400).send("Could not process your user information. Try again later.")
+
+        // return the decoded information
+        return res.status(200).send(decoded._doc);
+      });
+    });
+  });
 
   // function verifyOwner(req, res, next) {
   //   var token = req.body.token || req.query.token || req.headers['x-access-token'];

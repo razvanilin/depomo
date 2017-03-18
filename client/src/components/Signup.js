@@ -1,5 +1,5 @@
 import React from 'react';
-import { Component, Link, Goto } from 'jumpsuit';
+import { Component, Link } from 'jumpsuit';
 // grommet
 import Layer from 'grommet/components/Layer';
 import Box from 'grommet/components/Box';
@@ -25,11 +25,11 @@ export default Component({
     this.errors = {};
     this.loading = false;
     this.credentials = {};
-    if (this.props.user && this.props.user._id) {
-      Goto({
-        path: "/"
-      });
-    }
+    // if (this.props.user && this.props.user._id) {
+    //   Goto({
+    //     path: "/"
+    //   });
+    // }
   },
   render() {
     return(
