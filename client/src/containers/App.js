@@ -22,7 +22,7 @@ import Image from 'grommet/components/Image';
 export default React.createClass({
   render() {
     return (
-      <App>
+      <App centered={false}>
         <Article>
           <Header>
             <Box size={{width: {max: 'xxlarge'}}} direction="row"

@@ -28,7 +28,7 @@ export default function login(credentials) {
     try {
       userState.login(JSON.parse(body));
       Goto({
-        path: '/'
+        path: '/dashboard'
       });
       return;
     } catch (e) {

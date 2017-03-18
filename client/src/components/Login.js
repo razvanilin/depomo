@@ -20,7 +20,7 @@ export default Component({
 
     if (this.props.user && this.props.user._id) {
       Goto({
-        path: "/"
+        path: "/dashboard"
       });
     }
   },
