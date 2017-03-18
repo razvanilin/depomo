@@ -21,13 +21,13 @@ export default Component({
     this.credentials = {};
   },
   render() {
-    setInterval(() => {
+    var interval = setInterval(() => {
       if (this.credentials.due && document.getElementById("due-date-input")) {
         document.getElementById("due-date-input").value = this.credentials.due;
       }
     }, 500);
     return(
-      <Layer closer={true} flush={true} onClose={() => { Goto({path:"/dashboard/activities"})}}>
+      <Layer closer={true} flush={true} onClose={() => {clearInterval(interval); Goto({path:"/dashboard/activities"})}}>
 
         <Box>
           <Form pad="small" onSubmit={e => {
@@ -60,7 +60,7 @@ export default Component({
                     primary={true}
                     align="center"
                     style={{width:"100%"}}
-                    onClick={function() { console.log("track");}}>
+                    onClick={function() { clearInterval(interval); console.log("track");}}>
 
                   </Button>
                 </Box>
