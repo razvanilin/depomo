@@ -76,6 +76,7 @@ module.exports = (app, route) => {
         var userResponse = {
           _id: user._id,
           email: user.email,
+          name: user.name,
           token: token
         }
 
@@ -94,11 +95,16 @@ module.exports = (app, route) => {
       User.findOne({
         _id: decoded._doc._id
       }, (err, user) => {
+        if (!user || err) return res.status(400).send("Could not process your user information. Try again later.")
 
-        if (err) return res.status(400).send("Could not process your user information. Try again later.")
-
+        var userResponse = {
+          _id: user._id,
+          email: user.email,
+          name: user.name,
+          token: req.body.token
+        }
         // return the decoded information
-        return res.status(200).send(decoded._doc);
+        return res.status(200).send(userResponse);
       });
     });
   });
