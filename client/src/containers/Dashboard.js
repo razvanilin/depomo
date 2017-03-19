@@ -51,8 +51,6 @@ export default Component({
 
   _onMenuOpen () {
     this.setState({showMenu: true});
-    // this._renderMenu();
-    console.log("On Menu Open");
   },
 
   _onMenuClick () {
