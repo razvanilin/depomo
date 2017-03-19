@@ -18,16 +18,36 @@ import Spinning from 'grommet/components/icons/Spinning'
 export default Component({
   componentWillMount() {
     this.loading = false;
-    this.credentials = {};
+    this.credentials = {currency: "$"};
   },
+
+  _checkCurrency(currency) {
+    if (this.credentials.currency === currency) {
+      console.log(currency);
+      return true;
+    }
+
+    console.log(currency);
+    return false
+  },
+
+  _onCurrencyClick() {
+    this.credentials.currency = "£";
+  },
+
   render() {
     var interval = setInterval(() => {
       if (this.credentials.due && document.getElementById("due-date-input")) {
         document.getElementById("due-date-input").value = this.credentials.due;
       }
     }, 500);
+
+    let eurClicked = this.credentials.currency === "€";
+    let usdClicked = this.credentials.currency === "$";
+    let gbpClicked = this.credentials.currency === "£";
+    console.log(this.credentials.currency);
     return(
-      <Layer closer={true} flush={true} onClose={() => {clearInterval(interval); Goto({path:"/dashboard/activities"})}}>
+      <Layer align="right" closer={true} flush={true} onClose={() => {clearInterval(interval); Goto({path:"/dashboard/activities"})}}>
 
         <Box>
           <Form pad="small" onSubmit={e => {
@@ -40,8 +60,13 @@ export default Component({
               <TextInput name="label" onDOMChange={event => {this.credentials.label = event.target.value}} />
             </FormField>
             <FormField label="How much would you like to deposit?">
-              <NumberInput name="deposit" onChange={event => {this.credentials.deposit = event.target.value}} />
+              <NumberInput name="deposit" min={1} onChange={event => {this.credentials.deposit = event.target.value}} />
             </FormField>
+            <Box direction="row" justify="center" align="center" pad="small" wrap={true}>
+              <Button align="center" label="USD $" primary={usdClicked} onClick={() => {this.credentials.currency = "$"; this.forceUpdate()}} />
+              <Button align="center" label="GBP £" primary={gbpClicked} onClick={() => {this.credentials.currency = "£"; this.forceUpdate()}} />
+              <Button align="center" label="EUR €" primary={eurClicked} onClick={() => {this.credentials.currency = "€"; this.forceUpdate()}} />
+            </Box>
             <FormField label="When is it due?">
               <DateTime id="due-date-input" format="M/D/YYYY h:mm a" name="due"
                 onChange={ date => {
