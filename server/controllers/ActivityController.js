@@ -13,7 +13,16 @@ module.exports = (app, route) => {
       return res.status(400).send("Request body is incomplete. (_id, label, due, deposit, currency)");
     }
 
-    Activity.create(req.body, (error, activity) => {
+    // prepare the document
+    var activityDoc = {
+      owner: req.body._id,
+      label: req.body.label,
+      deposit: req.body.deposit,
+      due: req.body.due,
+      currency: req.body.currency
+    };
+
+    Activity.create(activityDoc, (error, activity) => {
       if (error) return res.status(400).send(error);
 
       console.log(activity);
