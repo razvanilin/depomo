@@ -15,14 +15,16 @@ import Button from 'grommet/components/Button'
 
 import Spinning from 'grommet/components/icons/Spinning'
 
+import addActivity from '../actions/addActivity'
+
 export default Component({
   componentWillMount() {
     this.loading = false;
-    this.credentials = {currency: "$"};
+    this.activity = {currency: "$"};
   },
 
   _checkCurrency(currency) {
-    if (this.credentials.currency === currency) {
+    if (this.activity.currency === currency) {
       console.log(currency);
       return true;
     }
@@ -32,47 +34,50 @@ export default Component({
   },
 
   _onCurrencyClick() {
-    this.credentials.currency = "£";
+    this.activity.currency = "£";
   },
 
   render() {
-    var interval = setInterval(() => {
-      if (this.credentials.due && document.getElementById("due-date-input")) {
-        document.getElementById("due-date-input").value = this.credentials.due;
+    let interval = setInterval(() => {
+      if (this.activity.due && document.getElementById("due-date-input")) {
+        document.getElementById("due-date-input").value = this.activity.due;
       }
     }, 500);
 
-    let eurClicked = this.credentials.currency === "€";
-    let usdClicked = this.credentials.currency === "$";
-    let gbpClicked = this.credentials.currency === "£";
-    console.log(this.credentials.currency);
+    let eurClicked = this.activity.currency === "€";
+    let usdClicked = this.activity.currency === "$";
+    let gbpClicked = this.activity.currency === "£";
+    console.log(this.activity.currency);
     return(
       <Layer align="right" closer={true} flush={true} onClose={() => {clearInterval(interval); Goto({path:"/dashboard/activities"})}}>
 
         <Box>
           <Form pad="small" onSubmit={e => {
             e.preventDefault();
-            console.log(this.credentials);
+            console.log(this.activity);
+            clearInterval(interval);
+
+            addActivity(this.activity, this.props.user._id);
           }}>
             <Heading align="center" tag="h2">Add an activity</Heading>
 
             <FormField label="What are you planning to do?">
-              <TextInput name="label" onDOMChange={event => {this.credentials.label = event.target.value}} />
+              <TextInput name="label" onDOMChange={event => {this.activity.label = event.target.value}} />
             </FormField>
             <FormField label="How much would you like to deposit?">
-              <NumberInput name="deposit" min={1} onChange={event => {this.credentials.deposit = event.target.value}} />
+              <NumberInput name="deposit" min={1} onChange={event => {this.activity.deposit = event.target.value}} />
             </FormField>
             <Box direction="row" justify="center" align="center" pad="small" wrap={true}>
-              <Button align="center" label="USD $" primary={usdClicked} onClick={() => {this.credentials.currency = "$"; this.forceUpdate()}} />
-              <Button align="center" label="GBP £" primary={gbpClicked} onClick={() => {this.credentials.currency = "£"; this.forceUpdate()}} />
-              <Button align="center" label="EUR €" primary={eurClicked} onClick={() => {this.credentials.currency = "€"; this.forceUpdate()}} />
+              <Button align="center" label="USD $" primary={usdClicked} onClick={() => {this.activity.currency = "$"; this.forceUpdate()}} />
+              <Button align="center" label="GBP £" primary={gbpClicked} onClick={() => {this.activity.currency = "£"; this.forceUpdate()}} />
+              <Button align="center" label="EUR €" primary={eurClicked} onClick={() => {this.activity.currency = "€"; this.forceUpdate()}} />
             </Box>
             <FormField label="When is it due?">
               <DateTime id="due-date-input" format="M/D/YYYY h:mm a" name="due"
                 onChange={ date => {
-                  this.credentials.due = date;
+                  this.activity.due = date;
                   if (date && date.length > 0) {
-                    document.getElementById("due-date-input").value = this.credentials.due;
+                    document.getElementById("due-date-input").value = this.activity.due;
                   }
                 } }/>
             </FormField>
