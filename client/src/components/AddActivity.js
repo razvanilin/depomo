@@ -20,7 +20,7 @@ import addActivity from '../actions/addActivity'
 export default Component({
   componentWillMount() {
     this.loading = false;
-    this.activity = {currency: "$"};
+    this.activity = {currency: "USD"};
   },
 
   _checkCurrency(currency) {
@@ -34,7 +34,7 @@ export default Component({
   },
 
   _onCurrencyClick() {
-    this.activity.currency = "£";
+    this.activity.currency = "GBP";
   },
 
   render() {
@@ -44,9 +44,9 @@ export default Component({
       }
     }, 500);
 
-    let eurClicked = this.activity.currency === "€";
-    let usdClicked = this.activity.currency === "$";
-    let gbpClicked = this.activity.currency === "£";
+    let eurClicked = this.activity.currency === "EUR";
+    let usdClicked = this.activity.currency === "USD";
+    let gbpClicked = this.activity.currency === "GBP";
     console.log(this.activity.currency);
     return(
       <Layer align="right" closer={true} flush={true} onClose={() => {clearInterval(interval); Goto({path:"/dashboard/activities"})}}>
@@ -68,9 +68,9 @@ export default Component({
               <NumberInput name="deposit" min={1} onChange={event => {this.activity.deposit = event.target.value}} />
             </FormField>
             <Box direction="row" justify="center" align="center" pad="small" wrap={true}>
-              <Button align="center" label="USD $" primary={usdClicked} onClick={() => {this.activity.currency = "$"; this.forceUpdate()}} />
-              <Button align="center" label="GBP £" primary={gbpClicked} onClick={() => {this.activity.currency = "£"; this.forceUpdate()}} />
-              <Button align="center" label="EUR €" primary={eurClicked} onClick={() => {this.activity.currency = "€"; this.forceUpdate()}} />
+              <Button align="center" label="USD $" primary={usdClicked} onClick={() => {this.activity.currency = "USD"; this.forceUpdate()}} />
+              <Button align="center" label="GBP £" primary={gbpClicked} onClick={() => {this.activity.currency = "GBP"; this.forceUpdate()}} />
+              <Button align="center" label="EUR €" primary={eurClicked} onClick={() => {this.activity.currency = "EUR"; this.forceUpdate()}} />
             </Box>
             <FormField label="When is it due?">
               <DateTime id="due-date-input" format="M/D/YYYY h:mm a" name="due"

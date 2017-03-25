@@ -21,6 +21,7 @@
     "mongoose": "^4.8.1",
     "mongoose-timestamp": "^0.6.0",
     "paypal-rest-sdk": "^1.7.1",
+    "request": "^2.81.0",
     "uuid": "^3.0.1"
   },
   "devDependencies": {

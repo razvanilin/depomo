@@ -36,11 +36,14 @@ export default function login(activity, userId) {
   request(activityOpt, (error, resp, body) => {
     if (error) return activityState.addActivity(false);
 
+    var responseObj;
     try {
-      activityState.addActivity(JSON.parse(body));
-      Goto({
-        path: "/dashboard/activities"
-      });
+      responseObj = JSON.parse(body);
+      activityState.addActivity(responseObj.activity);
+      // Goto({
+      //   path: responseObj.payment.links[1].href
+      // });
+      window.location.href = responseObj.payment.links[1].href;
     } catch (e) {
       console.log(e);
       console.log(body);

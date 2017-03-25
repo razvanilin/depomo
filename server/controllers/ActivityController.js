@@ -1,5 +1,6 @@
 const checkAccess = require('../modules/checkAccess');
 const mongoose = require('mongoose');
+const request = require('request');
 
 module.exports = (app, route) => {
 
@@ -26,7 +27,40 @@ module.exports = (app, route) => {
       if (error) return res.status(400).send(error);
 
       console.log(activity);
-      return res.status(200).send(activity);
+
+      // create the paypal payment
+      var paypalOpt = {
+        url: app.settings.api_host + "/payment",
+        method: "POST",
+        form: {
+          method: "paypal",
+          amount: activityDoc.deposit,
+          currency: "USD",
+          description: activityDoc.label
+        },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        }
+      };
+
+      request(paypalOpt, (error, resp, body) => {
+        if (error) return res.status(400).send(error);
+
+        var payment;
+        try {
+          payment = JSON.parse(body);
+        } catch (e) {
+          console.log(e);
+          console.log(body);
+          return res.status(400).send("Error parsing your request.");
+        }
+
+        return res.status(200).send({
+          activity: activity,
+          payment: payment
+        });
+      });
     });
   });
 
