@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const _ = require('lodash');
 const cors = require('cors');
+const paypal = require('paypal-rest-sdk');
 
 var app = express();
 var http = require('http').Server(app);
@@ -26,6 +27,14 @@ if (process.env.NODE_ENV == "production") {
 app.get('/', function(req, res, next) {
   return res.send("Welcome to depomo server API");
 });
+
+// configure paypal
+paypal.configure({
+  mode: app.settings.paypal.mode,
+  client_id: app.settings.paypal.client_id,
+  client_secret: app.settings.paypal.secret
+});
+app.paypal = paypal;
 
 // Connect to mongodb
 var mongoDB = mongoose.connect(app.settings.dbhost);
