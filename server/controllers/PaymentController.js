@@ -23,8 +23,8 @@ module.exports = (app, route) => {
     if (req.body.method === "paypal") {
       payment.payer.payment_method = 'paypal';
       payment.redirect_urls = {
-        "return_url": app.settings.host + "/dashboard/activities?register_activity=true",
-        "cancel_url": app.settings.host + "/dashboard/activities/add?register_activity=false"
+        "return_url": app.settings.host + "/payment?user_id=" + req.body._id,
+        "cancel_url": app.settings.host + "/payment?user_id=" + req.body._id
       }
     }
 
@@ -36,6 +36,27 @@ module.exports = (app, route) => {
 
       console.log(pay);
       return res.status(200).send(pay);
+    });
+  });
+  // ------------------------------------------------
+
+  /** Route to confirm the payment **/
+  app.post("/payment/confirm", (req, res) => {
+    if (!req.body.userId || !req.body.paymentId || !req.body.payerId) {
+      return res.status(400).send("Request body is missing parameters.");
+    }
+
+    app.paypal.payment.execute(req.body.paymentId, {payer_id: req.body.payerId}, (error, payment) => {
+      if (error) {
+        console.log("error");
+        console.log(error);
+        console.log(error.response);
+        return res.status(400).send(error);
+      }
+
+      console.log("pass");
+      console.log(payment, null, 4);
+      return res.status(200).send(payment);
     });
   });
 

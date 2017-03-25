@@ -28,9 +28,6 @@ export default function login(credentials, token) {
 
       try {
         userState.login(JSON.parse(body));
-        Goto({
-          path: "/dashboard"
-        });
         return;
       } catch (e) {
         console.log(e);

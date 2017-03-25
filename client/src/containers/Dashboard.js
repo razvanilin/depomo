@@ -1,5 +1,6 @@
 import React from 'react'
 import { Component, Goto } from 'jumpsuit';
+import cookie from 'react-cookie'
 
 import LogoImage from '../images/depomo_logo.png';
 
@@ -22,6 +23,8 @@ import PlanIcon from 'grommet/components/icons/base/Plan'
 import CloseIcon from 'grommet/components/icons/base/Close'
 import MenuIcon from 'grommet/components/icons/base/Menu'
 
+import login from '../actions/login'
+
 export default Component({
 
   componentWillMount() {
@@ -30,10 +33,16 @@ export default Component({
         path: "/dashboard/activities"
       });
     }
-    if (!this.props.user || !this.props.user._id) {
-      Goto({
-        path: "/login"
-      });
+    // if (!this.props.user || !this.props.user._id) {
+    //   Goto({
+    //     path: "/login"
+    //   });
+    // }
+    if (cookie.load("token")) {
+      console.log(window.location.pathname + window.location.search);
+      cookie.save("wanted_link", window.location.pathname + window.location.search);
+      console.log(cookie.load('wanted_link'));
+      login(null, cookie.load("token"));
     }
 
     this.state = {showMenu: true, responsive: 'multiple'};

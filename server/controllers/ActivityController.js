@@ -36,7 +36,8 @@ module.exports = (app, route) => {
           method: "paypal",
           amount: activityDoc.deposit,
           currency: "USD",
-          description: activityDoc.label
+          description: activityDoc.label,
+          _id: activityDoc.owner
         },
         headers: {
           "Content-Type": "application/json",

@@ -8,6 +8,8 @@ import states from './state'
 // Containers
 import App from './containers/App'
 import Dashboard from './containers/Dashboard'
+import ProcessPayment from './containers/ProcessPayment'
+
 import Login from './components/Login'
 import Signup from './components/Signup'
 import Activities from './components/Activities'
@@ -29,6 +31,7 @@ Render(states, (
       <Route path='add' component={AddActivity} />
       </Route>
     </Route>
+    <Route path="/payment" component={ProcessPayment} />
   </Router>
 ))
 
