@@ -35,9 +35,10 @@ module.exports = (app, route) => {
         form: {
           method: "paypal",
           amount: activityDoc.deposit,
-          currency: "USD",
+          currency: activityDoc.currency,
           description: activityDoc.label,
-          _id: activityDoc.owner
+          user_id: activityDoc.owner,
+          activity_id: activity._id.toString()
         },
         headers: {
           "Content-Type": "application/json",
@@ -57,9 +58,23 @@ module.exports = (app, route) => {
           return res.status(400).send("Error parsing your request.");
         }
 
-        return res.status(200).send({
-          activity: activity,
-          payment: payment
+        // update the activity document
+        Activity.findByIdAndUpdate(activity._id, {
+          $set: {
+            method: payment.payer.payment_method,
+            paymentId: payment.id
+          }
+        }, (err, activity) => {
+
+          if (err) {
+            console.log(err);
+            return res.status(400).send(err);
+          }
+
+          return res.status(200).send({
+            activity: activity,
+            payment: payment
+          });
         });
       });
     });

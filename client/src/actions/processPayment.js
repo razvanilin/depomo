@@ -12,6 +12,7 @@ export default function processPayment() {
   var userId = getQueryStringValue("user_id");
   var paymentId = getQueryStringValue("paymentId");
   var payerId = getQueryStringValue("PayerId");
+  var activityId = getQueryStringValue("activity_id");
 
   if (!userId || !paymentId) {
     Goto({
@@ -30,7 +31,8 @@ export default function processPayment() {
     form: {
       userId: userId,
       paymentId: paymentId,
-      payerId: payerId
+      payerId: payerId,
+      activityId: activityId
     },
     headers: {
       "Content-Type": "application/json",

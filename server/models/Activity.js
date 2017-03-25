@@ -22,6 +22,19 @@ var ActivitySchema = new mongoose.Schema({
   deposit: {
     type: Number,
     min: 1
+  },
+  method: {
+    type: String
+  },
+  payerId: {
+    type: String
+  },
+  paymentId: {
+    type: String
+  },
+  status: {
+    type: String,
+    default: "initial"
   }
 });
 
