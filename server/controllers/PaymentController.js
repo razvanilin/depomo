@@ -63,26 +63,15 @@ module.exports = (app, route) => {
         status: "waiting"
       }
     }, (err, activity) => {
-
       if (err) {
         console.log(err);
         return res.status(400).send("Error updating the activity");
       }
 
-      app.paypal.payment.execute(req.body.paymentId, {payer_id: req.body.payerId}, (error, payment) => {
-        if (error) {
-          console.log("error");
-          console.log(error);
-          console.log(error.response);
-          return res.status(400).send(error);
-        }
-
-        console.log("pass");
-        console.log(payment, null, 4);
-        return res.status(200).send(payment);
-      });
+      return res.status(200).send(activity);
     });
   });
+  // ------------------------------------------------  
 
   return (req, res, next) => {
 
