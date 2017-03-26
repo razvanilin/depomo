@@ -80,7 +80,15 @@ module.exports = (app, route) => {
       return res.status(400).send("The request body is missing the activity ID");
     }
 
-    Activity.findByIdAndUpdate(req.body.activityId, { $set: {status: 'canceled'}}, (err, activity) => {
+    Activity.findByIdAndUpdate(req.body.activityId, {
+      $set: {
+        status: 'canceled',
+        payerId: '',
+        paymentId: ''
+      }
+    }, {
+      new: true
+    }, (err, activity) => {
       if (err) {
         console.log(err);
         return res.status(400).send(err);
