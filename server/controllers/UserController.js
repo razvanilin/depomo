@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const verifyOwner = require('../modules/verifyOwner');
+const mailchimp = require('../modules/mailchimp');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -40,8 +41,12 @@ module.exports = (app, route) => {
           return res.status(400).send(err + "");
         }
         req.body.password = hash;
-        User.collection.insert(req.body, (error, user) => {
+        User.create(req.body, (error, user) => {
             if (error) return res.status(400).send(error);
+
+            // add user to the mailchimp list
+            mailchimp.addUser(user);
+
             return res.status(200).send("User Created");
         });
       });
