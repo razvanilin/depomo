@@ -38,6 +38,8 @@ module.exports = (app) => {
               if (err) {
                 console.log(err);
               }
+
+              console.log(payment.id + " was " + payment.state);
           });
         });
       }

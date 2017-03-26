@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const checkAccess = require('../modules/checkAccess');
 
 module.exports = (app, route) => {
 
@@ -71,7 +72,25 @@ module.exports = (app, route) => {
       return res.status(200).send(activity);
     });
   });
-  // ------------------------------------------------  
+  // ------------------------------------------------
+
+  /** Route to cancel payments **/
+  app.post("/payment/cancel", checkAccess, (req, res) => {
+    if (!req.body.activityId) {
+      return res.status(400).send("The request body is missing the activity ID");
+    }
+
+    Activity.findByIdAndUpdate(req.body.activityId, { $set: {status: 'canceled'}}, (err, activity) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send(err);
+      }
+
+      return res.status(200).send(activity);
+    });
+  });
+  // ------------------------------------------------
+
 
   return (req, res, next) => {
 
