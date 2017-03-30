@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const verifyOwner = require('../modules/verifyOwner');
 const mailchimp = require('../modules/mailchimp');
+const uuid = require('uuid/v4');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -64,7 +65,6 @@ module.exports = (app, route) => {
               content: "Get ready to break procrastination"
             }];
             var message = {
-              subject: "Welcome to Depomo! 😺",
               from_email: "razvan@depomo.com",
               from_name: "Razvan",
               to: [{
@@ -164,6 +164,77 @@ module.exports = (app, route) => {
         }
         // return the decoded information
         return res.status(200).send(userResponse);
+      });
+    });
+  });
+  // ----------------------------------------------------------
+
+  /** Route to reset user's password **/
+  app.post("/user/forgot", (req, res, next) => {
+    if (!req.body.email) return res.status(400).send("Email is missing");
+
+    // edit the user document with a randomly generated token
+    User.update({email: req.body.email}, { $set: { resetToken: uuid()}}, { new: true }, (err, user) => {
+      if (err || !user || user.length < 1) {
+        console.log(err);
+        return res.status(400).send(err ? err : 'No user with that email');
+      }
+      console.log(user);
+
+      User.findOne({email: req.body.email}, (err, user) => {
+        if (err || !user || user.length < 1) {
+          console.log(err);
+          return res.status(400).send(err ? err : 'No user with that email');
+        }
+
+        // send forgot password email
+        // send user a welcome message
+        var templateName = "depomo-forgot-password";
+        var templateContent = [{
+          name: "Forgot Passowrd",
+          content: "Get ready to break procrastination"
+        }];
+        var message = {
+          from_email: "razvan@depomo.com",
+          from_name: "Razvan",
+          to: [{
+            email: user.email,
+            name: user.name,
+            type: "to"
+          }],
+          headers: {
+            "Reply-To": "razvan@depomo.com"
+          },
+          track_opens: true,
+          track_clicks: true,
+          merge_vars: [{
+            rcpt: user.email,
+            vars: [{
+              name: 'fname',
+              content: user.name
+            }, {
+              name: "resetlink",
+              content: user.resetToken
+            }]
+          }],
+          tags: ["forgot"]
+        }
+
+        app.mandrill.messages.sendTemplate({
+          template_name: templateName,
+          template_content: templateContent,
+          message: message,
+          async: true,
+          ip_pool: "Main Pool"
+        }, result => {
+          console.log("email sent");
+          console.log(result);
+        }, err => {
+          console.log("email error");
+          console.log(err);
+        });
+
+        return res.status(200).send("Email sent.");
       });
     });
   });
