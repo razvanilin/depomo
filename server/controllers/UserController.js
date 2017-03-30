@@ -78,7 +78,11 @@ module.exports = (app, route) => {
               track_opens: true,
               track_clicks: true,
               merge_vars: [{
-                rcpt: user.email
+                rcpt: user.email,
+                vars: [{
+                  name: 'fname',
+                  content: user.name
+                }]
               }],
               tags: ["welcome"]
             }
