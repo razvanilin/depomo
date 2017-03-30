@@ -8,6 +8,7 @@ const cors = require('cors');
 const paypal = require('paypal-rest-sdk');
 const checkActivities = require('./modules/checkActivities');
 const moment = require('moment');
+const mandrill = require('mandrill-api/mandrill');
 
 var CronJob = require('cron').CronJob;
 
@@ -39,6 +40,9 @@ paypal.configure({
   client_secret: app.settings.paypal.secret
 });
 app.paypal = paypal;
+
+// configure mandrill
+app.mandrill = new mandrill.Mandrill(app.settings.mandrill.api_key);
 
 // Connect to mongodb
 var mongoDB = mongoose.connect(app.settings.dbhost);

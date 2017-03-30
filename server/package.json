@@ -18,6 +18,7 @@
     "express": "^4.14.1",
     "jsonwebtoken": "^7.3.0",
     "lodash": "^4.17.4",
+    "mandrill-api": "^1.0.45",
     "method-override": "^2.3.7",
     "moment": "^2.18.1",
     "mongoose": "^4.8.1",

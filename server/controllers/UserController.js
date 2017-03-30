@@ -21,6 +21,16 @@ module.exports = (app, route) => {
     return res.status(200).send("GET /user/:id works");
   });
 
+  app.get('/mandrill', (req, res) => {
+    app.mandrill.users.ping(resource => {
+      console.log(resource);
+      return res.status(200).send(resource);
+    }, err => {
+      console.log(err);
+      return res.status(400).send(err);
+    })
+  });
+
   /** Route to create a user **/
   app.post('/user', (req, res) => {
     if (!req.body.email) return res.status(400).send("Request is missing the email field.");
@@ -46,6 +56,46 @@ module.exports = (app, route) => {
 
             // add user to the mailchimp list
             mailchimp.addUser(user);
+
+            // send user a welcome message
+            var templateName = "Depomo Welcome";
+            var templateContent = [{
+              name: "Welcome to Depomo",
+              content: "Get ready to break procrastination"
+            }];
+            var message = {
+              subject: "Welcome to Depomo! 😺",
+              from_email: "razvan@depomo.com",
+              from_name: "Razvan",
+              to: [{
+                email: user.email,
+                name: user.name,
+                type: "to"
+              }],
+              headers: {
+                "Reply-To": "razvan@depomo.com"
+              },
+              track_opens: true,
+              track_clicks: true,
+              merge_vars: [{
+                rcpt: user.email
+              }],
+              tags: ["welcome"]
+            }
+
+            app.mandrill.messages.sendTemplate({
+              template_name: templateName,
+              template_content: templateContent,
+              message: message,
+              async: true,
+              ip_pool: "Main Pool"
+            }, result => {
+              console.log("email sent");
+              console.log(result);
+            }, err => {
+              console.log("email error");
+              console.log(err);
+            });
 
             return res.status(200).send("User Created");
         });
