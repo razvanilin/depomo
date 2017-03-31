@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha -R spec tests/spec.js",
-    "start-dev": "set NODE_ENV=development && nodemon index"
+    "start-dev": "set NODE_ENV=development && nodemon index",
+    "start-prod": "NODE_ENV=production nodemon index"
   },
   "author": "Razvan Ilin",
   "license": "ISC",

@@ -24,7 +24,7 @@ app.use(cors());
 
 // get the environment specific settings
 if (process.env.NODE_ENV == "production") {
-  app.settings = require('./settings');
+  app.settings = require('./settings-prod');
 } else {
   app.settings = require('./settings-dev');
 }
