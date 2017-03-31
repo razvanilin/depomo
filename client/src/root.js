@@ -9,6 +9,7 @@ import states from './state'
 import App from './containers/App'
 import Dashboard from './containers/Dashboard'
 import ProcessPayment from './containers/ProcessPayment'
+import ResetPassword from './containers/ResetPassword'
 
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -32,6 +33,7 @@ Render(states, (
       </Route>
     </Route>
     <Route path="/payment" component={ProcessPayment} />
+    <Route path="/reset" component={ResetPassword} />
   </Router>
 ))
 
