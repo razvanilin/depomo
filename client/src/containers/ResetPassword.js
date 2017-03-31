@@ -21,30 +21,34 @@ import resetPassword from '../actions/resetPassword'
 export default Component({
 
   componentWillMount() {
-    this.errors = {};
-    this.newPassword = {};
+    this.state = {
+      loading: false,
+      password: "",
+      confirm: "",
+      errors: {}
+    };
   },
 
   _resetPassword() {
-    this.errors = {};
-    if (!this.newPassword.password || this.newPassword.password.length < 8) {
-      this.errors.password = "The password must be at least 6 characters long";
+    this.setState({errorMessage: ""});
+    this.setState({loading: true});
+
+    if (!this.state.password || this.state.password.length < 8) {
+      this.setState({errors: {password: "The password must be at least 6 characters long"}});
     }
-    if (!this.newPassword.confirm || this.newPassword.password !== this.newPassword.confirm) {
-      this.errors.confirm = "The passwords do not match";
+    if (!this.state.confirm || this.state.password !== this.state.confirm) {
+      this.setState({errors: {confirm: "The passwords do not match"}});
     }
-    if (Object.keys(this.errors).length > 0) {
-      this.forceUpdate();
+    if (Object.keys(this.state.errors).length > 0) {
+      this.setState({loading: false});
       return;
     }
 
-    this.forceUpdate();
-
-    resetPassword(this.newPassword.password, (success, data) => {
+    resetPassword(this.state.password, (success, data) => {
       if (!success) {
-        this.errorMessage = data;
-        this.forceUpdate();
+        this.setState({errorMessage: data});
       }
+      this.setState({loading: false});
     });
   },
 
@@ -58,11 +62,11 @@ export default Component({
             e.preventDefault();
             this._resetPassword();
           }}>
-            <FormField label="New password" error={this.errors.password}>
-              <TextInput type="password" name="password" onDOMChange={event => {this.newPassword.password = event.target.value}}/>
+            <FormField label="New password" error={this.state.errors.password}>
+              <TextInput type="password" name="password" onDOMChange={event => {this.setState({password: event.target.value})}}/>
             </FormField>
-            <FormField label="Confirm password" error={this.errors.confirm}>
-              <TextInput type="password" name="confirm" onDOMChange={event => {this.newPassword.confirm = event.target.value}}/>
+            <FormField label="Confirm password" error={this.state.errors.confirm}>
+              <TextInput type="password" name="confirm" onDOMChange={event => {this.setState({confirm: event.target.value})}}/>
             </FormField>
 
             <Footer pad={{"vertical": "medium"}} justify="center">
@@ -78,8 +82,8 @@ export default Component({
                   </Button>
                 </Box>
 
-                {this.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
-                {this.errorMessage && <Label style={{color:'red'}}>{this.errorMessage}</Label>}
+                {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
+                {this.state.errorMessage && <Label style={{color:'red'}}>{this.state.errorMessage}</Label>}
               </Columns>
             </Footer>
           </Form>
