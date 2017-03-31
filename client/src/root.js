@@ -15,6 +15,7 @@ import Login from './components/Login'
 import Signup from './components/Signup'
 import Activities from './components/Activities'
 import AddActivity from './components/AddActivity'
+import ForgotPassword from './components/ForgotPassword'
 
 // Screens
 // import Home from './components/Home'
@@ -26,6 +27,7 @@ Render(states, (
     <Route path='/' component={App}>
       <Route path='login' component={Login} />
       <Route path='signup' component={Signup} />
+      <Route path='forgot' component={ForgotPassword} />
     </Route>
     <Route path='/dashboard' component={Dashboard}>
       <Route path='activities' component={Activities}>

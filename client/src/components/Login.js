@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, Component } from 'jumpsuit';
 // grommet
 import Layer from 'grommet/components/Layer';
-import Anchor from 'grommet/components/Anchor';
 import LoginForm from 'grommet/components/LoginForm';
 import Box from 'grommet/components/Box';
 import Spinning from 'grommet/components/icons/Spinning';
@@ -33,8 +32,7 @@ export default Component({
         <Box>
         <LoginForm
           title='Login'
-          forgotPassword={<Anchor href='#'
-          label='Forgot password?' />}
+          forgotPassword={<Link to="/forgot">Forgot password?</Link>}
           errors={[this.errors.username, this.errors.password, this.props.user.error]}
           onSubmit={(credentials) => {
             this.errors = {};

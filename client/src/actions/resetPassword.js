@@ -7,13 +7,21 @@ function getQueryStringValue (key) {
   return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
 }
 
-export default function resetPassword(password, cb) {
+export default function resetPassword(data, cb) {
 
   var token = getQueryStringValue('token');
   var hash = getQueryStringValue('hash');
 
   if (!token || !hash) {
     return cb(false, "The password reset cannot be completed at this time.");
+  }
+
+  if (!data || !data.password || !data.confirm) {
+    return cb(false);
+  }
+
+  if (data.password.length < 6 || data.password !== data.confirm) {
+    return cb(false);
   }
 
   // build the request to reset the password
@@ -23,7 +31,7 @@ export default function resetPassword(password, cb) {
     form: {
       token: token,
       hash: hash,
-      password: password
+      password: data.password
     },
     headers: {
       "Content-Type": "application/json",

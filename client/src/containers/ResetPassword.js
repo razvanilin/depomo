@@ -1,5 +1,5 @@
 import React from 'react'
-import { Component } from 'jumpsuit'
+import { Link, Component } from 'jumpsuit'
 
 import LogoImage from '../images/depomo_logo.png';
 
@@ -32,19 +32,20 @@ export default Component({
   _resetPassword() {
     this.setState({errorMessage: ""});
     this.setState({loading: true});
+    this.setState({errors: {}});
 
-    if (!this.state.password || this.state.password.length < 8) {
+    if (!this.state.password || this.state.password.length < 6) {
       this.setState({errors: {password: "The password must be at least 6 characters long"}});
     }
     if (!this.state.confirm || this.state.password !== this.state.confirm) {
       this.setState({errors: {confirm: "The passwords do not match"}});
     }
-    if (Object.keys(this.state.errors).length > 0) {
+    if (this.state.errors.password || this.state.errors.confirm) {
       this.setState({loading: false});
       return;
     }
 
-    resetPassword(this.state.password, (success, data) => {
+    resetPassword({password: this.state.password, confirm: this.state.confirm}, (success, data) => {
       if (!success) {
         this.setState({errorMessage: data});
       }
@@ -56,7 +57,7 @@ export default Component({
     return (
       <App>
         <Header direction="column" align="center" alignContent="center" justify="center">
-          <Image size="large" src={LogoImage} />
+          <Link to="/"><Image size="large" src={LogoImage} /></Link>
 
           <Form pad="medium" onSubmit={e => {
             e.preventDefault();
