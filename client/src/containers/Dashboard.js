@@ -24,6 +24,7 @@ import CloseIcon from 'grommet/components/icons/base/Close'
 import MenuIcon from 'grommet/components/icons/base/Menu'
 
 import login from '../actions/login'
+import logout from '../actions/logout'
 
 export default Component({
 
@@ -81,6 +82,10 @@ export default Component({
     }
   },
 
+  _onLogoutClicked() {
+    logout();
+  },
+
   _renderMenu() {
     const title = this._renderTitle(false);
     let closer;
@@ -109,7 +114,7 @@ export default Component({
           <UserIcon />
           <Menu responsive={true} inline={false} label={this.props.user.name} icon={<UserIcon />} primary={true}>
             <Anchor href="">Profile Settings</Anchor>
-            <Anchor href="">Log Out</Anchor>
+            <Anchor onClick={this._onLogoutClicked}>Log Out</Anchor>
           </Menu>
         </Footer>
       </Sidebar>
