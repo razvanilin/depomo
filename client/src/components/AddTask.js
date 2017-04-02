@@ -15,12 +15,11 @@ import Button from 'grommet/components/Button'
 
 import Spinning from 'grommet/components/icons/Spinning'
 
-import addActivity from '../actions/addActivity'
+import addTask from '../actions/addTask'
 
 export default Component({
   componentWillMount() {
     this.loading = false;
-    this.activity = {currency: "USD"};
     this.state = {
       loading: false,
       errorMessage: "",
@@ -33,22 +32,9 @@ export default Component({
     }
   },
 
-  _checkCurrency(currency) {
-    if (this.activity.currency === currency) {
-      return true;
-    }
-
-    console.log(currency);
-    return false
-  },
-
-  _onCurrencyClick() {
-    this.activity.currency = "GBP";
-  },
-
   render() {
     return(
-      <Layer align="right" closer={true} flush={true} onClose={() => {Goto({path:"/dashboard/activities"})}}>
+      <Layer align="right" closer={true} flush={true} onClose={() => {Goto({path:"/dashboard/tasks"})}}>
 
         <Box>
           <Form pad="small" onSubmit={e => {
@@ -65,13 +51,13 @@ export default Component({
               return;
             }
 
-            addActivity(this.state, this.props.user._id, (success, message) => {
+            addTask(this.state, this.props.user._id, (success, message) => {
               if (!success) this.setState({errorMessage: message});
 
               this.setState({loading: false});
             });
           }}>
-            <Heading align="center" tag="h2">Add an activity</Heading>
+            <Heading align="center" tag="h2">Add a task</Heading>
 
             <FormField label="What are you planning to do?" error={this.state.labelError}>
               <TextInput name="label" onDOMChange={event => {this.setState({label: event.target.value});}} />
@@ -88,16 +74,13 @@ export default Component({
               <DateTime id="due-date-input" value={this.state.due} format="M/D/YYYY h:mm a" name="due"
                 onChange={ date => {
                   this.setState({due: date});
-                  if (date && date.length > 0) {
-                    document.getElementById("due-date-input").value = this.activity.due;
-                  }
                 } }/>
             </FormField>
 
             <Footer pad={{"vertical": "medium"}} justify="center">
               <Columns justify="center">
                 <Box justify="center">
-                  <Button label='Track activity'
+                  <Button label='Save task'
                     type='submit'
                     primary={true}
                     align="center"

@@ -3,11 +3,11 @@ const checkAccess = require('../modules/checkAccess');
 
 module.exports = (app, route) => {
 
-  var Activity = mongoose.model('activity', app.models.activity);
+  var Task = mongoose.model('task', app.models.task);
 
   /** Route to authorize a payment **/
   app.post("/payment", (req, res) => {
-    if (!req.body.method || !req.body.currency || !req.body.amount || !req.body.user_id || !req.body.activity_id) {
+    if (!req.body.method || !req.body.currency || !req.body.amount || !req.body.user_id || !req.body.task_id) {
       return res.status(400).send("The body of the request is missing parameters.");
     }
 
@@ -21,17 +21,15 @@ module.exports = (app, route) => {
           currency: req.body.currency,
           total: req.body.amount
         },
-        description: req.body.description ? req.body.description : "depomo activity"
+        description: req.body.description ? req.body.description : "depomo task"
       }]
     };
-
-    console.log(req.body.activity_id);
 
     if (req.body.method === "paypal") {
       payment.payer.payment_method = 'paypal';
       payment.redirect_urls = {
-        "return_url": app.settings.host + "/payment?user_id=" + req.body.user_id + "&activity_id=" + req.body.activity_id,
-        "cancel_url": app.settings.host + "/payment?user_id=" + req.body.user_id + "&activity_id=" + req.body.activity_id
+        "return_url": app.settings.host + "/payment?user_id=" + req.body.user_id + "&task_id=" + req.body.task_id,
+        "cancel_url": app.settings.host + "/payment?user_id=" + req.body.user_id + "&task_id=" + req.body.task_id
       }
     }
 
@@ -53,34 +51,34 @@ module.exports = (app, route) => {
 
   /** Route to confirm the payment **/
   app.post("/payment/confirm", (req, res) => {
-    if (!req.body.userId || !req.body.paymentId || !req.body.payerId || !req.body.activityId) {
+    if (!req.body.userId || !req.body.paymentId || !req.body.payerId || !req.body.taskId) {
       return res.status(400).send("Request body is missing parameters.");
     }
 
-    // update the activity document
-    Activity.findByIdAndUpdate(req.body.activityId, {
+    // update the task document
+    Task.findByIdAndUpdate(req.body.taskId, {
       $set: {
         payerId: req.body.payerId,
         status: "waiting"
       }
-    }, (err, activity) => {
+    }, (err, task) => {
       if (err) {
         console.log(err);
-        return res.status(400).send("Error updating the activity");
+        return res.status(400).send("Error updating the task");
       }
 
-      return res.status(200).send(activity);
+      return res.status(200).send(task);
     });
   });
   // ------------------------------------------------
 
   /** Route to cancel payments **/
   app.post("/payment/cancel", checkAccess, (req, res) => {
-    if (!req.body.activityId) {
-      return res.status(400).send("The request body is missing the activity ID");
+    if (!req.body.taskId) {
+      return res.status(400).send("The request body is missing the task ID");
     }
 
-    Activity.findByIdAndUpdate(req.body.activityId, {
+    Task.findByIdAndUpdate(req.body.taskId, {
       $set: {
         status: 'canceled',
         payerId: '',
@@ -88,13 +86,13 @@ module.exports = (app, route) => {
       }
     }, {
       new: true
-    }, (err, activity) => {
+    }, (err, task) => {
       if (err) {
         console.log(err);
         return res.status(400).send(err);
       }
 
-      return res.status(200).send(activity);
+      return res.status(200).send(task);
     });
   });
   // ------------------------------------------------

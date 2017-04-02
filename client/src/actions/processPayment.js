@@ -12,11 +12,11 @@ export default function processPayment() {
   var userId = getQueryStringValue("user_id");
   var paymentId = getQueryStringValue("paymentId");
   var payerId = getQueryStringValue("PayerId");
-  var activityId = getQueryStringValue("activity_id");
+  var taskId = getQueryStringValue("task_id");
 
   if (!userId || !paymentId) {
     Goto({
-      path: "/dashboard/activities",
+      path: "/dashboard/tasks",
       query: {
         payment_failure: true
       }
@@ -32,7 +32,7 @@ export default function processPayment() {
       userId: userId,
       paymentId: paymentId,
       payerId: payerId,
-      activityId: activityId
+      taskId: taskId
     },
     headers: {
       "Content-Type": "application/json",
@@ -45,7 +45,7 @@ export default function processPayment() {
     if (error || resp.statusCode !== 200) {
       console.log(error);
       Goto({
-        path: "/dashboard/activities",
+        path: "/dashboard/tasks",
         query: {
           payment_failure: true
         }
@@ -54,7 +54,7 @@ export default function processPayment() {
     }
 
     Goto({
-      path: "/dashboard/activities"
+      path: "/dashboard/tasks"
     });
   });
 }

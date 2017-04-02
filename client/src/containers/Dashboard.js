@@ -36,7 +36,7 @@ export default Component({
 
     if (window.location.pathname === "/dashboard") {
       Goto({
-        path: "/dashboard/activities"
+        path: "/dashboard/tasks"
       });
     }
 
@@ -97,7 +97,7 @@ export default Component({
 
         <Box flex='grow' pad="small">
           <Menu primary={true}>
-            <Anchor label="Activities" icon={<PlanIcon />} animateIcon={true} href="" className="active"/>
+            <Anchor label="Tasks" icon={<PlanIcon />} animateIcon={true} href="" className="active"/>
             <Anchor label="Profile" icon={<UserIcon />} animateIcon={true} href="" />
             <Anchor label="History" icon={<HistoryIcon />} animateIcon={true} href="" />
             <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true} href="" />

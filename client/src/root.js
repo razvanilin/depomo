@@ -13,8 +13,8 @@ import ResetPassword from './containers/ResetPassword'
 
 import Login from './components/Login'
 import Signup from './components/Signup'
-import Activities from './components/Activities'
-import AddActivity from './components/AddActivity'
+import Tasks from './components/Tasks'
+import AddTask from './components/AddTask'
 import ForgotPassword from './components/ForgotPassword'
 
 // Screens
@@ -30,8 +30,8 @@ Render(states, (
       <Route path='forgot' component={ForgotPassword} />
     </Route>
     <Route path='/dashboard' component={Dashboard}>
-      <Route path='activities' component={Activities}>
-      <Route path='add' component={AddActivity} />
+      <Route path='tasks' component={Tasks}>
+      <Route path='add' component={AddTask} />
       </Route>
     </Route>
     <Route path="/payment" component={ProcessPayment} />

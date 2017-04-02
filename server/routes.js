@@ -1,5 +1,5 @@
 module.exports = {
   '/user': require('./controllers/UserController'),
-  '/activity': require('./controllers/ActivityController'),
+  '/task': require('./controllers/TaskController'),
   '/payment': require('./controllers/PaymentController')
 }

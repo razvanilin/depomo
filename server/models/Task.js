@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const timestamp = require('mongoose-timestamp');
 const bcrypt = require('bcryptjs');
 
-var ActivitySchema = new mongoose.Schema({
+var TaskSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
@@ -38,6 +38,6 @@ var ActivitySchema = new mongoose.Schema({
   }
 });
 
-ActivitySchema.plugin(timestamp);
+TaskSchema.plugin(timestamp);
 
-module.exports = ActivitySchema;
+module.exports = TaskSchema;

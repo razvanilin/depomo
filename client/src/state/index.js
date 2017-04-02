@@ -1,9 +1,9 @@
 import counter from './counter'
 import user from './user'
-import activity from './activity'
+import task from './task'
 
 export default {
   counter,
   user,
-  activity
+  task
 }

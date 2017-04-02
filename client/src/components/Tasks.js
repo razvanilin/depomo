@@ -12,7 +12,7 @@ export default Component({
     return(
       <Section>
         <Header justify="center">
-          <Link to='/dashboard/activities/add'><Button label="Add a new activity" icon={<AddIcon />} size="large" primary={true}
+          <Link to='/dashboard/tasks/add'><Button label="Add a new task" icon={<AddIcon />} size="large" primary={true}
             onClick={ () => { console.log("add"); }}
           /></Link>
         </Header>

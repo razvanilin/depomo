@@ -3,11 +3,11 @@ const request = require('request');
 import { Goto } from 'jumpsuit'
 import cookie from 'react-cookie'
 
-import activityState from '../state/activity'
+import taskState from '../state/task'
 import settings from '../settings'
 
-export default function login(activity, userId, cb) {
-  if (!activity || !activity.due || !activity.label || !activity.deposit || !activity.currency) {
+export default function login(task, userId, cb) {
+  if (!task || !task.due || !task.label || !task.deposit || !task.currency) {
     return cb(false, "The form is incomplete");
   }
 
@@ -20,12 +20,12 @@ export default function login(activity, userId, cb) {
   }
 
   // add the user ID to the request body
-  activity._id = userId;
+  task._id = userId;
 
-  var activityOpt = {
-    url: settings.api_host + "/activity",
+  var taskOpt = {
+    url: settings.api_host + "/task",
     method: "POST",
-    form: activity,
+    form: task,
     headers: {
       'x-access-token': cookie.load('token'),
       'Accept': 'application/json',
@@ -33,7 +33,7 @@ export default function login(activity, userId, cb) {
     }
   };
 
-  request(activityOpt, (error, resp, body) => {
+  request(taskOpt, (error, resp, body) => {
     if (error) return cb(false, error);
 
     if (resp.statusCode !== 200) return cb(false, body);
@@ -41,7 +41,7 @@ export default function login(activity, userId, cb) {
     var responseObj;
     try {
       responseObj = JSON.parse(body);
-      activityState.addActivity(responseObj.activity);
+      taskState.addTask(responseObj.task);
       cb(true);
       window.location.href = responseObj.payment.links[1].href;
     } catch (e) {

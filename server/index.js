@@ -6,7 +6,7 @@ const methodOverride = require('method-override');
 const _ = require('lodash');
 const cors = require('cors');
 const paypal = require('paypal-rest-sdk');
-const checkActivities = require('./modules/checkActivities');
+const checkTasks = require('./modules/checkTasks');
 const moment = require('moment');
 const mandrill = require('mandrill-api/mandrill');
 
@@ -60,11 +60,11 @@ _.each(routes, function(controller, route) {
 })
 
 var server = app.listen(app.settings.port, function() {
-  // starting the cron-job to check out activities
+  // starting the cron-job to check out tasks
   console.log("Starting cron...");
   new CronJob('0 */1 * * * *', () => {
     console.log(moment().format('MMMM Do YYYY, h:mm:ss a') + " - Running Cron");
-    checkActivities(app);
+    checkTasks(app);
   }, () => {
     console.log("Cron Stop");
   }, true);
