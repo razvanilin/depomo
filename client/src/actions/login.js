@@ -6,10 +6,10 @@ import cookie from 'react-cookie'
 import userState from '../state/user'
 import settings from '../settings'
 
-export default function login(credentials, token) {
-  if (!credentials || !credentials.username || !credentials.password) {
+export default function login(credentials, token, cb) {
+  if (!credentials || !credentials.email || !credentials.password) {
     // if the object is empty, check if there is a valid token in the cookies and try to get the user details from there
-    if (!token) return userState.login(false);
+    if (!token) return cb(false);
 
     var relogOpt = {
       url: settings.api_host + "/user/relog",
@@ -24,22 +24,19 @@ export default function login(credentials, token) {
     };
 
     request(relogOpt, (error, resp, body) => {
-      if (error) return userState.login(false);
+      if (error) return cb(false);
 
       try {
         userState.login(JSON.parse(body));
-        return;
+        return cb(true);
       } catch (e) {
         console.log(e);
         console.log(body);
-        return userState.login(false);
+        return cb(false);
       }
     });
 
   } else {
-
-    // copy the username field into the email one to meet the api needs
-    credentials.email = credentials.username;
 
     var loginOpt = {
       url: settings.api_host + "/user/login",
@@ -52,12 +49,17 @@ export default function login(credentials, token) {
     };
 
     request(loginOpt, (error, resp, body) => {
-      if (error) return userState.login({error: error});
+      if (error) return cb(false, error);
+
+      if (resp.statusCode !== 200) {
+        return cb(false, body);
+      }
 
       try {
         var userObject = JSON.parse(body);
         userState.login(userObject);
         cookie.save('token', userObject.token);
+        cb(true);
         Goto({
           path: '/dashboard'
         });
@@ -65,7 +67,7 @@ export default function login(credentials, token) {
       } catch (e) {
         console.log(e);
         console.log(body);
-        return userState.login({error: body});
+        return cb(false, body);
       }
     });
   }

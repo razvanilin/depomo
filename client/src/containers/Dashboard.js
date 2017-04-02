@@ -29,21 +29,15 @@ import logout from '../actions/logout'
 export default Component({
 
   componentWillMount() {
+    if (cookie.load("token")) {
+      cookie.save("wanted_link", window.location.pathname + window.location.search);
+      login(null, cookie.load("token"), (success) => {});
+    }
+
     if (window.location.pathname === "/dashboard") {
       Goto({
         path: "/dashboard/activities"
       });
-    }
-    // if (!this.props.user || !this.props.user._id) {
-    //   Goto({
-    //     path: "/login"
-    //   });
-    // }
-    if (cookie.load("token")) {
-      console.log(window.location.pathname + window.location.search);
-      cookie.save("wanted_link", window.location.pathname + window.location.search);
-      console.log(cookie.load('wanted_link'));
-      login(null, cookie.load("token"));
     }
 
     this.state = {showMenu: true, responsive: 'multiple'};

@@ -14,14 +14,13 @@ import login from '../actions/login'
 
 export default Component({
   componentWillMount() {
-    this.errors = {};
-    this.loading = false;
-
-    // if (this.props.user && this.props.user._id) {
-    //   Goto({
-    //     path: "/dashboard"
-    //   });
-    // }
+    this.state = {
+      email: "",
+      password: "",
+      loading: false,
+      emailError: "",
+      passwordError: ""
+    };
   },
   render() {
     return(
@@ -33,25 +32,40 @@ export default Component({
         <LoginForm
           title='Login'
           forgotPassword={<Link to="/forgot">Forgot password?</Link>}
-          errors={[this.errors.username, this.errors.password, this.props.user.error]}
+          errors={[this.state.emailError, this.state.passwordError, this.state.errorMessage]}
           onSubmit={(credentials) => {
-            this.errors = {};
-            this.loading = true;
+
+            this.setState({loading: true});
+            this.setState({emailError: ""});
+            this.setState({passwordError: ""});
 
             var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
             if (!credentials.username || !credentials.username.match(mailformat)) {
-              this.errors.username = "Please enter a valid email";
-              this.loading = false;
+              this.setState({emailError: "Please enter a valid email"});
             }
             if (!credentials.password) {
-              this.errors.password = "Please enter your password";
-              this.loading = false;
+              this.setState({passwordError: "Please enter your password"});
             }
 
-            login(credentials);
+            if (this.state.emailError || this.state.passwordError) {
+              this.setState({loading: false});
+              return;
+            }
+
+            // set the state
+            this.setState({email: credentials.username});
+            this.setState({password: credentials.password});
+
+            login({email: credentials.username, password: credentials.password}, null, (success, message) => {
+              if (!success) {
+                this.setState({errorMessage: message});
+              }
+
+              this.setState({loading: false});
+            });
           }}/>
           </Box>
-          {this.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
+          {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
       </Layer>
     )
   }
