@@ -21,11 +21,12 @@ module.exports = (req, res, next) => {
   if (token) {
     jwt.verify(token, settings.secret, (err, decoded) => {
       if (err) return res.status(401).send("Unauthorized access.");
+
       User.findOne({
         _id: decoded._doc._id
       }, (err, user) => {
 
-        if (err) return res.status(400).send("Could not process your user information. Try again later.")
+        if (err || !user) return res.status(400).send("Could not process your user information. Try again later.")
 
         if (user._id == req.params.id || user.isAdmin) {
           req.decoded = decoded;

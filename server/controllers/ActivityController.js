@@ -1,4 +1,5 @@
 const checkAccess = require('../modules/checkAccess');
+const verifyOwner = require('../modules/verifyOwner');
 const mongoose = require('mongoose');
 const request = require('request');
 
@@ -7,6 +8,20 @@ module.exports = (app, route) => {
   // prepare the models
   var User = mongoose.model('user', app.models.user);
   var Activity = mongoose.model('activity', app.models.activity);
+
+  /** Route to get user's activities **/
+  app.get('/activity/:id', verifyOwner, (req, res) => {
+    var activitiesExclusionFields = "-paymentId -payerId";
+    Activity.find({owner: req.params.id}, activitiesExclusionFields, (err, activities) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send(err);
+      }
+
+      return res.status(200).send(activities);
+    });
+  });
+  // ---------------------------------------------------
 
   /** Route to record activities **/
   app.post('/activity', checkAccess, (req, res) => {
@@ -79,6 +94,7 @@ module.exports = (app, route) => {
       });
     });
   });
+  // ---------------------------------------------------
 
   return (req, res, next) => {
     next();
