@@ -12,6 +12,7 @@ import Footer from 'grommet/components/Footer';
 import Button from 'grommet/components/Button';
 import CheckBox from 'grommet/components/CheckBox';
 import Columns from 'grommet/components/Columns';
+import Label from 'grommet/components/Label';
 import Spinning from 'grommet/components/icons/Spinning';
 
 // grommet icons
@@ -22,14 +23,16 @@ import signup from '../actions/signup';
 
 export default Component({
   componentWillMount() {
-    this.errors = {};
-    this.loading = false;
-    this.credentials = {};
-    // if (this.props.user && this.props.user._id) {
-    //   Goto({
-    //     path: "/"
-    //   });
-    // }
+    this.state = {
+      name: "",
+      email: "",
+      password: "",
+      agree: "",
+      nameError: "",
+      emailError: "",
+      passwordError: "",
+      agreeError: ""
+    };
   },
   render() {
     return(
@@ -44,26 +47,35 @@ export default Component({
             // validation
             var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-            this.errors = {};
-            this.loading = true;
-            if (!this.credentials.name || this.credentials.name.length < 1) {
-              this.errors.name = "Please enter your name.";
-              this.loading = false;
+            this.setState({nameError: ""});
+            this.setState({emailError: ""});
+            this.setState({passwordError: ""});
+            this.setState({agreeError: ""});
+            this.setState({loading: true});
+
+            if (!this.state.name || this.state.name.length < 1) {
+              this.setState({nameError: "Please enter your name."});
             }
-            if (!this.credentials.email || !this.credentials.email.match(mailformat)) {
-              this.errors.email = "Please enter a valid email.";
-              this.loading = false;
+            if (!this.state.email || !this.state.email.match(mailformat)) {
+              this.setState({emailError: "Please enter a valid email."});
             }
-            if (!this.credentials.password || this.credentials.password.length < 6) {
-              this.errors.password = "Please enter a password that's longer than 6 characters.";
-              this.loading = false;
+            if (!this.state.password || this.state.password.length < 6) {
+              this.setState({passwordError: "Please enter a password that's longer than 6 characters."});
             }
-            if (!this.credentials.agree) {
-              this.errors.agree = " ";
-              this.loading = false;
+            if (!this.state.agree) {
+              this.setState({agreeError: " "});
             }
 
-            signup(this.credentials);
+            if (this.state.nameError || this.state.emailError || this.state.passwordError || this.state.agreeError) {
+              this.setState({loading: false});
+              return;
+            }
+
+            signup(this.state, (success, message) => {
+              if (!success) this.setState({errorMessage: message});
+
+              this.setState({loading: false});
+            });
           }}>
             <Header align="center" justify="center">
               <Heading strong={true} align="center">
@@ -71,21 +83,21 @@ export default Component({
               </Heading>
             </Header>
 
-            <FormField label="Name" error={this.errors.name}>
-              <TextInput name="name" onDOMChange={event => {this.credentials.name = event.target.value}}/>
+            <FormField label="Name" error={this.state.nameError}>
+              <TextInput name="name" onDOMChange={event => {this.setState({name: event.target.value});}} />
             </FormField>
-            <FormField label="Email" error={this.errors.email}>
-              <TextInput name="email" onDOMChange={event => {this.credentials.email = event.target.value}}/>
+            <FormField label="Email" error={this.state.emailError}>
+              <TextInput name="email" onDOMChange={event => {this.setState({email: event.target.value});}}/>
             </FormField>
-            <FormField label="Password" error={this.errors.password}>
-              <TextInput type="password" name="password" onDOMChange={event => {this.credentials.password = event.target.value}}/>
+            <FormField label="Password" error={this.state.passwordError}>
+              <TextInput type="password" name="password" onDOMChange={event => {this.setState({password: event.target.value});}}/>
             </FormField>
 
-            <FormField error={this.errors.agree}>
+            <FormField error={this.state.agreeError}>
               <CheckBox id='agree'
                 name='agree'
                 label='I agree with the Terms & Conditions'
-                onChange={event => {this.credentials.agree = event.target.value}} />
+                onChange={event => {this.setState({agree: event.target.value})}} />
             </FormField>
 
             <Footer pad={{"vertical": "medium"}} justify="center">
@@ -101,7 +113,8 @@ export default Component({
                   </Button>
                 </Box>
 
-                {this.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
+                {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
+                {this.state.errorMessage && <Label style={{color:'red'}}>{this.state.errorMessage}</Label>}
               </Columns>
             </Footer>
           </Form>

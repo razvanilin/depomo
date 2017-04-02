@@ -2,12 +2,11 @@ const request = require('request');
 
 import { Goto } from 'jumpsuit'
 import settings from '../settings'
-import userState from '../state/user'
 
-export default function signup(user) {
-  console.log("sign in function");
+export default function signup(user, cb) {
+
   if (!user.email || !user.password || !user.name || !user.agree) {
-    return userState.signup({error: "The form is not complete"});
+    return cb(false, "The form is not complete");
   }
 
   let signupOpt = {
@@ -20,17 +19,16 @@ export default function signup(user) {
   };
 
   request(signupOpt, (error, resp, body) => {
-    if (error) return userState.signup({error: error});
+    if (error) return cb(false, error);
 
     if (resp.statusCode === 200) {
-      userState.signup({signup: true});
+      cb(true);
       Goto({
         path: "/login"
       });
       return;
     }
 
-    return userState.signup({error: body});
-
+    return cb(false, body);
   });
 }
