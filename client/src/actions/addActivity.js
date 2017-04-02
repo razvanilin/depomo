@@ -6,14 +6,14 @@ import cookie from 'react-cookie'
 import activityState from '../state/activity'
 import settings from '../settings'
 
-export default function login(activity, userId) {
+export default function login(activity, userId, cb) {
   if (!activity || !activity.due || !activity.label || !activity.deposit || !activity.currency) {
-    return activityState.addActivity(false);
+    return cb(false, "The form is incomplete");
   }
 
   // check if the user is authorised to do this action
   if (!cookie.load('token')) {
-    activityState.addActivity(false);
+    cb(false);
     return Goto({
       path: "/login"
     });
@@ -34,20 +34,20 @@ export default function login(activity, userId) {
   };
 
   request(activityOpt, (error, resp, body) => {
-    if (error) return activityState.addActivity(false);
+    if (error) return cb(false, error);
+
+    if (resp.statusCode !== 200) return cb(false, body);
 
     var responseObj;
     try {
       responseObj = JSON.parse(body);
       activityState.addActivity(responseObj.activity);
-      // Goto({
-      //   path: responseObj.payment.links[1].href
-      // });
+      cb(true);
       window.location.href = responseObj.payment.links[1].href;
     } catch (e) {
       console.log(e);
       console.log(body);
-      activityState.addActivity(false);
+      cb(false, body);
     }
   });
 }

@@ -21,11 +21,20 @@ export default Component({
   componentWillMount() {
     this.loading = false;
     this.activity = {currency: "USD"};
+    this.state = {
+      loading: false,
+      errorMessage: "",
+      currency: "USD",
+      label: "",
+      deposit: 1,
+      due: "",
+      labelError: "",
+      dueError: ""
+    }
   },
 
   _checkCurrency(currency) {
     if (this.activity.currency === currency) {
-      console.log(currency);
       return true;
     }
 
@@ -38,44 +47,47 @@ export default Component({
   },
 
   render() {
-    let interval = setInterval(() => {
-      if (this.activity.due && document.getElementById("due-date-input")) {
-        document.getElementById("due-date-input").value = this.activity.due;
-      }
-    }, 500);
-
-    let eurClicked = this.activity.currency === "EUR";
-    let usdClicked = this.activity.currency === "USD";
-    let gbpClicked = this.activity.currency === "GBP";
-    console.log(this.activity.currency);
     return(
-      <Layer align="right" closer={true} flush={true} onClose={() => {clearInterval(interval); Goto({path:"/dashboard/activities"})}}>
+      <Layer align="right" closer={true} flush={true} onClose={() => {Goto({path:"/dashboard/activities"})}}>
 
         <Box>
           <Form pad="small" onSubmit={e => {
             e.preventDefault();
-            console.log(this.activity);
-            clearInterval(interval);
 
-            addActivity(this.activity, this.props.user._id);
+            this.setState({loading: true});
+            this.setState({labelError: ""});
+            this.setState({dueError: ""});
+
+            if (!this.state.label) this.setState({labelError: "Please add a label to the task"});
+            if (!this.state.due) this.setState({dueError: "Please add a due date"});
+            if (this.state.labelError || this.state.dueError) {
+              this.setState({loading: false});
+              return;
+            }
+
+            addActivity(this.state, this.props.user._id, (success, message) => {
+              if (!success) this.setState({errorMessage: message});
+
+              this.setState({loading: false});
+            });
           }}>
             <Heading align="center" tag="h2">Add an activity</Heading>
 
-            <FormField label="What are you planning to do?">
-              <TextInput name="label" onDOMChange={event => {this.activity.label = event.target.value}} />
+            <FormField label="What are you planning to do?" error={this.state.labelError}>
+              <TextInput name="label" onDOMChange={event => {this.setState({label: event.target.value});}} />
             </FormField>
             <FormField label="How much would you like to deposit?">
-              <NumberInput name="deposit" min={1} onChange={event => {this.activity.deposit = event.target.value}} />
+              <NumberInput name="deposit" min={1} value={this.state.deposit} onChange={event => {this.setState({deposit: event.target.value});}} />
             </FormField>
             <Box direction="row" justify="center" align="center" pad="small" wrap={true}>
-              <Button align="center" label="USD $" primary={usdClicked} onClick={() => {this.activity.currency = "USD"; this.forceUpdate()}} />
-              <Button align="center" label="GBP £" primary={gbpClicked} onClick={() => {this.activity.currency = "GBP"; this.forceUpdate()}} />
-              <Button align="center" label="EUR €" primary={eurClicked} onClick={() => {this.activity.currency = "EUR"; this.forceUpdate()}} />
+              <Button align="center" label="USD $" primary={this.state.currency === "USD"} onClick={() => {this.setState({currency: "USD"});}} />
+              <Button align="center" label="GBP £" primary={this.state.currency === "GBP"} onClick={() => {this.setState({currency: "GBP"});}} />
+              <Button align="center" label="EUR €" primary={this.state.currency === "EUR"} onClick={() => {this.setState({currency: "EUR"});}} />
             </Box>
-            <FormField label="When is it due?">
-              <DateTime id="due-date-input" format="M/D/YYYY h:mm a" name="due"
+            <FormField label="When is it due?" error={this.state.dueError}>
+              <DateTime id="due-date-input" value={this.state.due} format="M/D/YYYY h:mm a" name="due"
                 onChange={ date => {
-                  this.activity.due = date;
+                  this.setState({due: date});
                   if (date && date.length > 0) {
                     document.getElementById("due-date-input").value = this.activity.due;
                   }
@@ -90,12 +102,12 @@ export default Component({
                     primary={true}
                     align="center"
                     style={{width:"100%"}}
-                    onClick={function() { clearInterval(interval); console.log("track");}}>
+                    onClick={function() { console.log("track");}}>
 
                   </Button>
                 </Box>
 
-                {this.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
+                {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
               </Columns>
             </Footer>
           </Form>
