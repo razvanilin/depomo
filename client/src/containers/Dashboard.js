@@ -127,7 +127,7 @@ export default Component({
      );
     }
     return (
-      <Box flex="grow" pad="medium">
+      <Box flex="grow">
         {header}
         {this.props.children}
       </Box>
