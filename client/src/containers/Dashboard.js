@@ -35,6 +35,7 @@ export default Component({
       login(null, cookie.load("token"), (success) => {
         getTasks(this.props.user._id, (success, message) => {
           if (!success) console.log(message);
+          console.log("works");
         });
       });
     }

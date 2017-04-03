@@ -10,7 +10,6 @@ import List from 'grommet/components/List'
 import ListItem from 'grommet/components/ListItem'
 import Menu from 'grommet/components/Menu'
 import Anchor from 'grommet/components/Anchor'
-import Value from 'grommet/components/Value'
 
 import AddIcon from 'grommet/components/icons/base/Add'
 import Checkmark from 'grommet/components/icons/base/Checkmark'
@@ -18,7 +17,49 @@ import Trash from 'grommet/components/icons/base/Trash'
 import Money from 'grommet/components/icons/base/Money'
 import Clock from 'grommet/components/icons/base/Clock'
 
+import getTasks from '../actions/getTasks'
+
 export default Component({
+  componentWillMount() {
+    if (this.props.user) {
+      getTasks(this.props.user._id, (success, message) => {
+        if (!success) console.log(message);
+      });
+    }
+  },
+
+  _renderTasks() {
+    if (this.props.task && this.props.task.tasks && this.props.task.tasks.length > 0) {
+      return (
+        <Box>
+          <Label style={{paddingLeft:"20px"}}>Current tasks</Label>
+
+          <List selectable={true}>
+            {
+              this.props.task.tasks.map((task) => {
+                //let task = this.props.task.tasks[index];
+                console.log(task);
+                return (
+                  <ListItem key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
+                    <Label size="small">{task.label}</Label>
+                    <Anchor icon={<Money/>} label={task.deposit + " " + task.currency} />
+                    <Anchor icon={<Clock/>} label={task.due}/>
+                    <span>
+                      <Menu inline={true} direction="row">
+                        <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} />
+                        <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} />
+                      </Menu>
+                    </span>
+                  </ListItem>
+                )
+              })
+            }
+          </List>
+        </Box>
+      )
+    }
+  },
+
   render() {
     return(
       <Section>
@@ -28,35 +69,7 @@ export default Component({
           /></Link>
         </Header>
 
-        <Box>
-          <Label style={{paddingLeft:"20px"}}>Current tasks</Label>
-
-          <List selectable={true}>
-            <ListItem responsive={false} primary={true} justify="between" separator="horizontal">
-              <span>Go to the doctor</span>
-              <Value size="xsmall" value={5} icon={<Money/>} units="USD" />
-              <Value size="xsmall" value={"4/2/2017 2:12 pm"} icon={<Clock/>} />
-              <span>
-                <Menu inline={true} direction="row">
-                  <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} />
-                  <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} />
-                </Menu>
-              </span>
-            </ListItem>
-          </List>
-        </Box>
-
-        <Box margin={{vertical:"medium"}}>
-          <Label style={{paddingLeft:"20px"}}>Past tasks</Label>
-
-          <List selectable={true}>
-            <ListItem responsive={false} primary={true} justify="between" separator="horizontal">
-              <span>Go to the doctor</span>
-              <Value size="xsmall" value={5} icon={<Money/>} units="USD" />
-              <Value size="xsmall" value={"4/2/2017 2:12 pm"} icon={<Clock/>} />
-            </ListItem>
-          </List>
-        </Box>
+        {this._renderTasks()}
 
         {this.props.children}
       </Section>
