@@ -2,11 +2,11 @@ import { State } from 'jumpsuit'
 
 export default State({
   initial: {
-    tasks: []
+    tasks: {}
   },
-  addTask(state, task) {
-    if (!task) return state;
+  addTask(state, tasks) {
+    if (!tasks) return state;
 
-    return [...state, task];
+    return {...state, tasks};
   }
 })

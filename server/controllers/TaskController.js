@@ -10,9 +10,9 @@ module.exports = (app, route) => {
   var Task = mongoose.model('task', app.models.task);
 
   /** Route to get user's tasks **/
-  app.get('/task/:id', verifyOwner, (req, res) => {
+  app.get('/task', verifyOwner, (req, res) => {
     var tasksExclusionFields = "-paymentId -payerId";
-    Task.find({owner: req.params.id}, tasksExclusionFields, (err, tasks) => {
+    Task.find({owner: req.query.userId}, tasksExclusionFields, (err, tasks) => {
       if (err) {
         console.log(err);
         return res.status(400).send(err);

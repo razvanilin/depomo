@@ -18,8 +18,8 @@ module.exports = (app, route) => {
   });
 
   /** Route to get a user **/
-  app.get('/user/:id', verifyOwner, (req, res) => {
-    return res.status(200).send("GET /user/:id works");
+  app.get('/user/:userId', verifyOwner, (req, res) => {
+    return res.status(200).send("GET /user/:userId works");
   });
 
   /** Route to create a user **/

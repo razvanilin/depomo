@@ -63,5 +63,6 @@ export default Component({
     )
   }
 }, state => ({
-  user: state.user
+  user: state.user,
+  task: state.task
 }))
