@@ -56,33 +56,75 @@ export default Component({
   _renderTasks() {
     if (this.props.task && this.props.task.tasks && this.props.task.tasks.length > 0) {
       return (
-        <Box>
+        <Box margin={{vertical:"medium"}}>
           <Label style={{paddingLeft:"20px"}}>Current tasks</Label>
 
           <List selectable={true}>
             {
               this.props.task.tasks.map((task) => {
                 //let task = this.props.task.tasks[index];
-                if (task.status === 'waiting')
-                return (
-                  <ListItem direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
-                      <Box style={{width:this.state.labelWidth}} justify="center" align="start">
-                        <Label truncate={true}>{task.label}</Label>
-                      </Box>
-                      <Box justify="start" align="start">
-                        <Anchor style={{fontSize:"90%"}} primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
-                      </Box>
-                      <Box justify="start" align="start">
-                        <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
-                      </Box>
-                      <Box justify="end" align="end">
-                        <Menu inline={true} direction="row">
-                          <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} />
-                          <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} />
-                        </Menu>
-                      </Box>
-                  </ListItem>
-                )
+                if (task.status === 'waiting') {
+                  return (
+                    <ListItem direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
+                        <Box style={{width:this.state.labelWidth}} justify="center" align="start">
+                          <Label truncate={true}>{task.label}</Label>
+                        </Box>
+                        <Box justify="start" align="start">
+                          <Anchor style={{fontSize:"90%"}} primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
+                        </Box>
+                        <Box justify="start" align="start">
+                          <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
+                        </Box>
+                        <Box justify="end" align="end">
+                          <Menu inline={true} direction="row">
+                            <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} />
+                            <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} />
+                          </Menu>
+                        </Box>
+                    </ListItem>
+                  )
+                } else {
+                  return(<span key={task._id}></span>)
+                }
+              })
+            }
+          </List>
+        </Box>
+      )
+    }
+  },
+
+  _renderPast() {
+    if (this.props.task && this.props.task.tasks && this.props.task.tasks.length > 0) {
+      return (
+        <Box>
+          <Label style={{paddingLeft:"20px"}}>Past tasks</Label>
+
+          <List selectable={true}>
+            {
+              this.props.task.tasks.map((task) => {
+                //let task = this.props.task.tasks[index];
+                if (task.status !== 'waiting' && task.status !== 'initial') {
+                  return (
+                    <ListItem colorIndex="light-2" direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
+                        <Box style={{width:this.state.labelWidth}} justify="center" align="start">
+                          <Label truncate={true}>{task.label}</Label>
+                        </Box>
+                        <Box justify="start" align="start">
+                          <Anchor style={{fontSize:"90%"}} primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
+                        </Box>
+                        <Box justify="start" align="start">
+                          <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
+                        </Box>
+                        <Box justify="end" align="end">
+                          {task.status === 'paid' && <Label>💗</Label>}
+                          {task.status === 'completed' && <Label>✌️</Label>}
+                        </Box>
+                    </ListItem>
+                  )
+                } else {
+                  return(<span key={task._id}></span>)
+                }
               })
             }
           </List>
@@ -101,6 +143,7 @@ export default Component({
         </Header>
 
         {this._renderTasks()}
+        {this._renderPast()}
 
         {this.props.children}
       </Section>
