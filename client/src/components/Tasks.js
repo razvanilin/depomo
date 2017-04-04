@@ -17,14 +17,39 @@ import Trash from 'grommet/components/icons/base/Trash'
 import Money from 'grommet/components/icons/base/Money'
 import Clock from 'grommet/components/icons/base/Clock'
 
+import Responsive from 'grommet/utils/Responsive'
+
 import getTasks from '../actions/getTasks'
 
 export default Component({
   componentWillMount() {
+    this.state = {
+      listItemDirection: "row",
+      labelWidth: "20%"
+    }
+
     if (this.props.user) {
       getTasks(this.props.user._id, (success, message) => {
         if (!success) console.log(message);
       });
+    }
+  },
+
+  componentDidMount() {
+    this._responsive = Responsive.start(this._onResponsive);
+  },
+
+  componentWillUnmout() {
+    this._responsive.stop();
+  },
+
+  _onResponsive(small) {
+    if (small && this.state.listItemDirection !== "column") {
+      this.setState({listItemDirection: "column"});
+      this.setState({labelWidth: "90%"});
+    } else if (!small && this.state.listItemDirection !== "row") {
+      this.setState({listItemDirection: "row"});
+      this.setState({labelWidth: "20%"});
     }
   },
 
@@ -38,19 +63,19 @@ export default Component({
             {
               this.props.task.tasks.map((task) => {
                 //let task = this.props.task.tasks[index];
-                console.log(task);
+                if (task.status === 'waiting')
                 return (
-                  <ListItem key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
-                      <Box style={{width:"20%"}} justify="center" align="center">
+                  <ListItem direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
+                      <Box style={{width:this.state.labelWidth}} justify="center" align="start">
                         <Label truncate={true}>{task.label}</Label>
                       </Box>
-                      <Box justify="end">
+                      <Box justify="start" align="start">
                         <Anchor style={{fontSize:"90%"}} primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
                       </Box>
-                      <Box>
+                      <Box justify="start" align="start">
                         <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
                       </Box>
-                      <Box>
+                      <Box justify="end" align="end">
                         <Menu inline={true} direction="row">
                           <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} />
                           <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} />
