@@ -41,15 +41,21 @@ export default Component({
                 console.log(task);
                 return (
                   <ListItem key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
-                    <Label size="small">{task.label}</Label>
-                    <Anchor icon={<Money/>} label={task.deposit + " " + task.currency} />
-                    <Anchor icon={<Clock/>} label={task.due}/>
-                    <span>
-                      <Menu inline={true} direction="row">
-                        <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} />
-                        <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} />
-                      </Menu>
-                    </span>
+                      <Box style={{width:"20%"}} justify="center" align="center">
+                        <Label truncate={true}>{task.label}</Label>
+                      </Box>
+                      <Box justify="end">
+                        <Anchor style={{fontSize:"90%"}} primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
+                      </Box>
+                      <Box>
+                        <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
+                      </Box>
+                      <Box>
+                        <Menu inline={true} direction="row">
+                          <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} />
+                          <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} />
+                        </Menu>
+                      </Box>
                   </ListItem>
                 )
               })
