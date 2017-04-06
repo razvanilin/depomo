@@ -6,16 +6,16 @@ import '../node_modules/grommet/scss/aruba/index.scss';
 import states from './state'
 
 // Containers
-import App from './containers/App'
-import Dashboard from './containers/Dashboard'
-import ProcessPayment from './containers/ProcessPayment'
-import ResetPassword from './containers/ResetPassword'
-
-import Login from './components/Login'
-import Signup from './components/Signup'
-import Tasks from './components/Tasks'
-import AddTask from './components/AddTask'
-import ForgotPassword from './components/ForgotPassword'
+import App from './containers/PreLaunch'
+// import Dashboard from './containers/Dashboard'
+// import ProcessPayment from './containers/ProcessPayment'
+// import ResetPassword from './containers/ResetPassword'
+//
+// import Login from './components/Login'
+// import Signup from './components/Signup'
+// import Tasks from './components/Tasks'
+// import AddTask from './components/AddTask'
+// import ForgotPassword from './components/ForgotPassword'
 
 // Screens
 // import Home from './components/Home'
@@ -24,18 +24,7 @@ import ForgotPassword from './components/ForgotPassword'
 // Simple Routing
 Render(states, (
   <Router>
-    <Route path='/' component={App}>
-      <Route path='login' component={Login} />
-      <Route path='signup' component={Signup} />
-      <Route path='forgot' component={ForgotPassword} />
-    </Route>
-    <Route path='/dashboard' component={Dashboard}>
-      <Route path='tasks' component={Tasks}>
-      <Route path='add' component={AddTask} />
-      </Route>
-    </Route>
-    <Route path="/payment" component={ProcessPayment} />
-    <Route path="/reset" component={ResetPassword} />
+    <Route path='/' component={App}/>
   </Router>
 ))
 
