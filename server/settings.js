@@ -13,7 +13,8 @@ module.exports = {
   mailchimp: {
     host: "https://us8.api.mailchimp.com/3.0",
     api_key: process.env.MAILCHIMP_API_KEY,
-    general_list: "2a60530976"
+    general_list: "2a60530976",
+    pre_list: "78758e5ff3"
   },
   mandrill: {
     api_key: process.env.MANDRILL_API_KEY
