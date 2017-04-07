@@ -242,6 +242,88 @@ module.exports = (app, route) => {
   });
   // ----------------------------------------------------------
 
+  /** Route to change the user's profile **/
+  app.put('/user/:id/profile', verifyOwner, (req, res) => {
+    var updates = {};
+
+    if (req.body.name) updates.name = req.body.name;
+    if (req.body.email) updates.email = req.body.email;
+
+    User.findByIdAndUpdate(req.params.id, { $set: updates}, {new: true}, (err, user) => {
+      if (err) return res.status(400).send(err);
+      if (!user) return res.status(404).send("User not found");
+
+      let token = jwt.sign(user, app.settings.secret, {
+        expiresIn: 604800 // a week
+      });
+
+      var userResponse = {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        token: token
+      }
+
+      return res.status(200).send(userResponse);
+    });
+  });
+  // ----------------------------------------------------------
+
+  /** Route to update user's password while logged in **/
+  app.put('/user/:id/password', verifyOwner, (req, res) => {
+    if (!req.body.password) return res.status(400).send("Password field missing");
+    if (!req.body.newPassword) return res.status(400).send("New password file is missing");
+
+    User.findOne({_id: req.params.id}, (err, user) => {
+      if (err) return res.status(400).send(err);
+      if (!user) return res.status(400).send("User not found");
+
+      // check the password
+      user.comparePassword(req.body.password, user.password, (isMatch) => {
+        if (!isMatch) {
+          console.log("Failed to update password for " + user.email);
+          return res.status(401).send("Wrong email or password.");
+        }
+
+        // hash the new password
+        bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+          if (err) {
+            console.log(err);
+            return res.status(400).send(err);
+          }
+
+          bcrypt.hash(req.body.password, salt, (err, hash) => {
+            if (err) {
+              console.log(err);
+              return res.status(400).send(err + "");
+            }
+
+            User.findByIdAndUpdate(req.params.id, { $set: {password: hash}}, {new: true}, (err, user) => {
+
+              if (err) return res.status(400).send(err);
+              if (!user) return res.status(404).send("Could not find user to update");
+
+              let token = jwt.sign(user, app.settings.secret, {
+                expiresIn: 604800 // a week
+              });
+
+              var userResponse = {
+                _id: user._id,
+                email: user.email,
+                name: user.name,
+                token: token
+              }
+
+              return res.status(200).send(userResponse);
+            });
+          });
+        });
+      });
+    });
+  });
+  // ----------------------------------------------------------
+
+
   return (req, res, next) => {
     next();
   }
