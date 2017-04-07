@@ -142,7 +142,7 @@ export default React.createClass({
                   A task-based platform that will help users break procrastination by placing deposits for each task.
                 </Paragraph>
                 <Paragraph size="large">
-                  When the taks is not completed, the deposit will go towards helping poor regions in africa develop their education system and help children to study.
+                  When the task is not completed, the deposit will go towards helping poor regions in africa develop their education system and help children to study.
                 </Paragraph>
                 <Paragraph size="large">
                   Register for updates to be the first one who gets notified about future developments.
