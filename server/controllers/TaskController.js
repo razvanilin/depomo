@@ -96,6 +96,45 @@ module.exports = (app, route) => {
   });
   // ---------------------------------------------------
 
+  /** ROUTE to update tasks **/
+  app.put('/task/:id', verifyOwner, (req, res) => {
+    task.findByIdAndUpdate(req.params.id, { $set: req.body }, {new: true}, (err, task) => {
+      if (err) return res.status(400).send(err);
+      if (!task) return res.status(404).send("No task found with that ID");
+
+      return res.status(200).send(task);
+    });
+  });
+  // ---------------------------------------------------
+
+  /** ROUTE to mark activity as complete **/
+  app.put('/task/:id/complete', verifyOwner, (req, res) => {
+    task.findByIdAndUpdate(req.params.id, {
+      $set: {
+        status: "complete",
+        payerId: "",
+        paymentId: ""
+      }
+    }, {new: true}, (err, task) => {
+      if (err) return res.status(400).send(err);
+      if (!task) return res.status(404).send("No task found with that ID");
+
+      return res.status(200).send(task);
+    });
+  });
+  // ---------------------------------------------------
+
+  /** ROUTE to remove a task **/
+  app.put('/task/:id/remove', (req, res) => {
+    task.findByIdAndRemove(req.params.id, err => {
+      if (err) return res.status(400).send(err);
+
+      return res.status(200).send("Task removed");
+    });
+  });
+  // ---------------------------------------------------
+
+
   return (req, res, next) => {
     next();
   }
