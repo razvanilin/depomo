@@ -1,5 +1,5 @@
 import React from 'react'
-import { Component, Goto } from 'jumpsuit';
+import { Component, Goto, Link } from 'jumpsuit';
 import cookie from 'react-cookie'
 
 import LogoImage from '../images/depomo_logo.png';
@@ -103,7 +103,7 @@ export default Component({
 
         <Box flex='grow' pad="small">
           <Menu primary={true}>
-            <Anchor label="Tasks" icon={<PlanIcon />} animateIcon={true} href="" className="active"/>
+            <Link to="/dashboard/tasks" className="active"><Anchor tag="span" label="Tasks" icon={<PlanIcon />} animateIcon={true} className="active"/></Link>
             <Anchor label="Profile" icon={<UserIcon />} animateIcon={true} href="" />
             <Anchor label="History" icon={<HistoryIcon />} animateIcon={true} href="" />
             <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true} href="" />
@@ -113,7 +113,7 @@ export default Component({
         <Footer pad="medium">
           <UserIcon />
           <Menu responsive={true} inline={false} label={this.props.user.name} icon={<UserIcon />} primary={true}>
-            <Anchor href="">Profile Settings</Anchor>
+            <Link to="/dashboard/settings"><Anchor tag="span">Profile Settings</Anchor></Link>
             <Anchor onClick={this._onLogoutClicked}>Log Out</Anchor>
           </Menu>
         </Footer>
