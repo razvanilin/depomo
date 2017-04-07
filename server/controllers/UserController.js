@@ -48,48 +48,8 @@ module.exports = (app, route) => {
             // add user to the mailchimp list
             mailchimp.addUser(user);
 
-            // send user a welcome message
-            var templateName = "Depomo Welcome";
-            var templateContent = [{
-              name: "Welcome to Depomo",
-              content: "Get ready to break procrastination"
-            }];
-            var message = {
-              from_email: "razvan@depomo.com",
-              from_name: "Razvan",
-              to: [{
-                email: user.email,
-                name: user.name,
-                type: "to"
-              }],
-              headers: {
-                "Reply-To": "razvan@depomo.com"
-              },
-              track_opens: true,
-              track_clicks: true,
-              merge_vars: [{
-                rcpt: user.email,
-                vars: [{
-                  name: 'fname',
-                  content: user.name
-                }]
-              }],
-              tags: ["welcome"]
-            }
-
-            app.mandrill.messages.sendTemplate({
-              template_name: templateName,
-              template_content: templateContent,
-              message: message,
-              async: true,
-              ip_pool: "Main Pool"
-            }, result => {
-              console.log("email sent");
-              console.log(result);
-            }, err => {
-              console.log("email error");
-              console.log(err);
-            });
+            // send welcome message
+            mailchimp.sendEmail(app, app.settings.mandrill.welcome_template, user, [{name: "fname", content: user.name}]);
 
             return res.status(200).send("User Created");
         });

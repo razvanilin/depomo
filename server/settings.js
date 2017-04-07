@@ -16,6 +16,7 @@ module.exports = {
     general_list: "2a60530976"
   },
   mandrill: {
-    api_key: process.env.MANDRILL_API_KEY
+    api_key: process.env.MANDRILL_API_KEY,
+    welcome_template: "depomo-welcome"
   }
 }

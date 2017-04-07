@@ -9,7 +9,8 @@ if (process.env.NODE_ENV == "production") {
 }
 
 module.exports = {
-  addUser: addUser
+  addUser: addUser,
+  sendEmail: sendEmail
 }
 
 function addUser(user) {
@@ -39,5 +40,47 @@ function addUser(user) {
     }
 
     console.log(body);
+  });
+}
+
+function sendEmail(app, template, user, vars, tags) {
+  // send user a welcome message
+  var templateName = template;
+  var templateContent = [{
+    name: "Depomo",
+    content: "Get ready to break procrastination"
+  }];
+  var message = {
+    from_email: "razvan@depomo.com",
+    from_name: "Razvan",
+    to: [{
+      email: user.email,
+      name: user.name,
+      type: "to"
+    }],
+    headers: {
+      "Reply-To": "razvan@depomo.com"
+    },
+    track_opens: true,
+    track_clicks: true,
+    merge_vars: [{
+      rcpt: user.email,
+      vars: vars
+    }],
+    tags: tags || []
+  }
+
+  app.mandrill.messages.sendTemplate({
+    template_name: templateName,
+    template_content: templateContent,
+    message: message,
+    async: true,
+    ip_pool: "Main Pool"
+  }, result => {
+    console.log("email sent");
+    console.log(result);
+  }, err => {
+    console.log("email error");
+    console.log(err);
   });
 }
