@@ -11,6 +11,8 @@ import ListItem from 'grommet/components/ListItem'
 import Menu from 'grommet/components/Menu'
 import Anchor from 'grommet/components/Anchor'
 import Toast from 'grommet/components/Toast'
+import Layer from 'grommet/components/Layer'
+import Heading from 'grommet/components/Heading'
 
 import AddIcon from 'grommet/components/icons/base/Add'
 import Checkmark from 'grommet/components/icons/base/Checkmark'
@@ -22,6 +24,7 @@ import Responsive from 'grommet/utils/Responsive'
 
 import getTasks from '../actions/getTasks'
 import completeTask from '../actions/completeTask'
+import removeTask from '../actions/removeTask'
 
 export default Component({
   componentWillMount() {
@@ -56,20 +59,41 @@ export default Component({
   },
 
   _onTaskCompleted(taskId) {
-    console.log("complete requested for: " + taskId);
     completeTask(taskId, this.props.user._id, (success, data) => {
-      if (!success) this.setState({completeError: true});
+      if (!success) {
+        this.setState({completeError: true});
+      } else {
+        this.setState({completeSuccess: true});
 
-      this.setState({completeSuccess: true});
-      // if everything is fine, load the tasks again
-      getTasks(this.props.user._id, (success, message) => {
-        if (!success) console.log(message);
-      });
+        // if everything is fine, load the tasks again
+        getTasks(this.props.user._id, (success, message) => {
+          if (!success) console.log(message);
+        });
+      }
+
+
     });
   },
 
-  _onTaskRemoved(taskId) {
+  _onRemoveTriggered(taskId) {
+    this.setState({deleteSelected: taskId});
+  },
 
+  _onTaskRemoved() {
+    removeTask(this.state.deleteSelected, this.props.user._id, (success, data) => {
+      if (!success) {
+        this.setState({removeError: true});
+      } else {
+        this.setState({removeSuccess: true});
+
+        // if everything is fine, load the tasks again
+        getTasks(this.props.user._id, (success, message) => {
+          if (!success) console.log(message);
+        });
+      }
+
+      this.setState({deleteSelected: ""});
+    });
   },
 
   _renderTasks() {
@@ -97,7 +121,7 @@ export default Component({
                         <Box justify="end" align="end">
                           <Menu inline={true} direction="row">
                             <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} onClick={() => {this._onTaskCompleted(task._id)}} />
-                            <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} onClick={() => {this._onTaskRemoved(task._id)}} />
+                            <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} onClick={() => {this._onRemoveTriggered(task._id)}} />
                           </Menu>
                         </Box>
                     </ListItem>
@@ -171,6 +195,30 @@ export default Component({
           <Toast status='ok' onClose={ () => { this.setState({completeSuccess: false}) }}>
             Way to go! 😻 One more step towards conquering that procrastination 👊
           </Toast>
+        }
+
+        {this.state.removeError &&
+          <Toast status='critical' onClose={ () => { this.setState({removeError: false}) }}>
+            Oh no 🙀 There was an error with removing the task. Please try again 🙏
+          </Toast>
+        }
+
+        {this.state.removeSuccess &&
+          <Toast status='ok' onClose={ () => { this.setState({removeSuccess: false}) }}>
+            The task was removed successfully 👌
+          </Toast>
+        }
+
+        {this.state.deleteSelected &&
+          <Layer closer={true} onClose={() => { this.setState({deleteSelected: ""}) }}>
+            <Box direction="column" pad="medium" justify="center" align="center">
+              <Heading>Are you sure you want to remove the task? 🤔</Heading>
+              <Box direction="row" pad="medium" justify="center" align="center">
+                <Box pad="small"><Button primary={true} label="Yes, remove it" onClick={this._onTaskRemoved} /></Box>
+                <Box pad="small"><Button secondary={true} label="No, I still want it" onClick={() => {this.setState({deleteSelected: ""}) }} /></Box>
+              </Box>
+            </Box>
+          </Layer>
         }
 
         {this._renderTasks()}
