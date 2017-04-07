@@ -27,6 +27,7 @@ import Section from 'grommet/components/Section'
 import Spinning from 'grommet/components/icons/Spinning'
 import Paragraph from 'grommet/components/Paragraph'
 import Notification from 'grommet/components/Notification'
+import Responsive from 'grommet/utils/Responsive'
 
 import subscribeEmail from '../actions/subscribeEmail'
 
@@ -38,6 +39,22 @@ export default React.createClass({
       errorMessage: "",
       loading: false
     };
+  },
+
+  componentDidMount() {
+    this._responsive = Responsive.start(this._onResponsive);
+  },
+
+  componentWillUnmout() {
+    this._responsive.stop();
+  },
+
+  _onResponsive(small) {
+    if (small && !this.state.isMobile) {
+      this.setState({isMobile: true});
+    } else if (!small && this.state.isMobile) {
+      this.setState({isMobile: false});
+    }
   },
 
   _onSubmitForm() {
@@ -79,9 +96,7 @@ export default React.createClass({
                 <Headline margin='none'>
                   <Image size="large" src={DepomoLogo}/>
                 </Headline>
-                <Heading style={{textShadow: "3px 3px 5px #000000"}} strong={true} tag="h3">
-                  Help children get educated while breaking procrastination in your daily activities
-                </Heading>
+                {!this.state.isMobile && <Heading style={{textShadow: "3px 3px 5px #000000"}} strong={true} tag="h3">Help children get educated while breaking procrastination in your daily activities</Heading>}
             </Box>
 
             <Box full="horizontal" direction="row" justify="center" align="center">
