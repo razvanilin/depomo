@@ -10,6 +10,7 @@ import List from 'grommet/components/List'
 import ListItem from 'grommet/components/ListItem'
 import Menu from 'grommet/components/Menu'
 import Anchor from 'grommet/components/Anchor'
+import Toast from 'grommet/components/Toast'
 
 import AddIcon from 'grommet/components/icons/base/Add'
 import Checkmark from 'grommet/components/icons/base/Checkmark'
@@ -20,6 +21,7 @@ import Clock from 'grommet/components/icons/base/Clock'
 import Responsive from 'grommet/utils/Responsive'
 
 import getTasks from '../actions/getTasks'
+import completeTask from '../actions/completeTask'
 
 export default Component({
   componentWillMount() {
@@ -53,6 +55,23 @@ export default Component({
     }
   },
 
+  _onTaskCompleted(taskId) {
+    console.log("complete requested for: " + taskId);
+    completeTask(taskId, this.props.user._id, (success, data) => {
+      if (!success) this.setState({completeError: true});
+
+      this.setState({completeSuccess: true});
+      // if everything is fine, load the tasks again
+      getTasks(this.props.user._id, (success, message) => {
+        if (!success) console.log(message);
+      });
+    });
+  },
+
+  _onTaskRemoved(taskId) {
+
+  },
+
   _renderTasks() {
     if (this.props.task && this.props.task.tasks && this.props.task.tasks.length > 0) {
       return (
@@ -77,8 +96,8 @@ export default Component({
                         </Box>
                         <Box justify="end" align="end">
                           <Menu inline={true} direction="row">
-                            <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} />
-                            <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} />
+                            <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} onClick={() => {this._onTaskCompleted(task._id)}} />
+                            <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} onClick={() => {this._onTaskRemoved(task._id)}} />
                           </Menu>
                         </Box>
                     </ListItem>
@@ -141,6 +160,18 @@ export default Component({
             onClick={ () => { console.log("add"); }}
           /></Link>
         </Header>
+
+        {this.state.completeError &&
+          <Toast status='critical' onClose={ () => { this.setState({completeError: false}) }}>
+            Oh no 🙀 There was an error with completing the task. Please try again 🙏
+          </Toast>
+        }
+
+        {this.state.completeSuccess &&
+          <Toast status='ok' onClose={ () => { this.setState({completeSuccess: false}) }}>
+            Way to go! 😻 One more step towards conquering that procrastination 👊
+          </Toast>
+        }
 
         {this._renderTasks()}
         {this._renderPast()}
