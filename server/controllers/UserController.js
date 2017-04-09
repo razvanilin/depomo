@@ -282,7 +282,7 @@ module.exports = (app, route) => {
       user.comparePassword(req.body.password, user.password, (isMatch) => {
         if (!isMatch) {
           console.log("Failed to update password for " + user.email);
-          return res.status(401).send("Wrong email or password.");
+          return res.status(401).send("Wrong password.");
         }
 
         // hash the new password
@@ -292,7 +292,7 @@ module.exports = (app, route) => {
             return res.status(400).send(err);
           }
 
-          bcrypt.hash(req.body.password, salt, (err, hash) => {
+          bcrypt.hash(req.body.newPassword, salt, (err, hash) => {
             if (err) {
               console.log(err);
               return res.status(400).send(err + "");

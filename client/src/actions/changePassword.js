@@ -2,8 +2,9 @@ const request = require('request');
 
 import cookie from 'react-cookie'
 import settings from '../settings'
+import userState from '../state/user'
 
-export default function changeProfile(profile, userId, cb) {
+export default function changeProfile(passwords, userId, cb) {
 
   if (!cookie.load('token')) return cb(false, "Invalid token");
   if (!passwords || !passwords.password || !passwords.newPassword) return cb(false, "Invalid request");
@@ -11,7 +12,7 @@ export default function changeProfile(profile, userId, cb) {
   var profileOpt = {
     url: settings.api_host + "/user/" + userId + "/password",
     method: "PUT",
-    form: profile,
+    form: passwords,
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -22,6 +23,16 @@ export default function changeProfile(profile, userId, cb) {
   request(profileOpt, (error, resp, body) => {
     if (error) return cb(false, error);
     if (resp.statusCode !== 200) return cb(false, body);
+
+    let newUser;
+    try {
+      newUser = JSON.parse(body);
+    } catch (e) {
+      newUser = body;
+    }
+
+    // set new user in the state
+    userState.set(newUser);
 
     return cb(true, body);
   });

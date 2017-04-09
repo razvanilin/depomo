@@ -14,6 +14,7 @@ import Toast from 'grommet/components/Toast'
 import Label from 'grommet/components/Label'
 
 import changeProfile from '../actions/changeProfile'
+import changePassword from '../actions/changePassword'
 
 export default Component({
   componentWillMount() {
@@ -26,7 +27,8 @@ export default Component({
       emailError: "",
       passwordError: "",
       newPasswordError: "",
-      loading: false,
+      profileLoading: false,
+      passwordLoading: false,
       profileError: "",
       passProfileError: ""
     }
@@ -39,24 +41,24 @@ export default Component({
   },
 
   _onSubmitProfileForm() {
-    this.setState({profileError: null, emailError: null, nameError: null, loading: true});
+    this.setState({profileError: null, emailError: null, nameError: null, profileLoading: true});
     // validation
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     if (!this.state.name) {
       this.setState({nameError: "Please enter your name"});
-      this.setState({loading: false})
+      this.setState({profileLoading: false})
       return;
     }
 
     if (this.state.email && !this.state.email.match(mailformat)) {
       this.setState({emailError: "Please enter a valid email"});
-      this.setState({loading: false})
+      this.setState({profileLoading: false})
       return;
     }
 
     changeProfile(this.state, this.props.user._id, (success, data) => {
-      this.setState({loading: false});
+      this.setState({profileLoading: false});
 
       if (!success) {
         this.setState({profileError: data});
@@ -64,6 +66,32 @@ export default Component({
       }
 
       this.setState({profileSaved: true, name: "", email: ""});
+    })
+  },
+
+  _onSubmitPasswordForm() {
+    this.setState({passProfileError: "", passwordError: "", newPasswordError: "", passwordLoading: true});
+
+    if (!this.state.password) {
+      this.setState({passwordError: "Please enter your current password"});
+      this.setState({passwordLoading: false});
+      return;
+    }
+    if (!this.state.newPassword || this.state.newPassword.length < 6) {
+      this.setState({newPasswordError: "Your new password must be at least 6 characters long"});
+      this.setState({passwordLoading: false});
+      return;
+    }
+
+    changePassword(this.state, this.props.user._id, (success, data) => {
+      this.setState({passwordLoading: false});
+
+      if (!success) {
+        this.setState({passProfileError: data});
+        return;
+      }
+
+      this.setState({passwordChanged: true});
     })
   },
 
@@ -86,7 +114,7 @@ export default Component({
 
             <Footer pad={{"vertical": "medium"}}>
               <Button type="submit" primary={true} label="Save profile" onClick={() => console.log("Saving profile")}/>
-              <Box pad="small">{this.state.loading && <Spinning />}</Box>
+              <Box pad="small">{this.state.profileLoading && <Spinning />}</Box>
             </Footer>
           </Form>
 
@@ -105,6 +133,32 @@ export default Component({
 
         <Box pad="medium">
           <Heading tag="h3">Change Password</Heading>
+
+          <Form pad="medium" onSubmit={e => { e.preventDefault(); this._onSubmitPasswordForm()}} >
+            <FormField label="Current password" error={this.state.passwordError}>
+              <TextInput type="password" name="password" onDOMChange={event => {this.setState({password: event.target.value}) }} />
+            </FormField>
+            <FormField label="New password" error={this.state.newPasswordError}>
+              <TextInput type="password" name="newPassword" onDOMChange={event => {this.setState({newPassword: event.target.value}) }} />
+            </FormField>
+
+            <Footer pad={{"vertical": "medium"}}>
+              <Button type="submit" primary={true} label="Save password" onClick={() => console.log("Saving password...")}/>
+              <Box pad="small">{this.state.passwordLoading && <Spinning />}</Box>
+            </Footer>
+          </Form>
+
+          {this.state.passwordChanged &&
+            <Toast status="ok" onClose={()=>{this.setState({passwordChanged: false}) }}>
+              Oh yes! Your password was changed 😼
+            </Toast>
+          }
+
+          {this.state.passProfileError &&
+            <Toast status="critical" onClose={()=>{this.setState({passProfileError: false}) }}>
+              Oh no! 🙀 There was an error: <i>{this.state.passProfileError}</i>
+            </Toast>
+          }
         </Box>
       </Section>
     )

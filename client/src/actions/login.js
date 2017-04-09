@@ -31,7 +31,6 @@ export default function login(credentials, token, cb) {
         return cb(true);
       } catch (e) {
         console.log(e);
-        console.log(body);
         return cb(false);
       }
     });
@@ -66,7 +65,6 @@ export default function login(credentials, token, cb) {
         return;
       } catch (e) {
         console.log(e);
-        console.log(body);
         return cb(false, body);
       }
     });
