@@ -2,6 +2,7 @@ const request = require('request');
 
 import cookie from 'react-cookie'
 import settings from '../settings'
+import userState from '../state/user'
 
 export default function changeProfile(profile, userId, cb) {
 
@@ -23,6 +24,16 @@ export default function changeProfile(profile, userId, cb) {
     if (error) return cb(false, error);
     if (resp.statusCode !== 200) return cb(false, body);
 
-    return cb(true, body);
+    let newUser;
+    try {
+      newUser = JSON.parse(body);
+    } catch (e) {
+      newUser = body;
+    }
+
+    // set new user in the state
+    userState.set(newUser);
+    
+    return cb(true, newUser);
   });
 }

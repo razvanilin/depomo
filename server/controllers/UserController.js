@@ -243,13 +243,13 @@ module.exports = (app, route) => {
   // ----------------------------------------------------------
 
   /** Route to change the user's profile **/
-  app.put('/user/:id/profile', verifyOwner, (req, res) => {
+  app.put('/user/:userId/profile', verifyOwner, (req, res) => {
     var updates = {};
 
     if (req.body.name) updates.name = req.body.name;
     if (req.body.email) updates.email = req.body.email;
 
-    User.findByIdAndUpdate(req.params.id, { $set: updates}, {new: true}, (err, user) => {
+    User.findByIdAndUpdate(req.params.userId, { $set: updates}, {new: true}, (err, user) => {
       if (err) return res.status(400).send(err);
       if (!user) return res.status(404).send("User not found");
 
@@ -270,11 +270,11 @@ module.exports = (app, route) => {
   // ----------------------------------------------------------
 
   /** Route to update user's password while logged in **/
-  app.put('/user/:id/password', verifyOwner, (req, res) => {
+  app.put('/user/:userId/password', verifyOwner, (req, res) => {
     if (!req.body.password) return res.status(400).send("Password field missing");
     if (!req.body.newPassword) return res.status(400).send("New password file is missing");
 
-    User.findOne({_id: req.params.id}, (err, user) => {
+    User.findOne({_id: req.params.userId}, (err, user) => {
       if (err) return res.status(400).send(err);
       if (!user) return res.status(400).send("User not found");
 
@@ -298,7 +298,7 @@ module.exports = (app, route) => {
               return res.status(400).send(err + "");
             }
 
-            User.findByIdAndUpdate(req.params.id, { $set: {password: hash}}, {new: true}, (err, user) => {
+            User.findByIdAndUpdate(req.params.userId, { $set: {password: hash}}, {new: true}, (err, user) => {
 
               if (err) return res.status(400).send(err);
               if (!user) return res.status(404).send("Could not find user to update");

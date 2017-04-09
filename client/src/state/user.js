@@ -9,5 +9,8 @@ export default State({
   },
   login (state, user) {
     return user;
+  },
+  set (state, user) {
+    return user;
   }
 });
