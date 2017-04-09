@@ -6,7 +6,6 @@ import '../index.scss';
 import DepomoSmile from '../images/depomo_smile.png';
 
 import App from 'grommet/components/App'
-import Article from 'grommet/components/Article'
 import Header from 'grommet/components/Header'
 import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button';
@@ -19,7 +18,6 @@ import Headline from 'grommet/components/Headline'
 import Footer from 'grommet/components/Footer'
 import TextInput from 'grommet/components/TextInput'
 import Label from 'grommet/components/Label'
-import Section from 'grommet/components/Section'
 import Spinning from 'grommet/components/icons/Spinning'
 import Notification from 'grommet/components/Notification'
 import Responsive from 'grommet/utils/Responsive'
@@ -75,43 +73,42 @@ export default React.createClass({
 
   render() {
     return (
-      <App centered={false}>
-        <Article>
-          <Section>
-            <Box full={true} justify="center" align="center">
-            <Headline>Depomo is coming soon...</Headline>
-            <Box direction="row" justify="center" align="start" pad={{horizontal: "large", vertical: "large"}}>
-              <Form pad="medium" onSubmit={e => {e.preventDefault(); this._onSubmitForm()}}>
-                <Header justify="center" align="center">
-                  <Heading strong={true} tag="h3">{"Become part of Depomo's story"}</Heading>
-                </Header>
-                <FormField label="Get the latest updates on your email" error={this.state.emailError}>
-                  <TextInput name="email" value={this.state.email} onDOMChange={event => {this.setState({email: event.target.value})}} />
-                </FormField>
+      <App>
+            <Box pad="medium" full={true} justify="center" align="center">
+              <Image size={this.state.isMobile ? "small" : "medium"} src={DepomoSmile}/>
 
-                <Footer pad={{"vertical": "medium"}} justify="center">
-                  <Columns justify="center">
-                    <Box justify="center">
-                      <Button label="Count me in"
-                        type='submit'
-                        primary={true}
-                        align="center"
-                        style={{width:"100%"}}
-                        onClick={function() { console.log("change");}}>
-                      </Button>
-                    </Box>
+              <Headline>Depomo is coming soon...</Headline>
+              <Box direction={this.state.isMobile ? 'column' : 'row'} justify="center" align="center">
+                <Form compact={this.state.isMobile} onSubmit={e => {e.preventDefault(); this._onSubmitForm()}}>
+                  { !this.state.isMobile &&
+                    <Header>
+                      <Heading strong={true} tag="h3">{"Become part of Depomo's story"}</Heading>
+                      </Header>
+                  }
+                  <FormField label="Get the latest updates on your email" error={this.state.emailError}>
+                    <TextInput name="email" value={this.state.email} onDOMChange={event => {this.setState({email: event.target.value})}} />
+                  </FormField>
 
-                    {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
-                    {this.state.errorMessage && <Label style={{color:'red'}}>{this.state.errorMessage}</Label>}
-                    {this.state.success && <Notification message='Thank you for subscribing! 😻' status='ok' />}
-                  </Columns>
-                </Footer>
-              </Form>
-              <Image size="medium" src={DepomoSmile}/>
+                  <Footer pad={{"vertical": "medium"}} justify="center">
+                    <Columns justify="center">
+                      <Box justify="center">
+                        <Button label="Count me in"
+                          type='submit'
+                          primary={true}
+                          align="center"
+                          style={{width:"100%"}}
+                          onClick={function() { console.log("change");}}>
+                        </Button>
+                      </Box>
+
+                      {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
+                      {this.state.errorMessage && <Label style={{color:'red'}}>{this.state.errorMessage}</Label>}
+                      {this.state.success && <Notification message='Thank you for subscribing! 😻' status='ok' />}
+                    </Columns>
+                  </Footer>
+                </Form>
+              </Box>
             </Box>
-            </Box>
-          </Section>
-        </Article>
       </App>
     )
   }
