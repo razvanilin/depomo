@@ -38,14 +38,19 @@ export default Component({
     }
   },
 
-  _onSubmitForm() {
+  _onSubmitProfileForm() {
     this.setState({profileError: null, emailError: null, nameError: null, loading: true});
     // validation
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-    if (!this.state.name) this.setState({nameError: "Please enter your name"});
-    if (!this.state.email || !this.state.email.match(mailformat)) this.setState({emailError: "Please enter a valid email"});
-    if (this.state.nameError || this.state.emailError) {
+    if (!this.state.name) {
+      this.setState({nameError: "Please enter your name"});
+      this.setState({loading: false})
+      return;
+    }
+
+    if (this.state.email && !this.state.email.match(mailformat)) {
+      this.setState({emailError: "Please enter a valid email"});
       this.setState({loading: false})
       return;
     }
@@ -69,7 +74,7 @@ export default Component({
         <Box pad="medium">
           <Heading tag="h3">My Profile</Heading>
 
-          <Form pad="medium" onSubmit={e => { e.preventDefault(); this._onSubmitForm()}}>
+          <Form pad="medium" onSubmit={e => { e.preventDefault(); this._onSubmitProfileForm()}}>
             <FormField label="Your name" error={this.state.nameError}>
               <TextInput name="name" value={this.state.name} onDOMChange={event => { this.setState({name: event.target.value}) }} />
               <Label style={{paddingLeft:"20px"}}>{this.props.user.name}</Label>
