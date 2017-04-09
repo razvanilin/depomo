@@ -1,5 +1,5 @@
 import React from 'react'
-import { Component, Goto, Link } from 'jumpsuit';
+import { Component, Goto } from 'jumpsuit';
 import cookie from 'react-cookie'
 
 import LogoImage from '../images/depomo_logo.png';
@@ -86,6 +86,15 @@ export default Component({
     logout();
   },
 
+  _makeActive(path) {
+    console.log(this.props.location.pathname);
+    if (this.props.location.pathname === path) {
+      return true;
+    }
+
+    return false;
+  },
+
   _renderMenu() {
     const title = this._renderTitle(false);
     let closer;
@@ -103,17 +112,17 @@ export default Component({
 
         <Box flex='grow' pad="small">
           <Menu primary={true}>
-            <Link to="/dashboard/tasks" className="active"><Anchor tag="span" label="Tasks" icon={<PlanIcon />} animateIcon={true} className="active"/></Link>
-            <Anchor label="Profile" icon={<UserIcon />} animateIcon={true} href="" />
-            <Anchor label="History" icon={<HistoryIcon />} animateIcon={true} href="" />
-            <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true} href="" />
+            <Anchor label="Tasks" icon={<PlanIcon />} animateIcon={true} path={{path: "/dashboard/tasks", index: true}}/>
+            <Anchor label="Profile" icon={<UserIcon />} animateIcon={true} />
+            <Anchor label="History" icon={<HistoryIcon />} animateIcon={true} />
+            <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true} />
           </Menu>
         </Box>
 
         <Footer pad="medium">
           <UserIcon />
           <Menu responsive={true} inline={false} label={this.props.user.name} icon={<UserIcon />} primary={true}>
-            <Link to="/dashboard/settings"><Anchor tag="span">Profile Settings</Anchor></Link>
+            <Anchor path={{path: "/dashboard/settings", index:true}}>Profile Settings</Anchor>
             <Anchor onClick={this._onLogoutClicked}>Log Out</Anchor>
           </Menu>
         </Footer>
@@ -153,5 +162,6 @@ export default Component({
     )
   }
 }, state => ({
-  user: state.user
+  user: state.user,
+  location: state.routing.locationBeforeTransitions
 }))
