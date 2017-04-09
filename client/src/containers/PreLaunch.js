@@ -3,15 +3,11 @@ import React from 'react'
 import './App.scss';
 import '../index.scss';
 
-import HeaderImage from '../images/classroom.jpg';
-import DepomoLogo from '../images/depomo_logo_mod.png';
 import DepomoSmile from '../images/depomo_smile.png';
-import DepomoConfused from '../images/depomo_confused.png';
 
 import App from 'grommet/components/App'
 import Article from 'grommet/components/Article'
 import Header from 'grommet/components/Header'
-import Hero from 'grommet/components/Hero'
 import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button';
 import Heading from 'grommet/components/Heading';
@@ -25,7 +21,6 @@ import TextInput from 'grommet/components/TextInput'
 import Label from 'grommet/components/Label'
 import Section from 'grommet/components/Section'
 import Spinning from 'grommet/components/icons/Spinning'
-import Paragraph from 'grommet/components/Paragraph'
 import Notification from 'grommet/components/Notification'
 import Responsive from 'grommet/utils/Responsive'
 
@@ -81,30 +76,11 @@ export default React.createClass({
   render() {
     return (
       <App centered={false}>
-        <Article colorIndex="accent-1-a">
-          <Hero background={<Image src={HeaderImage}
-            fit='cover'
-            full={true}
-            align={{"bottom": true}} />}
-            backgroundColorIndex='dark'
-            size="medium">
-            <Box align="end" pad="medium" basis="1/2"/>
-            <Box direction='column'
-              basis="1/2"
-              justify='center'
-              align='center'>
-                <Headline margin='none'>
-                  <Image size="large" src={DepomoLogo}/>
-                </Headline>
-                {!this.state.isMobile && <Heading style={{textShadow: "3px 3px 5px #000000"}} strong={true} tag="h3">Help children get educated while breaking procrastination in your daily activities</Heading>}
-            </Box>
-
-            <Box full="horizontal" direction="row" justify="center" align="center">
-            </Box>
-          </Hero>
-
+        <Article>
           <Section>
-            <Box direction="row" justify="center" align="start" pad={{horizontal: "large"}}>
+            <Box full={true} justify="center" align="center">
+            <Headline>Depomo is coming soon...</Headline>
+            <Box direction="row" justify="center" align="start" pad={{horizontal: "large", vertical: "large"}}>
               <Form pad="medium" onSubmit={e => {e.preventDefault(); this._onSubmitForm()}}>
                 <Header justify="center" align="center">
                   <Heading strong={true} tag="h3">{"Become part of Depomo's story"}</Heading>
@@ -133,21 +109,6 @@ export default React.createClass({
               </Form>
               <Image size="medium" src={DepomoSmile}/>
             </Box>
-
-            <Box direction="row" justify="center" align="start" pad={{horizontal: "large"}}>
-              <Image size="medium" src={DepomoConfused}/>
-              <Box direction="column" justify="center" align="start">
-                <Heading strong={true} tag="h3">What will Depomo be</Heading>
-                <Paragraph size="large">
-                  A task-based platform that will help users break procrastination by placing deposits for each task.
-                </Paragraph>
-                <Paragraph size="large">
-                  When the task is not completed, the deposit will go towards helping poor regions in africa develop their education system and help children to study.
-                </Paragraph>
-                <Paragraph size="large">
-                  Register for updates to be the first one who gets notified about future developments.
-                </Paragraph>
-              </Box>
             </Box>
           </Section>
         </Article>
