@@ -1,4 +1,5 @@
 const request = require('request');
+const moment = require('moment');
 
 import { Goto } from 'jumpsuit'
 import settings from '../settings'
@@ -8,6 +9,9 @@ export default function signup(user, cb) {
   if (!user.email || !user.password || !user.name || !user.agree) {
     return cb(false, "The form is not complete");
   }
+
+  // get the default timezone
+  user.timezone = moment().format("Z");
 
   let signupOpt = {
     url: settings.api_host + "/user",

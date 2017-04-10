@@ -22,6 +22,9 @@ var UserSchema = new mongoose.Schema({
   },
   resetToken: {
     type: String
+  },
+  timezone: {
+    type: String
   }
 });
 
