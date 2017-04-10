@@ -86,6 +86,7 @@ module.exports = (app, route) => {
           _id: user._id,
           email: user.email,
           name: user.name,
+          timezone: user.timezone,
           token: token
         }
 
@@ -110,6 +111,7 @@ module.exports = (app, route) => {
           _id: user._id,
           email: user.email,
           name: user.name,
+          timezone: user.timezone,
           token: req.body.token
         }
         // return the decoded information
@@ -261,6 +263,7 @@ module.exports = (app, route) => {
         _id: user._id,
         email: user.email,
         name: user.name,
+        timezone: user.timezone,
         token: token
       }
 
@@ -311,6 +314,7 @@ module.exports = (app, route) => {
                 _id: user._id,
                 email: user.email,
                 name: user.name,
+                timezone: user.timezone,
                 token: token
               }
 

@@ -11,7 +11,7 @@ import Footer from 'grommet/components/Footer'
 import Heading from 'grommet/components/Heading'
 import Spinning from 'grommet/components/icons/Spinning'
 import Toast from 'grommet/components/Toast'
-import Label from 'grommet/components/Label'
+import Select from 'grommet/components/Select'
 
 import changeProfile from '../actions/changeProfile'
 import changePassword from '../actions/changePassword'
@@ -21,6 +21,8 @@ export default Component({
     this.state = {
       name: "",
       email: "",
+      timezone: "",
+      timezoneLabel: "",
       password: "",
       newPassword: "",
       nameError: "",
@@ -95,6 +97,62 @@ export default Component({
     })
   },
 
+  _renderTimezones() {
+    return (
+      <FormField>
+        <Select placeHolder={this.props.user.timezone}
+          options={[{
+            value: "Pacific/Midway (UTC -11:00)",
+            sub: "-11:00",
+            "label": <Box direction='row' justify='between'><span>Pacific/Midway</span><span className='secondary'>UTC -11:00</span></Box>
+          },{
+            value: "Pacific/Pago Pago (UTC -11:00)",
+            sub: "-11:00",
+            "label": <Box direction='row' justify='between'><span>Pacific/Pago Pago</span><span className='secondary'>UTC -11:00</span></Box>
+          },{
+            value: "Pacific/Honolulu (UTC -10:00)",
+            sub: "-10:00",
+            "label": <Box direction='row' justify='between'><span>Pacific/Honolulu</span><span className='secondary'>UTC -10:00</span></Box>
+          },{
+            value: "America/Juneau (UTC -8:00)",
+            sub: "-8:00",
+            "label": <Box direction='row' justify='between'><span>America/Juneau</span><span className='secondary'>UTC -8:00</span></Box>
+          },{
+            value: "America/Tijuana (UTC -7:00)",
+            sub: "-7:00",
+            "label": <Box direction='row' justify='between'><span>America/Tijuana</span><span className='secondary'>UTC -7:00</span></Box>
+          },{
+            value: "America/Phoenix (UTC -7:00)",
+            sub: "-7:00",
+            "label": <Box direction='row' justify='between'><span>America/Phoenix</span><span className='secondary'>UTC -7:00</span></Box>
+          },{
+            value: "America/Los Angeles (UTC -7:00)",
+            sub: "-7:00",
+            "label": <Box direction='row' justify='between'><span>America/Los Angeles</span><span className='secondary'>UTC -7:00</span></Box>
+          },{
+            value: "America/Regina (UTC -6:00)",
+            sub: "-6:00",
+            "label": <Box direction='row' justify='between'><span>America/Regina</span><span className='secondary'>UTC -6:00</span></Box>
+          },{
+            value: "America/Denver (UTC -6:00)",
+            sub: "-6:00",
+            "label": <Box direction='row' justify='between'><span>America/Denver</span><span className='secondary'>UTC -6:00</span></Box>
+          },{
+            value: "America/Guatemala (UTC -6:00)",
+            sub: "-6:00",
+            "label": <Box direction='row' justify='between'><span>America/Guatemala</span><span className='secondary'>UTC -6:00</span></Box>
+          },{
+            value: "America/Mazatlan (UTC -6:00)",
+            sub: "-6:00",
+            "label": <Box direction='row' justify='between'><span>America/Mazatlan</span><span className='secondary'>UTC -6:00</span></Box>
+          }]}
+          value={this.state.timezone}
+          onChange={(target) => {this.setState({timezone: target.option.sub})}}
+        />
+      </FormField>
+    )
+  },
+
   render() {
 
     return (
@@ -104,13 +162,12 @@ export default Component({
 
           <Form pad="medium" onSubmit={e => { e.preventDefault(); this._onSubmitProfileForm()}}>
             <FormField label="Your name" error={this.state.nameError}>
-              <TextInput name="name" value={this.state.name} onDOMChange={event => { this.setState({name: event.target.value}) }} />
-              <Label style={{paddingLeft:"20px"}}>{this.props.user.name}</Label>
+              <TextInput placeHolder={this.props.user.name} name="name" value={this.state.name} onDOMChange={event => { this.setState({name: event.target.value}) }} />
             </FormField>
             <FormField label="Your email" error={this.state.emailError}>
-              <TextInput name="email" value={this.state.email} onDOMChange={event => { this.setState({email: event.target.value}) }} />
-              <Label style={{paddingLeft:"20px"}}>{this.props.user.email}</Label>
+              <TextInput placeHolder={this.props.user.email} name="email" value={this.state.email} onDOMChange={event => { this.setState({email: event.target.value}) }} />
             </FormField>
+            {this._renderTimezones()}
 
             <Footer pad={{"vertical": "medium"}}>
               <Button type="submit" primary={true} label="Save profile" onClick={() => console.log("Saving profile")}/>
