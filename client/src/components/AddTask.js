@@ -51,7 +51,7 @@ export default Component({
               return;
             }
 
-            addTask(this.state, this.props.user._id, (success, message) => {
+            addTask(this.state, this.props.user, (success, message) => {
               if (!success) this.setState({errorMessage: message});
 
               this.setState({loading: false});

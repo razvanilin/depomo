@@ -1,4 +1,5 @@
 const request = require('request');
+const moment = require('moment');
 
 import { Goto } from 'jumpsuit'
 import cookie from 'react-cookie'
@@ -6,7 +7,7 @@ import cookie from 'react-cookie'
 import taskState from '../state/task'
 import settings from '../settings'
 
-export default function login(task, userId, cb) {
+export default function addTask(task, user, cb) {
   if (!task || !task.due || !task.label || !task.deposit || !task.currency) {
     return cb(false, "The form is incomplete");
   }
@@ -20,7 +21,38 @@ export default function login(task, userId, cb) {
   }
 
   // add the user ID to the request body
-  task._id = userId;
+  task._id = user._id;
+
+  // format the date into the server format UTC
+  //task.due = moment(task.due, "M/D/YYYY h:mm a").format();
+
+  // take the timezone into account
+  try {
+    if (user.timezone.indexOf("+") > -1) {
+      let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("+")+1, user.timezone.indexOf(":")));
+      if (user.timezone.indexOf(":30") > -1) {
+        modifier += 0.5;
+      } else if (user.timezone.indexOf(":45") > -1) {
+        modifier += 0.75;
+      }
+
+      task.due = moment(task.due, "M/D/YYYY h:mm a").subtract(modifier, "hours").format();
+    } else if (user.timezone.indexOf("-") > -1) {
+      let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("-")+1, user.timezone.indexOf(":")));
+      if (user.timezone.indexOf(":30") > -1) {
+        modifier += 0.5;
+      } else if (user.timezone.indexOf(":45") > -1) {
+        modifier += 0.75;
+      }
+
+      task.due = moment(task.due, "M/D/YYYY h:mm a").add(modifier, "hours").format();
+    }
+  } catch(e) {
+    console.log(e);
+    return cb(false, "There was an error while processing the date due");
+  }
+
+  console.log(task.due);
 
   var taskOpt = {
     url: settings.api_host + "/task",

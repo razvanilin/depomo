@@ -250,6 +250,7 @@ module.exports = (app, route) => {
 
     if (req.body.name) updates.name = req.body.name;
     if (req.body.email) updates.email = req.body.email;
+    if (req.body.timezone) updates.timezone = req.body.timezone;
 
     User.findByIdAndUpdate(req.params.userId, { $set: updates}, {new: true}, (err, user) => {
       if (err) return res.status(400).send(err);

@@ -34,7 +34,7 @@ export default Component({
     }
 
     if (this.props.user) {
-      getTasks(this.props.user._id, (success, message) => {
+      getTasks(this.props.user, (success, message) => {
         if (!success) console.log(message);
       });
     }
@@ -66,7 +66,7 @@ export default Component({
         this.setState({completeSuccess: true});
 
         // if everything is fine, load the tasks again
-        getTasks(this.props.user._id, (success, message) => {
+        getTasks(this.props.user, (success, message) => {
           if (!success) console.log(message);
         });
       }
@@ -87,7 +87,7 @@ export default Component({
         this.setState({removeSuccess: true});
 
         // if everything is fine, load the tasks again
-        getTasks(this.props.user._id, (success, message) => {
+        getTasks(this.props.user, (success, message) => {
           if (!success) console.log(message);
         });
       }
