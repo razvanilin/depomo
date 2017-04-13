@@ -25,7 +25,7 @@ export default function addTask(task, user, cb) {
 
   // format the date into the server format UTC
   //task.due = moment(task.due, "M/D/YYYY h:mm a").format();
-
+  var taskDue;
   // take the timezone into account
   try {
     if (user.timezone.indexOf("+") > -1) {
@@ -36,7 +36,7 @@ export default function addTask(task, user, cb) {
         modifier += 0.75;
       }
 
-      task.due = moment(task.due, "M/D/YYYY h:mm a").subtract(modifier, "hours").format();
+      taskDue = moment(task.due, "M/D/YYYY h:mm a").subtract(modifier, "hours").format();
     } else if (user.timezone.indexOf("-") > -1) {
       let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("-")+1, user.timezone.indexOf(":")), 10);
       if (user.timezone.indexOf(":30") > -1) {
@@ -45,20 +45,20 @@ export default function addTask(task, user, cb) {
         modifier += 0.75;
       }
 
-      task.due = moment(task.due, "M/D/YYYY h:mm a").add(modifier, "hours").format("M/D/YYYY h:mm a");
-      console.log(task.due);
+      taskDue = moment(task.due, "M/D/YYYY h:mm a").add(modifier, "hours").format();
     }
   } catch(e) {
     console.log(e);
     return cb(false, "There was an error while processing the date due");
   }
 
-  console.log(task.due);
+  var requestBody = JSON.parse(JSON.stringify(task));
+  requestBody.due = taskDue;
 
   var taskOpt = {
     url: settings.api_host + "/task",
     method: "POST",
-    form: task,
+    form: requestBody,
     headers: {
       'x-access-token': cookie.load('token'),
       'Accept': 'application/json',

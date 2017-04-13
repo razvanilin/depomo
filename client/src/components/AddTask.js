@@ -12,6 +12,7 @@ import DateTime from 'grommet/components/DateTime'
 import Footer from 'grommet/components/Footer'
 import Columns from 'grommet/components/Columns'
 import Button from 'grommet/components/Button'
+import Label from 'grommet/components/Label'
 
 import Spinning from 'grommet/components/icons/Spinning'
 
@@ -90,7 +91,7 @@ export default Component({
                   </Button>
                 </Box>
 
-                {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
+                {this.state.loading && <Box direction="column" justify="center" align="center" pad="small"><Label>Redirecting you to PayPal</Label><Spinning /></Box>}
               </Columns>
             </Footer>
           </Form>
