@@ -29,7 +29,7 @@ export default function addTask(task, user, cb) {
   // take the timezone into account
   try {
     if (user.timezone.indexOf("+") > -1) {
-      let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("+")+1, user.timezone.indexOf(":")));
+      let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("+")+1, user.timezone.indexOf(":")), 10);
       if (user.timezone.indexOf(":30") > -1) {
         modifier += 0.5;
       } else if (user.timezone.indexOf(":45") > -1) {
@@ -38,14 +38,15 @@ export default function addTask(task, user, cb) {
 
       task.due = moment(task.due, "M/D/YYYY h:mm a").subtract(modifier, "hours").format();
     } else if (user.timezone.indexOf("-") > -1) {
-      let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("-")+1, user.timezone.indexOf(":")));
+      let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("-")+1, user.timezone.indexOf(":")), 10);
       if (user.timezone.indexOf(":30") > -1) {
         modifier += 0.5;
       } else if (user.timezone.indexOf(":45") > -1) {
         modifier += 0.75;
       }
 
-      task.due = moment(task.due, "M/D/YYYY h:mm a").add(modifier, "hours").format();
+      task.due = moment(task.due, "M/D/YYYY h:mm a").add(modifier, "hours").format("M/D/YYYY h:mm a");
+      console.log(task.due);
     }
   } catch(e) {
     console.log(e);

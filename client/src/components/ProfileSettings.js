@@ -501,7 +501,7 @@ export default Component({
             value: "Asia/Jakarta (UTC +7:00)",
             sub: "+7:00",
             "label": <Box direction='row' justify='between'><span>Asia/Jakarata</span><span className='secondary'>UTC +7:00</span></Box>
-          },,{
+          },{
             value: "Asia/Bangkok (UTC +7:00)",
             sub: "+7:00",
             "label": <Box direction='row' justify='between'><span>Asia/Bangkok</span><span className='secondary'>UTC +7:00</span></Box>

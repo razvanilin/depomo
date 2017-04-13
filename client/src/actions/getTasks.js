@@ -32,7 +32,7 @@ export default function getTasks(user, cb) {
       for (var i=0; i<tasks.length; i++) {
         if (tasks[i].due) {
           if (user.timezone.indexOf("+") > -1) {
-            let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("+")+1, user.timezone.indexOf(":")));
+            let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("+")+1, user.timezone.indexOf(":")), 10);
             if (user.timezone.indexOf(":30") > -1) {
               modifier += 0.5;
             } else if (user.timezone.indexOf(":45") > -1) {
@@ -41,7 +41,7 @@ export default function getTasks(user, cb) {
 
             tasks[i].due = moment(tasks[i].due).add(modifier, "hours").format("M/D/YYYY h:mm a");
           } else if (user.timezone.indexOf("-") > -1) {
-            let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("-")+1, user.timezone.indexOf(":")));
+            let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("-")+1, user.timezone.indexOf(":")), 10);
             if (user.timezone.indexOf(":30") > -1) {
               modifier += 0.5;
             } else if (user.timezone.indexOf(":45") > -1) {

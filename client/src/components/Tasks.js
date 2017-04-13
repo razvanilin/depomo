@@ -177,6 +177,7 @@ export default Component({
   },
 
   render() {
+    
     return(
       <Section>
         <Header justify="center">
