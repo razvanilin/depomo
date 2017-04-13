@@ -19,7 +19,7 @@ module.exports = (app) => {
 
     for (var i=0; i<tasks.length; i++) {
       // if the task is due, then process the payment
-      if (moment().diff(moment(tasks[i].due, "M/D/YYYY h:mm a"), 'minutes') > 0) {
+      if (moment().diff(moment(tasks[i].due), 'minutes') > 0) {
         app.paypal.payment.execute(tasks[i].paymentId, {payer_id: tasks[i].payerId}, (error, payment) => {
           if (error) {
             console.log(error);

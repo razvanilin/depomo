@@ -30,12 +30,14 @@ export default Component({
   componentWillMount() {
     this.state = {
       listItemDirection: "row",
-      labelWidth: "20%"
+      labelWidth: "20%",
+      tasksLoaded: false
     }
 
     if (this.props.user) {
       getTasks(this.props.user, (success, message) => {
         if (!success) console.log(message);
+        this.setState({tasksLoaded: true});
       });
     }
   },
@@ -177,7 +179,7 @@ export default Component({
   },
 
   render() {
-    
+
     return(
       <Section>
         <Header justify="center">
@@ -222,8 +224,8 @@ export default Component({
           </Layer>
         }
 
-        {this._renderTasks()}
-        {this._renderPast()}
+        {this.state.tasksLoaded && this._renderTasks()}
+        {this.state.tasksLoaded && this._renderPast()}
 
         {this.props.children}
       </Section>

@@ -25,18 +25,18 @@ import MenuIcon from 'grommet/components/icons/base/Menu'
 
 import login from '../actions/login'
 import logout from '../actions/logout'
-import getTasks from '../actions/getTasks'
 
 export default Component({
 
   componentWillMount() {
+    this.state = {
+      userLoaded: false
+    };
+
     if (cookie.load("token")) {
       cookie.save("wanted_link", window.location.pathname + window.location.search);
       login(null, cookie.load("token"), (success) => {
-        getTasks(this.props.user._id, (success, message) => {
-          if (!success) console.log(message);
-          console.log("works");
-        });
+        this.setState({userLoaded: true});
       });
     }
 
@@ -144,7 +144,7 @@ export default Component({
     return (
       <Box flex="grow">
         {header}
-        {this.props.children}
+        {this.state.userLoaded && this.props.children}
       </Box>
     );
   },
@@ -163,5 +163,6 @@ export default Component({
   }
 }, state => ({
   user: state.user,
+  task: state.task,
   location: state.routing.locationBeforeTransitions
 }))
