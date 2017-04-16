@@ -108,7 +108,7 @@ export default Component({
             {
               this.props.task.tasks.map((task) => {
                 //let task = this.props.task.tasks[index];
-                if (task.status === 'waiting') {
+                if (task.status !== 'completed') {
                   return (
                     <ListItem direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
                         <Box style={{width:this.state.labelWidth}} justify="center" align="start">
@@ -149,7 +149,7 @@ export default Component({
             {
               this.props.task.tasks.map((task) => {
                 //let task = this.props.task.tasks[index];
-                if (task.status !== 'waiting' && task.status !== 'initial') {
+                if (task.status === 'completed') {
                   return (
                     <ListItem colorIndex="light-2" direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
                         <Box style={{width:this.state.labelWidth}} justify="center" align="start">
@@ -162,7 +162,7 @@ export default Component({
                           <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
                         </Box>
                         <Box justify="end" align="end">
-                          {task.status === 'paid' && <Label>💗</Label>}
+                          {(task.refund < task.deposit && task.refund > -1) && <Label>💗</Label>}
                           {task.status === 'completed' && <Label>✌️</Label>}
                         </Box>
                     </ListItem>

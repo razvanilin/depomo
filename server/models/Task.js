@@ -23,6 +23,10 @@ var TaskSchema = new mongoose.Schema({
     type: Number,
     min: 1
   },
+  refund: {
+    type: Number,
+    min: -1
+  },
   method: {
     type: String
   },
