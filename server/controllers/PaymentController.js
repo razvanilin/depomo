@@ -61,11 +61,35 @@ module.exports = (app, route) => {
         payerId: req.body.payerId,
         status: "waiting"
       }
+    }, {
+      new: true
     }, (err, task) => {
       if (err) {
         console.log(err);
         return res.status(400).send("Error updating the task");
       }
+
+      // process the payment
+      app.paypal.payment.execute(task.paymentId, {payer_id: task.payerId}, (error, payment) => {
+        if (error) {
+          console.log(error);
+          console.log(error.response);
+        }
+
+        // update the status of the document
+        Task.update({paymentId: payment.id},
+          {
+            $set: {
+              status: "paid"
+            }
+          }, (err, task) => {
+            if (err) {
+              console.log(err);
+            }
+
+            console.log(payment.id + " was " + payment.state);
+        });
+      });
 
       return res.status(200).send(task);
     });

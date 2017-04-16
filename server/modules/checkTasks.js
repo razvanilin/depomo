@@ -18,29 +18,26 @@ module.exports = (app) => {
     }
 
     for (var i=0; i<tasks.length; i++) {
-      // if the task is due, then process the payment
-      if (moment().diff(moment(tasks[i].due), 'minutes') > 0) {
-        app.paypal.payment.execute(tasks[i].paymentId, {payer_id: tasks[i].payerId}, (error, payment) => {
-          if (error) {
-            console.log(error);
-            console.log(error.response);
-          }
+      app.paypal.payment.execute(tasks[i].paymentId, {payer_id: tasks[i].payerId}, (error, payment) => {
+        if (error) {
+          console.log(error);
+          console.log(error.response);
+        }
 
-          // update the status of the document
-          Task.update({paymentId: payment.id},
-            {
-              $set: {
-                status: "paid"
-              }
-            }, (err, task) => {
-              if (err) {
-                console.log(err);
-              }
+        // update the status of the document
+        Task.update({paymentId: payment.id},
+          {
+            $set: {
+              status: "paid"
+            }
+          }, (err, task) => {
+            if (err) {
+              console.log(err);
+            }
 
-              console.log(payment.id + " was " + payment.state);
-          });
+            console.log(payment.id + " was " + payment.state);
         });
-      }
+      });
     }
   });
 }
