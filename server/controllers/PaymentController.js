@@ -43,7 +43,7 @@ module.exports = (app, route) => {
         return res.status(400).send(error);
       }
 
-      console.log(pay);
+      //console.log(pay);
       return res.status(200).send(pay);
     });
   });
@@ -75,6 +75,8 @@ module.exports = (app, route) => {
           console.log(error);
           console.log(error.response);
         }
+
+        console.log(payment);
 
         // update the status of the document
         Task.update({paymentId: payment.id},

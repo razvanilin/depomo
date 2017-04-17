@@ -3,6 +3,7 @@ const verifyOwner = require('../modules/verifyOwner');
 const mongoose = require('mongoose');
 const request = require('request');
 const moment = require('moment');
+const getPaypalToken = require('../modules/getPaypalToken');
 
 module.exports = (app, route) => {
 
@@ -110,17 +111,58 @@ module.exports = (app, route) => {
 
   /** ROUTE to mark activity as complete **/
   app.put('/task/:id/complete', verifyOwner, (req, res) => {
-    Task.findByIdAndUpdate(req.params.id, {
-      $set: {
-        status: "completed",
-        payerId: "",
-        paymentId: ""
-      }
-    }, {new: true}, (err, task) => {
-      if (err) return res.status(400).send(err);
-      if (!task) return res.status(404).send("No task found with that ID");
 
-      return res.status(200).send(task);
+    Task.findOne({ _id: req.params.id}, (err, task) => {
+
+      app.paypal.payment.get(task.paymentId, (err, payment) => {
+        if (err) res.status(400).send("Could not get transaction");
+        getPaypalToken((success, data) => {
+          if (!success) return res.status(400).send("Could not authorize paypal action.");
+          console.log(data);
+
+          var refundOpt = {
+            url: app.settings.paypal.api_host + "/payments/sale/" + payment.transactions[0].related_resources[0].sale.id + "/refund",
+            method: "POST",
+            body: {},
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + data.access_token
+            }
+          };
+
+          var refund;
+          if (req.body.donation && req.body.donation > 0) {
+            refund = task.deposit - parseInt(req.body.donation, 10);
+            refundOpt.form.amount = {
+              total: refund,
+              currency: task.currency
+            };
+          }
+
+          console.log(refundOpt);
+
+          refundOpt.body = JSON.stringify(refundOpt.body);
+
+          request(refundOpt, (error, resp, body) => {
+            if (error) return res.status(400).send("Could not authorize refund");
+            console.log("Response Code: " + resp.statusCode);
+            console.log(body);
+
+            Task.findByIdAndUpdate(req.params.id, {
+              $set: {
+                status: "completed",
+                refund: refund ? refund : task.deposit,
+                payerId: ""
+              }
+            }, {new: true}, (err, task) => {
+              if (err) return res.status(400).send(err);
+              if (!task) return res.status(404).send("No task found with that ID");
+
+              return res.status(200).send(task);
+            });
+          });
+        });
+      });
     });
   });
   // ---------------------------------------------------

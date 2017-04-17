@@ -18,7 +18,8 @@ export default function completeTask(taskId, userId, cb) {
 
   request(requestOpt, (error, resp, body) => {
     if (error) return cb(false, error);
-
+    if (resp.statusCode !== 200) cb(false, body);
+    
     return cb(true, body);
   });
 }

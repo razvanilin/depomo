@@ -161,9 +161,9 @@ export default Component({
                         <Box justify="start" align="start">
                           <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
                         </Box>
-                        <Box justify="end" align="end">
-                          {(task.refund < task.deposit && task.refund > -1) && <Label>💗</Label>}
-                          {task.status === 'completed' && <Label>✌️</Label>}
+                        <Box direction="row" justify="end" align="end">
+                          {(task.refund < task.deposit && task.refund > -1) && <Label title="Helped us with a donation <3">💗</Label>}
+                          {task.status === 'completed' && <Label title="Task completed">✌️</Label>}
                         </Box>
                     </ListItem>
                   )
