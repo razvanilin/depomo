@@ -13,6 +13,8 @@ import Anchor from 'grommet/components/Anchor'
 import Toast from 'grommet/components/Toast'
 import Layer from 'grommet/components/Layer'
 import Heading from 'grommet/components/Heading'
+import FormField from 'grommet/components/FormField'
+import NumberInput from 'grommet/components/NumberInput'
 
 import AddIcon from 'grommet/components/icons/base/Add'
 import Checkmark from 'grommet/components/icons/base/Checkmark'
@@ -31,7 +33,8 @@ export default Component({
     this.state = {
       listItemDirection: "row",
       labelWidth: "20%",
-      tasksLoaded: false
+      tasksLoaded: false,
+      donation: 0
     }
 
     if (this.props.user) {
@@ -61,7 +64,7 @@ export default Component({
   },
 
   _onTaskCompleted(taskId) {
-    completeTask(taskId, this.props.user._id, (success, data) => {
+    completeTask(taskId, this.state.donation, this.props.user._id, (success, data) => {
       if (!success) {
         this.setState({completeError: true});
       } else {
@@ -73,8 +76,27 @@ export default Component({
         });
       }
 
-
+      this.setState({complete: ""});
     });
+  },
+
+  _onRenderComplete(task) {
+    return (
+      <Layer closer={true} onClose={() => { this.setState({complete: ""}) }}>
+        <Box direction="column" pad="medium" justify="center" align="center">
+          <Heading tag="h2"> Have you finished the task? 🤔</Heading>
+          <Box direction="column" pad="medium" justify="center" align="center">
+            <FormField label="Would you like to make a donation from your deposit?">
+              <NumberInput max={this.state.complete.deposit} min={0} value={this.state.donation} onChange={event => {this.setState({donation: event.target.value});}} />
+            </FormField>
+          </Box>
+          <Box direction="row" pad="medium" justify="center" align="center">
+            <Box pad="small"><Button primary={true} label="Yes, I completed it" onClick={() => {this._onTaskCompleted(this.state.complete._id)}} /></Box>
+            <Box pad="small"><Button secondary={true} label="No, I changed my mind" onClick={() => {this.setState({complete: ""}) }} /></Box>
+          </Box>
+        </Box>
+      </Layer>
+    )
   },
 
   _onRemoveTriggered(taskId) {
@@ -122,7 +144,7 @@ export default Component({
                         </Box>
                         <Box justify="end" align="end">
                           <Menu inline={true} direction="row">
-                            <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} onClick={() => {this._onTaskCompleted(task._id)}} />
+                            <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} onClick={() => { this.setState({complete: task}); }} />
                             <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} onClick={() => {this._onRemoveTriggered(task._id)}} />
                           </Menu>
                         </Box>
@@ -223,6 +245,8 @@ export default Component({
             </Box>
           </Layer>
         }
+
+        {this.state.complete && this._onRenderComplete()}
 
         {this.state.tasksLoaded && this._renderTasks()}
         {this.state.tasksLoaded && this._renderPast()}

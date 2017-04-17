@@ -133,7 +133,7 @@ module.exports = (app, route) => {
           var refund;
           if (req.body.donation && req.body.donation > 0) {
             refund = task.deposit - parseInt(req.body.donation, 10);
-            refundOpt.form.amount = {
+            refundOpt.body.amount = {
               total: refund,
               currency: task.currency
             };
