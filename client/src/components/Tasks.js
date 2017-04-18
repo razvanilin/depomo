@@ -21,6 +21,7 @@ import Checkmark from 'grommet/components/icons/base/Checkmark'
 import Trash from 'grommet/components/icons/base/Trash'
 import Money from 'grommet/components/icons/base/Money'
 import Clock from 'grommet/components/icons/base/Clock'
+import Favorite from 'grommet/components/icons/base/Favorite'
 
 import Responsive from 'grommet/utils/Responsive'
 
@@ -137,10 +138,10 @@ export default Component({
                           <Label truncate={true}>{task.label}</Label>
                         </Box>
                         <Box justify="start" align="start">
-                          <Anchor style={{fontSize:"90%"}} primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
+                          <Anchor style={{fontSize:"90%"}} title="Deposit" primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
                         </Box>
                         <Box justify="start" align="start">
-                          <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
+                          <Anchor style={{fontSize:"90%"}} title="Due date" icon={<Clock/>} label={task.due}/>
                         </Box>
                         <Box justify="end" align="end">
                           <Menu inline={true} direction="row">
@@ -178,7 +179,10 @@ export default Component({
                           <Label truncate={true}>{task.label}</Label>
                         </Box>
                         <Box justify="start" align="start">
-                          <Anchor style={{fontSize:"90%"}} primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
+                          <Anchor style={{fontSize:"90%"}} primary={false} title="Refund" icon={<Money/>} label={(task.refund === -1 ? 0 : task.refund) + " " + task.currency} />
+                        </Box>
+                        <Box>
+                          <Anchor style={{fontSize:"90%"}} primary={false} title="Donation" icon={<Favorite title="Donation"/>} label={(task.refund === -1 ? task.deposit : task.deposit - task.refund) + " " + task.currency} />
                         </Box>
                         <Box justify="start" align="start">
                           <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
