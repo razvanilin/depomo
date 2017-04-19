@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const request = require('request');
 const moment = require('moment');
 const getPaypalToken = require('../modules/getPaypalToken');
+const makePayment = require('../modules/makePayment');
 
 module.exports = (app, route) => {
 
@@ -43,38 +44,39 @@ module.exports = (app, route) => {
     Task.create(taskDoc, (error, task) => {
       if (error) return res.status(400).send(error);
 
-      console.log(task);
+      makePayment(task, (success, payment) => {
+        if (!success) return res.status(400).send(payment);
 
-      // create the paypal payment
-      var paypalOpt = {
-        url: app.settings.api_host + "/payment",
-        method: "POST",
-        form: {
-          method: "paypal",
-          amount: taskDoc.deposit,
-          currency: taskDoc.currency,
-          description: taskDoc.label,
-          user_id: taskDoc.owner,
-          task_id: task._id.toString()
-        },
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        }
-      };
+        // update the task document
+        Task.findByIdAndUpdate(task._id, {
+          $set: {
+            method: payment.payer.payment_method,
+            paymentId: payment.id
+          }
+        }, (err, task) => {
 
-      request(paypalOpt, (error, resp, body) => {
-        if (error) return res.status(400).send(error);
+          if (err) {
+            console.log(err);
+            return res.status(400).send(err);
+          }
 
-        var payment;
-        try {
-          payment = JSON.parse(body);
-        } catch (e) {
-          console.log(e);
-          console.log(body);
-          return res.status(400).send("Error parsing your request.");
-        }
+          return res.status(200).send({
+            task: task,
+            payment: payment
+          });
+        });
+      });
+    });
+  });
+  // ---------------------------------------------------
 
+  /** ROUTE to complete payment **/
+  app.put('/task/:id/payment', verifyOwner, (req, res) => {
+    Task.findOne({_id: req.params.id}, (err, task) => {
+      if (err) return res.status(400).send(err);
+      if (!task) return res.status(404).send("No task found with that ID");
+
+      makePayment(task, (error, payment) => {
         // update the task document
         Task.findByIdAndUpdate(task._id, {
           $set: {
