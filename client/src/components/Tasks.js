@@ -22,12 +22,14 @@ import Trash from 'grommet/components/icons/base/Trash'
 import Money from 'grommet/components/icons/base/Money'
 import Clock from 'grommet/components/icons/base/Clock'
 import Favorite from 'grommet/components/icons/base/Favorite'
+import Alert from 'grommet/components/icons/base/Alert'
 
 import Responsive from 'grommet/utils/Responsive'
 
 import getTasks from '../actions/getTasks'
 import completeTask from '../actions/completeTask'
 import removeTask from '../actions/removeTask'
+import completePayment from '../actions/completePayment'
 
 export default Component({
   componentWillMount() {
@@ -121,6 +123,13 @@ export default Component({
     });
   },
 
+  _onCompletePayment(taskId) {
+    completePayment(taskId, this.props.user._id, (success, data) => {
+      console.log(success);
+      console.log(data);
+    });
+  },
+
   _renderTasks() {
     if (this.props.task && this.props.task.tasks && this.props.task.tasks.length > 0) {
       return (
@@ -131,7 +140,7 @@ export default Component({
             {
               this.props.task.tasks.map((task) => {
                 //let task = this.props.task.tasks[index];
-                if (task.status !== 'completed') {
+                if (task.status !== 'completed' && task.status !== 'failed') {
                   return (
                     <ListItem direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
                         <Box style={{width:this.state.labelWidth}} justify="center" align="start">
@@ -145,6 +154,7 @@ export default Component({
                         </Box>
                         <Box justify="end" align="end">
                           <Menu inline={true} direction="row">
+                            {task.status === 'initial' && <Anchor animateIcon={true} title="The deposit failed to be processed. Click to retry." icon={<Alert colorIndex="warning"/>} onClick={() => { this._onCompletePayment(task._id) }} />}
                             <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} onClick={() => { this.setState({complete: task}); }} />
                             <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} onClick={() => {this._onRemoveTriggered(task._id)}} />
                           </Menu>
@@ -172,7 +182,7 @@ export default Component({
             {
               this.props.task.tasks.map((task) => {
                 //let task = this.props.task.tasks[index];
-                if (task.status === 'completed') {
+                if (task.status === 'completed' || task.status === 'failed') {
                   return (
                     <ListItem colorIndex="light-2" direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
                         <Box style={{width:this.state.labelWidth}} justify="center" align="start">
@@ -188,9 +198,9 @@ export default Component({
                           <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
                         </Box>
                         <Box style={{flexDirection: "row"}} direction="row" justify="center" align="center">
-                          {(task.refund < task.deposit || task.refund === -1) && <Label title="Helped us with a donation <3">💗</Label>}
-                          {(task.status === 'completed' && task.refund > -1) && <Label title="Task completed">😎</Label>}
-                          {task.refund === -1 && <Label title="Task not completed in time.">😯</Label>}
+                          {task.refund < task.deposit && <Label title="Helped us with a donation <3">💗</Label>}
+                          {task.status === 'completed' && <Label title="Task completed">😎</Label>}
+                          {task.status === 'failed' && <Label title="Task not completed in time.">😯</Label>}
                         </Box>
                     </ListItem>
                   )

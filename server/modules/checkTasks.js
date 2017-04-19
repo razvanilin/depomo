@@ -58,8 +58,32 @@ module.exports = (app) => {
       if (moment().diff(moment(tasks[i].due), 'minutes') > 0) {
         Task.findByIdAndUpdate(tasks[i]._id, {
           $set: {
-            status: "completed",
-            refund: -1
+            status: "failed",
+            refund: 0
+          }
+        }, { new: true }, (err, task) => {
+          console.log(task._id + " was processed with: " + task.deposit + " " + task.currency);
+        });
+      }
+    }
+  });
+
+  // Check to see if any tasks that were not paid for
+  Task.find({
+    status: "initial",
+  }, (err, tasks) => {
+    if (err) {
+      console.log(err);
+      return false;
+    }
+
+    for (var i=0; i<tasks.length; i++) {
+      if (moment().diff(moment(tasks[i].due), 'minutes') > 0) {
+        Task.findByIdAndUpdate(tasks[i]._id, {
+          $set: {
+            status: "failed",
+            deposit: 0,
+            refund: 0
           }
         }, { new: true }, (err, task) => {
           console.log(task._id + " was processed with: " + task.deposit + " " + task.currency);
