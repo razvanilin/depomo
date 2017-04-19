@@ -9,6 +9,7 @@ const paypal = require('paypal-rest-sdk');
 const checkTasks = require('./modules/checkTasks');
 const moment = require('moment');
 const mandrill = require('mandrill-api/mandrill');
+const braintreeSdk = require('braintree');
 
 var CronJob = require('cron').CronJob;
 
@@ -40,6 +41,14 @@ paypal.configure({
   client_secret: app.settings.paypal.secret
 });
 app.paypal = paypal;
+
+// configure braintree
+app.braintree = braintreeSdk.connect({
+    environment:  braintreeSdk.Environment.Sandbox,
+    merchantId:   app.settings.braintree.merchant_id,
+    publicKey:    app.settings.braintree.public_key,
+    privateKey:   app.settings.braintree.private_key
+});
 
 // configure mandrill
 app.mandrill = new mandrill.Mandrill(app.settings.mandrill.api_key);

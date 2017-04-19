@@ -123,6 +123,18 @@ module.exports = (app, route) => {
   });
   // ------------------------------------------------
 
+  /** ROUTE to generate a Braintree client_token **/
+  app.get('/payment/client_token', (req, res) => {
+    app.braintree.clientToken.generate({}, (err, response) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send(err);
+      }
+
+      return res.status(200).send(response);
+    });
+  });
+  // ------------------------------------------------
 
   return (req, res, next) => {
 
