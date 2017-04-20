@@ -17,8 +17,10 @@ import Anchor from 'grommet/components/Anchor'
 import Spinning from 'grommet/components/icons/Spinning'
 import CreditCard from 'grommet/components/icons/base/CreditCard'
 import Paypal from 'grommet/components/icons/base/SocialPaypal'
+import Previous from 'grommet/components/icons/base/FormPrevious'
 
 import addTask from '../actions/addTask'
+import PaymentMethod from './PaymentMethod'
 
 export default Component({
   componentWillMount() {
@@ -37,11 +39,15 @@ export default Component({
     }
   },
 
+  _methodClicked() {
+    this.setState({viewPage: 'paymentMethod'});
+  },
+
   render() {
     return(
       <Layer align="right" closer={true} flush={true} onClose={() => {Goto({path:"/dashboard/tasks"})}}>
 
-        <Box>
+        <Box className={this.state.viewPage === 'addTask' ? 'fade-in' : 'fade-out'} margin={{top:"large"}}>
           <Form pad="small" onSubmit={e => {
             e.preventDefault();
 
@@ -84,16 +90,12 @@ export default Component({
 
             <Footer pad={{"vertical": "medium"}} justify="center">
                 <Box justify="center" direction="column">
-                  <Box justify="between" align="center" direction="row">
 
-                    <Box justify="between" align="center" direction="row" pad="medium">
-                      <Anchor primary={'paypal' && true} animateIcon={true} icon={<Paypal />} label="Paypal"/>
-                    </Box>
-                    <Box justify="between" align="center" direction="row" pad="medium">
-                      <Anchor primary={'credit' && true} animateIcon={true} icon={<CreditCard />} label="Credit card"/>
-                    </Box>
+                  <Box justify="center" align="center" direction="row" margin={{bottom: "small"}} pad="small">
+                    {this.state.method === 'paypal' && <Anchor primary={false} animateIcon={true} icon={<Paypal />} label="Paypal" onClick={() => {this._methodClicked()}}/>}
+                    {this.state.method === 'card' && <Anchor primary={false} animateIcon={true} icon={<CreditCard />} label="Credit card" onClick={() => {this._methodClicked()}}/>}
                   </Box>
-                  <Button label='Save task'
+                  <Button label='Save task & Place deposit'
                     type='submit'
                     primary={true}
                     align="center"
@@ -106,6 +108,16 @@ export default Component({
             </Footer>
           </Form>
         </Box>
+
+        {/** Payment method selection **/}
+        { this.state.viewPage === 'paymentMethod' &&
+          <Box>
+            <Box justify="start" align="start">
+              <Anchor primary={false} animateIcon={true} icon={<Previous size="medium" />} onClick={() => {this.setState({viewPage: "addTask"})}} />
+            </Box>
+            <PaymentMethod />
+          </Box>
+        }
       </Layer>
     );
   }
