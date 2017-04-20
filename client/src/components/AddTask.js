@@ -10,11 +10,13 @@ import TextInput from 'grommet/components/TextInput'
 import NumberInput from 'grommet/components/NumberInput'
 import DateTime from 'grommet/components/DateTime'
 import Footer from 'grommet/components/Footer'
-import Columns from 'grommet/components/Columns'
 import Button from 'grommet/components/Button'
 import Label from 'grommet/components/Label'
+import Anchor from 'grommet/components/Anchor'
 
 import Spinning from 'grommet/components/icons/Spinning'
+import CreditCard from 'grommet/components/icons/base/CreditCard'
+import Paypal from 'grommet/components/icons/base/SocialPaypal'
 
 import addTask from '../actions/addTask'
 
@@ -29,7 +31,9 @@ export default Component({
       deposit: 1,
       due: "",
       labelError: "",
-      dueError: ""
+      dueError: "",
+      viewPage: "addTask",
+      method: "paypal"
     }
   },
 
@@ -79,20 +83,26 @@ export default Component({
             </FormField>
 
             <Footer pad={{"vertical": "medium"}} justify="center">
-              <Columns justify="center">
-                <Box justify="center">
+                <Box justify="center" direction="column">
+                  <Box justify="between" align="center" direction="row">
+
+                    <Box justify="between" align="center" direction="row" pad="medium">
+                      <Anchor primary={'paypal' && true} animateIcon={true} icon={<Paypal />} label="Paypal"/>
+                    </Box>
+                    <Box justify="between" align="center" direction="row" pad="medium">
+                      <Anchor primary={'credit' && true} animateIcon={true} icon={<CreditCard />} label="Credit card"/>
+                    </Box>
+                  </Box>
                   <Button label='Save task'
                     type='submit'
                     primary={true}
                     align="center"
                     style={{width:"100%"}}
                     onClick={function() { console.log("track");}}>
-
                   </Button>
+                  {this.state.loading && <Box direction="column" justify="center" align="center" pad="small"><Label>Redirecting you to PayPal</Label><Spinning /></Box>}
                 </Box>
 
-                {this.state.loading && <Box direction="column" justify="center" align="center" pad="small"><Label>Redirecting you to PayPal</Label><Spinning /></Box>}
-              </Columns>
             </Footer>
           </Form>
         </Box>
