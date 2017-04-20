@@ -87,6 +87,7 @@ module.exports = (app, route) => {
           email: user.email,
           name: user.name,
           timezone: user.timezone,
+          preferedPayment: user.preferedPayment,
           token: token
         }
 
@@ -112,6 +113,7 @@ module.exports = (app, route) => {
           email: user.email,
           name: user.name,
           timezone: user.timezone,
+          preferedPayment: user.preferedPayment,
           token: req.body.token
         }
         // return the decoded information
@@ -251,6 +253,7 @@ module.exports = (app, route) => {
     if (req.body.name) updates.name = req.body.name;
     if (req.body.email) updates.email = req.body.email;
     if (req.body.timezone) updates.timezone = req.body.timezone;
+    if (req.body.preferedPayment) updates.preferedPayment = req.body.preferedPayment;
 
     User.findByIdAndUpdate(req.params.userId, { $set: updates}, {new: true}, (err, user) => {
       if (err) return res.status(400).send(err);
@@ -265,6 +268,7 @@ module.exports = (app, route) => {
         email: user.email,
         name: user.name,
         timezone: user.timezone,
+        preferedPayment: user.preferedPayment,
         token: token
       }
 
@@ -316,6 +320,7 @@ module.exports = (app, route) => {
                 email: user.email,
                 name: user.name,
                 timezone: user.timezone,
+                preferedPayment: user.preferedPayment,
                 token: token
               }
 
