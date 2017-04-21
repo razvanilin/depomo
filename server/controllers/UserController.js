@@ -26,6 +26,7 @@ module.exports = (app, route) => {
   app.post('/user', (req, res) => {
     if (!req.body.email) return res.status(400).send("Request is missing the email field.");
     if (!req.body.password) return res.status(400).send("Request is missing the password field.");
+    if (!req.body.name) return res.status(400).send("Request is missing the name field");
     if (req.body.password.length < 6) {
       return res.status(400).send("The password must be at least 6 characters long.");
     }
@@ -44,6 +45,24 @@ module.exports = (app, route) => {
         req.body.password = hash;
         User.create(req.body, (error, user) => {
             if (error) return res.status(400).send(error);
+
+            // create a customer on braintree
+            app.braintree.customer.create({
+              firstName: req.body.name,
+              email: req.body.email
+            }, (err, result) => {
+              if (err) {
+                console.log(err);
+                return;
+              }
+
+              if (result && result.customer && result.customer.id) {
+                User.findByIdAndUpdate(user._id, { $set: { customerId: result.customer.id}}, {new:true}, (err, customer) => {
+                  if (err) console.log(err);
+                  console.log(customer);
+                });
+              }
+            });
 
             // add user to the mailchimp list
             mailchimp.addUser(user);
@@ -76,6 +95,26 @@ module.exports = (app, route) => {
         if (!isMatch) {
           console.log("Failed to log in with " + req.body.email);
           return res.status(401).send("Wrong email or password.");
+        }
+
+        if (!user.customerId) {
+          // create a customer on braintree
+          app.braintree.customer.create({
+            firstName: user.name,
+            email: user.email
+          }, (err, result) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+
+            if (result && result.customer && result.customer.id) {
+              User.findByIdAndUpdate(user._id, { $set: { customerId: result.customer.id}}, {new:true}, (err, customer) => {
+                if (err) console.log(err);
+                console.log(customer);
+              });
+            }
+          });
         }
 
         let token = jwt.sign(user, app.settings.secret, {

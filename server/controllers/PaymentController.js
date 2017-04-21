@@ -136,6 +136,13 @@ module.exports = (app, route) => {
   });
   // ------------------------------------------------
 
+  /** ROUTE to create a new customer **/
+  app.post('/payment/customer', (req, res) => {
+
+  });
+  // ------------------------------------------------
+
+
   return (req, res, next) => {
 
   }

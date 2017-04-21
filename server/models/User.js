@@ -26,6 +26,9 @@ var UserSchema = new mongoose.Schema({
   timezone: {
     type: String
   },
+  customerId: {
+    type: String
+  },
   preferedPayment: {
     type: String
   }
