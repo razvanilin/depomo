@@ -11,6 +11,7 @@ module.exports = (app, route) => {
 
   // prepare the model
   var User = mongoose.model('user', app.models.user);
+  var PaymentMethod = mongoose.model('paymentMethod', app.models.paymentMethod);
 
   /** Route to get all the users **/
   app.get('/user', (req, res) => {
@@ -117,20 +118,27 @@ module.exports = (app, route) => {
           });
         }
 
-        let token = jwt.sign(user, app.settings.secret, {
-          expiresIn: 604800 // a week
+        // get the payment Mehtods associated with the user
+        PaymentMethod.find({owner: user._id}, (err, paymentMethods) => {
+
+          if (err) console.log(err);
+
+          let token = jwt.sign(user, app.settings.secret, {
+            expiresIn: 604800 // a week
+          });
+
+          var userResponse = {
+            _id: user._id,
+            email: user.email,
+            name: user.name,
+            timezone: user.timezone,
+            preferedPayment: user.preferedPayment,
+            paymentMethods: paymentMethods || [],
+            token: token
+          }
+
+          return res.status(200).send(userResponse);
         });
-
-        var userResponse = {
-          _id: user._id,
-          email: user.email,
-          name: user.name,
-          timezone: user.timezone,
-          preferedPayment: user.preferedPayment,
-          token: token
-        }
-
-        return res.status(200).send(userResponse);
       });
     });
   });
@@ -147,16 +155,22 @@ module.exports = (app, route) => {
       }, (err, user) => {
         if (!user || err) return res.status(400).send("Could not process your user information. Try again later.")
 
-        var userResponse = {
-          _id: user._id,
-          email: user.email,
-          name: user.name,
-          timezone: user.timezone,
-          preferedPayment: user.preferedPayment,
-          token: req.body.token
-        }
-        // return the decoded information
-        return res.status(200).send(userResponse);
+        // get the payment methods
+        PaymentMethod.find({owner: user._id}, (err, paymentMethods) => {
+          if (err) console.log(err);
+
+          var userResponse = {
+            _id: user._id,
+            email: user.email,
+            name: user.name,
+            timezone: user.timezone,
+            preferedPayment: user.preferedPayment,
+            paymentMethods: paymentMethods || [],
+            token: req.body.token
+          }
+          // return the decoded information
+          return res.status(200).send(userResponse);
+        });
       });
     });
   });
@@ -302,16 +316,22 @@ module.exports = (app, route) => {
         expiresIn: 604800 // a week
       });
 
-      var userResponse = {
-        _id: user._id,
-        email: user.email,
-        name: user.name,
-        timezone: user.timezone,
-        preferedPayment: user.preferedPayment,
-        token: token
-      }
+      // get the paymnet methods
+      PaymentMethod.find({owner: user._id}, (err, paymentMethods) => {
+        if (err) console.log(err);
 
-      return res.status(200).send(userResponse);
+        var userResponse = {
+          _id: user._id,
+          email: user.email,
+          name: user.name,
+          timezone: user.timezone,
+          preferedPayment: user.preferedPayment,
+          paymentMethods: paymentMethods || [],
+          token: token
+        }
+
+        return res.status(200).send(userResponse);
+      });
     });
   });
   // ----------------------------------------------------------
@@ -354,16 +374,23 @@ module.exports = (app, route) => {
                 expiresIn: 604800 // a week
               });
 
-              var userResponse = {
-                _id: user._id,
-                email: user.email,
-                name: user.name,
-                timezone: user.timezone,
-                preferedPayment: user.preferedPayment,
-                token: token
-              }
+              // get the payment methods
+              PaymentMethod.find({owner: user._id}, (err, paymentMethods) => {
 
-              return res.status(200).send(userResponse);
+                if (err) console.log(err);
+
+                var userResponse = {
+                  _id: user._id,
+                  email: user.email,
+                  name: user.name,
+                  timezone: user.timezone,
+                  preferedPayment: user.preferedPayment,
+                  paymentMethods: paymentMethods || [],
+                  token: token
+                }
+
+                return res.status(200).send(userResponse);
+              });
             });
           });
         });
