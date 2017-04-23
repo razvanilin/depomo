@@ -10,8 +10,6 @@ import Footer from 'grommet/components/Footer'
 import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button'
 import Heading from 'grommet/components/Heading'
-import FormField from 'grommet/components/FormField'
-import TextInput from 'grommet/components/TextInput'
 
 import Paypal from 'grommet/components/icons/base/SocialPaypal'
 import Checkmark from 'grommet/components/icons/base/Checkmark'
@@ -61,7 +59,7 @@ export default Component({
           </Footer>
         </Form>
 
-        {this.state.method === 'card' && 
+        {this.state.method === 'card' &&
           <Box>
             <AddCard />
           </Box>
