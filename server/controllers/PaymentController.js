@@ -6,6 +6,7 @@ module.exports = (app, route) => {
 
   var Task = mongoose.model('task', app.models.task);
   var User = mongoose.model('user', app.models.user);
+  var PaymentMethod = mongoose.model('paymentMethod', app.models.paymentMethod);
 
   /** Route to authorize a payment **/
   app.post("/payment", (req, res) => {
@@ -140,9 +141,6 @@ module.exports = (app, route) => {
 
   /** ROUTE to create a new payment method for an existing customer **/
   app.post('/payment/:userId/method', verifyOwner, (req, res) => {
-    console.log("nonce thing:");
-    console.log(req.body);
-
     if (!req.body.nonce) return res.status(400).send("Nonce missing from the request body");
 
     User.findOne({_id: req.params.userId}, (err, user) => {
@@ -163,9 +161,20 @@ module.exports = (app, route) => {
           return res.status(400).send(err);
         }
 
-        console.log(result.paymentMethod.token);
+        var paymentMethodFields = {
+          owner: user._id,
+          token: result.paymentMethod.token,
+          cardType: req.body.details.cardType || "",
+          type: req.body.type,
+          lastTwo: req.body.details.lastTwo || "",
+          description: req.body.description || ""
+        };
 
-        return res.status(200).send("Payment method created");
+        PaymentMethod.create(paymentMethodFields, (err, paymentMethod) => {
+          if (err) return res.status(400).send(err);
+
+          return res.status(200).send(paymentMethod);
+        });
       });
     })
   });

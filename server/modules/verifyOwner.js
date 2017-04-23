@@ -30,7 +30,6 @@ module.exports = (req, res, next) => {
 
         if (err || !user) return res.status(400).send("Could not process your user information. Try again later.");
 
-        console.log(requestedOwner);
         if (user._id == requestedOwner || user.isAdmin) {
           req.decoded = decoded;
           next();
