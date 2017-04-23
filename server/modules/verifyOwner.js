@@ -17,7 +17,6 @@ var User = mongoose.model('user', models.user);
 
 module.exports = (req, res, next) => {
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
-  console.log(req.params.userId);
   var requestedOwner = req.params.userId || req.body.userId || req.query.userId;
   if (!requestedOwner) return res.status(401).send("Unauthorized access.")
 

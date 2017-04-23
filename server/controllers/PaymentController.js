@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const checkAccess = require('../modules/checkAccess');
+const verifyOwner = require('../modules/verifyOwner');
 
 module.exports = (app, route) => {
 
   var Task = mongoose.model('task', app.models.task);
+  var User = mongoose.model('user', app.models.user);
 
   /** Route to authorize a payment **/
   app.post("/payment", (req, res) => {
@@ -124,7 +126,7 @@ module.exports = (app, route) => {
   // ------------------------------------------------
 
   /** ROUTE to generate a Braintree client_token **/
-  app.get('/payment/client_token', (req, res) => {
+  app.get('/payment/client_token', verifyOwner, (req, res) => {
     app.braintree.clientToken.generate({}, (err, response) => {
       if (err) {
         console.log(err);
@@ -136,9 +138,36 @@ module.exports = (app, route) => {
   });
   // ------------------------------------------------
 
-  /** ROUTE to create a new customer **/
-  app.post('/payment/customer', (req, res) => {
+  /** ROUTE to create a new payment method for an existing customer **/
+  app.post('/payment/:userId/method', verifyOwner, (req, res) => {
+    console.log("nonce thing:");
+    console.log(req.body);
 
+    if (!req.body.nonce) return res.status(400).send("Nonce missing from the request body");
+
+    User.findOne({_id: req.params.userId}, (err, user) => {
+      if (err) return res.status(400).send(err);
+      if (!user) {
+        return res.status(404).send("Could not retrieve user information");
+      }
+
+      app.braintree.paymentMethod.create({
+        customerId: user.customerId,
+        paymentMethodNonce: req.body.nonce,
+        options: {
+          makeDefault: req.body.makeDefault || false
+        }
+      }, (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send(err);
+        }
+
+        console.log(result.paymentMethod.token);
+
+        return res.status(200).send("Payment method created");
+      });
+    })
   });
   // ------------------------------------------------
 
