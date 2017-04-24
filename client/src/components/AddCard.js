@@ -77,7 +77,7 @@ export default Component({
   },
 
   _sendNonce() {
-    addPaymentMethod(hostedFields, this.props.user._id, (success, data) => {
+    addPaymentMethod("card", hostedFields, this.props.user._id, (success, data) => {
       if (!success) {
         this.setState({errorMessage: data});
         return;

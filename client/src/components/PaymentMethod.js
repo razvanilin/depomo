@@ -18,12 +18,13 @@ import Spinning from 'grommet/components/icons/Spinning'
 import Add from 'grommet/components/icons/base/Add'
 
 import AddCard from './AddCard'
+import AddPaypal from './AddPaypal'
 import selectPaymentMethod from '../actions/selectPaymentMethod'
 
 export default Component({
   componentWillMount() {
     this.state = {
-      method: this.props.user.preferedPayment || 'paypal'
+      method: ''
     }
   },
 
@@ -60,8 +61,8 @@ export default Component({
           return (
             <ListItem key={paymentMethod.token} responsive={false} justify="between" onClick={()=>{this._selectPaymentMethod(paymentMethod.token)}}>
               <Anchor primary={paymentMethod.default} animateIcon={true}
-                      icon={(paymentMethod.cardType!=="Paypal" && <CreditCard />) || (paymentMethod.cardType==="Paypal" && <Paypal />)}
-                      label={paymentMethod.cardType + " " + paymentMethod.last4}
+                      icon={(paymentMethod.cardType && <CreditCard />) || <Paypal />}
+                      label={(paymentMethod.cardType && paymentMethod.cardType + " " + paymentMethod.last4) || paymentMethod.email}
                       onClick={() => console.log(paymentMethod.cardType + " clicked")}/>
               {paymentMethod.default && <Checkmark colorIndex="ok" />}
               {paymentMethod.token === this.state.selectedMethod && <Spinning />}
@@ -84,25 +85,25 @@ export default Component({
           {this._renderPaymentMethods()}
           </Box>
 
-          <Footer pad={{"vertical": "medium"}} justify="center">
-              <Box justify="center" direction="column">
-                <Button label='Add payment method'
-                  type='button'
-                  icon={<Add />}
-                  primary={false}
-                  align="center"
-                  style={{width:"100%"}}
-                  onClick={() => { this.setState({method: 'card'})}}>
-                </Button>
-                {this.state.loading && <Box direction="column" justify="center" align="center" pad="small"><Label>Redirecting you to PayPal</Label><Spinning /></Box>}
+          <Footer pad={{"vertical": "medium"}} justify="start" direction="column">
+              <Box justify="start" align="start" direction="column" pad="small">
+                <Anchor animateIcon={true} icon={<Add />} label="Add Paypal account" onClick={() => this.setState({method:'paypal'})}/>
               </Box>
-
+              <Box justify="start" align="start" direction="column" pad="small">
+                <Anchor animateIcon={true} icon={<Add />} label="Add Debit or Credit card" onClick={() => this.setState({method:'card'})} />
+              </Box>
           </Footer>
         </Form>
 
         {this.state.method === 'card' &&
           <Box>
             <AddCard />
+          </Box>
+        }
+
+        {this.state.method === 'paypal' &&
+          <Box justify="center" align="center">
+            <AddPaypal />
           </Box>
         }
 

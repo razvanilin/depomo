@@ -56,8 +56,9 @@ export default Component({
 
     return (
       <Anchor primary={false} animateIcon={true}
-            icon={(defaultPayment.cardType!=="Paypal" && <CreditCard />) || (defaultPayment.cardType==="Paypal" && <Paypal />)}
-            label={defaultPayment.cardType + " " + defaultPayment.last4} path={{path: "/dashboard/tasks/add/payment"}}
+            title="Current payment method. Click to change"
+            icon={(defaultPayment.cardType && <CreditCard />) || <Paypal />}
+            label={(defaultPayment.cardType && defaultPayment.cardType + " " + defaultPayment.last4) || defaultPayment.email} path={{path: "/dashboard/tasks/add/payment"}}
             onClick={() => {this._methodClicked()}}/>
     )
   },
