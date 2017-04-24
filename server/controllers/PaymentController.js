@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const checkAccess = require('../modules/checkAccess');
 const verifyOwner = require('../modules/verifyOwner');
+const userResponse = require('../modules/userResponse');
 
 module.exports = (app, route) => {
 
@@ -153,7 +154,7 @@ module.exports = (app, route) => {
         customerId: user.customerId,
         paymentMethodNonce: req.body.nonce,
         options: {
-          makeDefault: req.body.makeDefault || false
+          makeDefault: true
         }
       }, (err, result) => {
         if (err) {
@@ -170,16 +171,37 @@ module.exports = (app, route) => {
           description: req.body.description || ""
         };
 
-        PaymentMethod.create(paymentMethodFields, (err, paymentMethod) => {
-          if (err) return res.status(400).send(err);
+        app.braintree.customer.find(user.customerId, (err, customer) => {
+          if (err) return res.status(400).send("Could not retrieve user information.");
 
-          return res.status(200).send(paymentMethod);
+          return res.status(200).send(userResponse(user, customer.paymentMethods));
         });
       });
     })
   });
   // ------------------------------------------------
 
+  /** Route to make payment method as default **/
+  app.put("/payment/:userId/method/:token", verifyOwner, (req, res) => {
+    app.braintree.paymentMethod.update(req.params.token, req.body, (err, result) => {
+      if (err) {
+        console.log(err);
+        console.log(req.params.token);
+        return res.status(400).send(err);
+      }
+
+      User.findOne({_id: req.params.userId}, (err, user) => {
+        if (err || !user) return res.status(400).send("Could not retrieve user information");
+
+        app.braintree.customer.find(user.customerId, (err, customer) => {
+          if (err) return res.status(400).send("Could not retrieve customer information");
+
+          return res.status(200).send(userResponse(user, customer.paymentMethods));
+        });
+      });
+    });
+  });
+  // ------------------------------------------------
 
   return (req, res, next) => {
 

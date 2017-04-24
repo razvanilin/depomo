@@ -18,18 +18,30 @@ import Spinning from 'grommet/components/icons/Spinning'
 import Add from 'grommet/components/icons/base/Add'
 
 import AddCard from './AddCard'
+import selectPaymentMethod from '../actions/selectPaymentMethod'
 
 export default Component({
   componentWillMount() {
     this.state = {
-      method: this.props.user.preferedPayment || ''
+      method: this.props.user.preferedPayment || 'paypal'
     }
   },
 
-  _selectPaymentMethod() {
-    Goto({
-      path: "/dashboard/tasks/add"
-    })
+  _selectPaymentMethod(token) {
+
+    this.setState({selectedMethod: token});
+
+    selectPaymentMethod(token, {
+      options: {
+        makeDefault: true
+      }
+    }, this.props.user._id, (success) => {
+      if (!success) return this.setState({selectError: true});
+
+      Goto({
+        path: "/dashboard/tasks/add"
+      });
+    });
   },
 
   _renderPaymentMethods() {
@@ -43,14 +55,16 @@ export default Component({
 
     return (
       <List selectable={true}>
+        {this.props.user.paymentMethods && this.props.user.paymentMethods.length > 0 && <Label>Your saved payment methods:</Label>}
         {this.props.user.paymentMethods.map(paymentMethod => {
           return (
-            <ListItem key={paymentMethod._id} responsive={false} justify="between" onClick={()=>{this._selectPaymentMethod()}}>
-              <Anchor primary={false} animateIcon={true}
-                      icon={(paymentMethod.type==="CreditCard" && <CreditCard />) || (paymentMethod.type==="Paypal" && <Paypal />)}
-                      label={paymentMethod.description}
-                      onClick={() => console.log("yo")}/>
-              {this.state.method === 'paypal' && <span><Checkmark colorIndex="ok" /></span>}
+            <ListItem key={paymentMethod.token} responsive={false} justify="between" onClick={()=>{this._selectPaymentMethod(paymentMethod.token)}}>
+              <Anchor primary={paymentMethod.default} animateIcon={true}
+                      icon={(paymentMethod.cardType!=="Paypal" && <CreditCard />) || (paymentMethod.cardType==="Paypal" && <Paypal />)}
+                      label={paymentMethod.cardType + " " + paymentMethod.last4}
+                      onClick={() => console.log(paymentMethod.cardType + " clicked")}/>
+              {paymentMethod.default && <Checkmark colorIndex="ok" />}
+              {paymentMethod.token === this.state.selectedMethod && <Spinning />}
             </ListItem>
           )
         })}
@@ -66,7 +80,9 @@ export default Component({
         }}>
           <Heading align="center" tag="h2">Payment Options</Heading>
 
+          <Box pad="small">
           {this._renderPaymentMethods()}
+          </Box>
 
           <Footer pad={{"vertical": "medium"}} justify="center">
               <Box justify="center" direction="column">

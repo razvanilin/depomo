@@ -119,9 +119,12 @@ module.exports = (app, route) => {
         }
 
         // get the payment Mehtods associated with the user
-        PaymentMethod.find({owner: user._id}, (err, paymentMethods) => {
+        app.braintree.customer.find(user.customerId, (err, customer) => {
 
-          if (err) console.log(err);
+          if (err) {
+            console.log(err);
+            customer = {};
+          }
 
           let token = jwt.sign(user, app.settings.secret, {
             expiresIn: 604800 // a week
@@ -133,7 +136,7 @@ module.exports = (app, route) => {
             name: user.name,
             timezone: user.timezone,
             preferedPayment: user.preferedPayment,
-            paymentMethods: paymentMethods || [],
+            paymentMethods: customer.paymentMethods || [],
             token: token
           }
 
@@ -156,8 +159,11 @@ module.exports = (app, route) => {
         if (!user || err) return res.status(400).send("Could not process your user information. Try again later.")
 
         // get the payment methods
-        PaymentMethod.find({owner: user._id}, (err, paymentMethods) => {
-          if (err) console.log(err);
+        app.braintree.customer.find(user.customerId, (err, customer) => {
+          if (err) {
+            console.log(err);
+            customer = {};
+          }
 
           var userResponse = {
             _id: user._id,
@@ -165,7 +171,7 @@ module.exports = (app, route) => {
             name: user.name,
             timezone: user.timezone,
             preferedPayment: user.preferedPayment,
-            paymentMethods: paymentMethods || [],
+            paymentMethods: customer.paymentMethods || [],
             token: req.body.token
           }
           // return the decoded information
@@ -316,9 +322,14 @@ module.exports = (app, route) => {
         expiresIn: 604800 // a week
       });
 
-      // get the paymnet methods
-      PaymentMethod.find({owner: user._id}, (err, paymentMethods) => {
-        if (err) console.log(err);
+      // alternative payment methods
+      app.braintree.customer.find(user.customerId, (err, customer) => {
+        //console.log(customer.paymentMethods);
+
+        if (err) {
+          console.log(err);
+          customer = {};
+        }
 
         var userResponse = {
           _id: user._id,
@@ -326,12 +337,12 @@ module.exports = (app, route) => {
           name: user.name,
           timezone: user.timezone,
           preferedPayment: user.preferedPayment,
-          paymentMethods: paymentMethods || [],
+          paymentMethods: customer.paymentMethods || [],
           token: token
         }
 
         return res.status(200).send(userResponse);
-      });
+      })
     });
   });
   // ----------------------------------------------------------
@@ -375,9 +386,12 @@ module.exports = (app, route) => {
               });
 
               // get the payment methods
-              PaymentMethod.find({owner: user._id}, (err, paymentMethods) => {
+              app.braintree.customer.find(user.customerId, (err, customer) => {
 
-                if (err) console.log(err);
+                if (err) {
+                  console.log(err);
+                  customer = {};
+                }
 
                 var userResponse = {
                   _id: user._id,
@@ -385,7 +399,7 @@ module.exports = (app, route) => {
                   name: user.name,
                   timezone: user.timezone,
                   preferedPayment: user.preferedPayment,
-                  paymentMethods: paymentMethods || [],
+                  paymentMethods: customer.paymentMethods || [],
                   token: token
                 }
 

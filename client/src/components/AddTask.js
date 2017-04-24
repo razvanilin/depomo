@@ -46,6 +46,22 @@ export default Component({
     this.setState({viewPage: 'paymentMethod'});
   },
 
+  _renderDefaultPayment() {
+    let defaultPayment;
+
+    for (var i=0; i < this.props.user.paymentMethods.length; i++) {
+      if (this.props.user.paymentMethods[i].default)
+        defaultPayment = this.props.user.paymentMethods[i];
+    }
+
+    return (
+      <Anchor primary={false} animateIcon={true}
+            icon={(defaultPayment.cardType!=="Paypal" && <CreditCard />) || (defaultPayment.cardType==="Paypal" && <Paypal />)}
+            label={defaultPayment.cardType + " " + defaultPayment.last4} path={{path: "/dashboard/tasks/add/payment"}}
+            onClick={() => {this._methodClicked()}}/>
+    )
+  },
+
   render() {
     return(
       <Layer align="right" closer={true} flush={true} onClose={() => {Goto({path:"/dashboard/tasks"})}}>
@@ -95,8 +111,7 @@ export default Component({
                 <Box justify="center" direction="column">
 
                   <Box justify="center" align="center" direction="row" margin={{bottom: "small"}} pad="small">
-                    {this.state.method === 'paypal' && <Anchor primary={false} animateIcon={true} icon={<Paypal />} label="Paypal" path={{path: "/dashboard/tasks/add/payment"}} onClick={() => {this._methodClicked()}}/>}
-                    {this.state.method === 'card' && <Anchor primary={false} animateIcon={true} icon={<CreditCard />} label="Credit card" path={{path: "/dashboard/tasks/add/payment"}} onClick={() => {this._methodClicked()}}/>}
+                    {this._renderDefaultPayment()}
                   </Box>
                   <Button label='Save task & Place deposit'
                     type='submit'

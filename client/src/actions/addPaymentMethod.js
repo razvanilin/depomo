@@ -1,6 +1,8 @@
 const request = require('request');
+
 import settings from '../settings'
 import cookie from 'react-cookie'
+import userState from '../state/user'
 
 export default function addPaymentMethod(hostedFields, userId, cb) {
   if (!hostedFields) cb(false, 'hostedFields object is missing');
@@ -28,7 +30,17 @@ export default function addPaymentMethod(hostedFields, userId, cb) {
       if (error) return cb(false, error);
       if (resp.statusCode !== 200) return cb(false, body);
 
-      cb(true, body);
+      let newUser;
+      try {
+        newUser = JSON.parse(body);
+      } catch (e) {
+        newUser = body;
+      }
+
+      // set new user in the state
+      userState.set(newUser);
+
+      return cb(true, newUser);
     });
   });
 }
