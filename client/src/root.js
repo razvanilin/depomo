@@ -17,6 +17,7 @@ import Tasks from './components/Tasks'
 import AddTask from './components/AddTask'
 import ForgotPassword from './components/ForgotPassword'
 import ProfileSettings from './components/ProfileSettings'
+import PaymentMethod from './components/PaymentMethod'
 
 // Screens
 // import Home from './components/Home'
@@ -32,7 +33,9 @@ Render(states, (
     </Route>
     <Route path='/dashboard' component={Dashboard}>
       <Route path='tasks' component={Tasks}>
-        <Route path='add' component={AddTask} />
+        <Route path='add' component={AddTask}>
+          <Route path='payment' component={PaymentMethod} />
+        </Route>
       </Route>
       <Route path='settings' component={ProfileSettings} />
     </Route>

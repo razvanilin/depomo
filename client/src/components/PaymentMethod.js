@@ -1,5 +1,5 @@
 import React from 'react'
-import { Component } from 'jumpsuit'
+import { Component, Goto } from 'jumpsuit'
 
 import Form from 'grommet/components/Form'
 import List from 'grommet/components/List'
@@ -15,6 +15,7 @@ import Paypal from 'grommet/components/icons/base/SocialPaypal'
 import Checkmark from 'grommet/components/icons/base/Checkmark'
 import CreditCard from 'grommet/components/icons/base/CreditCard'
 import Spinning from 'grommet/components/icons/Spinning'
+import Add from 'grommet/components/icons/base/Add'
 
 import AddCard from './AddCard'
 
@@ -25,6 +26,38 @@ export default Component({
     }
   },
 
+  _selectPaymentMethod() {
+    Goto({
+      path: "/dashboard/tasks/add"
+    })
+  },
+
+  _renderPaymentMethods() {
+    if (this.props.user.paymentMethods.length === 0) {
+      return (
+        <Box justify="center" align="center">
+          <Label>No payment methods have been saved yet.</Label>
+        </Box>
+      )
+    }
+
+    return (
+      <List selectable={true}>
+        {this.props.user.paymentMethods.map(paymentMethod => {
+          return (
+            <ListItem key={paymentMethod._id} responsive={false} justify="between" onClick={()=>{this._selectPaymentMethod()}}>
+              <Anchor primary={false} animateIcon={true}
+                      icon={(paymentMethod.type==="CreditCard" && <CreditCard />) || (paymentMethod.type==="Paypal" && <Paypal />)}
+                      label={paymentMethod.description}
+                      onClick={() => console.log("yo")}/>
+              {this.state.method === 'paypal' && <span><Checkmark colorIndex="ok" /></span>}
+            </ListItem>
+          )
+        })}
+      </List>
+    )
+  },
+
   render() {
     return (
       <Box>
@@ -33,25 +66,17 @@ export default Component({
         }}>
           <Heading align="center" tag="h2">Payment Options</Heading>
 
-          <List selectable={true}>
-            <ListItem responsive={false} justify="between" onClick={() => {this.setState({method:'paypal'})}}>
-              <Anchor primary={this.state.method === 'paypal'} animateIcon={true} icon={<Paypal />} label="Paypal"/>
-              {this.state.method === 'paypal' && <span><Checkmark colorIndex="ok" /></span>}
-            </ListItem>
-            <ListItem responsive={false} justify="between" onClick={() => {this.setState({method:'card'})}}>
-              <Anchor primary={this.state.method === 'card'} animateIcon={true} icon={<CreditCard />} label="Credit or Debit Card"/>
-              {this.state.method === 'card' && <span><Checkmark colorIndex="ok" /></span>}
-            </ListItem>
-          </List>
+          {this._renderPaymentMethods()}
 
           <Footer pad={{"vertical": "medium"}} justify="center">
               <Box justify="center" direction="column">
-                <Button label='Save payment method'
-                  type='submit'
-                  primary={true}
+                <Button label='Add payment method'
+                  type='button'
+                  icon={<Add />}
+                  primary={false}
                   align="center"
                   style={{width:"100%"}}
-                  onClick={function() { console.log("track");}}>
+                  onClick={() => { this.setState({method: 'card'})}}>
                 </Button>
                 {this.state.loading && <Box direction="column" justify="center" align="center" pad="small"><Label>Redirecting you to PayPal</Label><Spinning /></Box>}
               </Box>

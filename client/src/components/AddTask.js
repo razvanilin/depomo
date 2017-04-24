@@ -20,7 +20,6 @@ import Paypal from 'grommet/components/icons/base/SocialPaypal'
 import Previous from 'grommet/components/icons/base/FormPrevious'
 
 import addTask from '../actions/addTask'
-import PaymentMethod from './PaymentMethod'
 
 export default Component({
   componentWillMount() {
@@ -39,6 +38,10 @@ export default Component({
     }
   },
 
+  componentDidMount() {
+    console.log("testing");
+  },
+
   _methodClicked() {
     this.setState({viewPage: 'paymentMethod'});
   },
@@ -46,8 +49,8 @@ export default Component({
   render() {
     return(
       <Layer align="right" closer={true} flush={true} onClose={() => {Goto({path:"/dashboard/tasks"})}}>
-
-        <Box className={this.state.viewPage === 'addTask' ? 'fade-in' : 'fade-out'} margin={{top:"large"}}>
+        {window.location.pathname.indexOf('payment') === -1 &&
+        <Box margin={{top:"large"}}>
           <Form pad="small" onSubmit={e => {
             e.preventDefault();
 
@@ -92,8 +95,8 @@ export default Component({
                 <Box justify="center" direction="column">
 
                   <Box justify="center" align="center" direction="row" margin={{bottom: "small"}} pad="small">
-                    {this.state.method === 'paypal' && <Anchor primary={false} animateIcon={true} icon={<Paypal />} label="Paypal" onClick={() => {this._methodClicked()}}/>}
-                    {this.state.method === 'card' && <Anchor primary={false} animateIcon={true} icon={<CreditCard />} label="Credit card" onClick={() => {this._methodClicked()}}/>}
+                    {this.state.method === 'paypal' && <Anchor primary={false} animateIcon={true} icon={<Paypal />} label="Paypal" path={{path: "/dashboard/tasks/add/payment"}} onClick={() => {this._methodClicked()}}/>}
+                    {this.state.method === 'card' && <Anchor primary={false} animateIcon={true} icon={<CreditCard />} label="Credit card" path={{path: "/dashboard/tasks/add/payment"}} onClick={() => {this._methodClicked()}}/>}
                   </Box>
                   <Button label='Save task & Place deposit'
                     type='submit'
@@ -108,16 +111,18 @@ export default Component({
             </Footer>
           </Form>
         </Box>
+        }
 
         {/** Payment method selection **/}
-        { this.state.viewPage === 'paymentMethod' &&
+        { window.location.pathname.indexOf('payment') > -1 &&
           <Box>
             <Box justify="start" align="start">
-              <Anchor primary={false} animateIcon={true} icon={<Previous size="medium" />} onClick={() => {this.setState({viewPage: "addTask"})}} />
+              <Anchor primary={false} animateIcon={true} icon={<Previous size="medium" />} path={{path: "/dashboard/tasks/add"}} onClick={() => {this.setState({viewPage: "addTask"})}} />
             </Box>
-            <PaymentMethod />
+            {this.props.children}
           </Box>
         }
+
       </Layer>
     );
   }
