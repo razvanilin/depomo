@@ -51,13 +51,20 @@ export default Component({
   },
 
   _renderDefaultPayment() {
-    return (
-      <Anchor primary={false} animateIcon={true}
-            title="Current payment method. Click to change"
-            icon={(this.state.defaultPayment.cardType && <CreditCard />) || <Paypal />}
-            label={(this.state.defaultPayment.cardType && this.state.defaultPayment.cardType + " " + this.state.defaultPayment.last4) || this.state.defaultPayment.email} path={{path: "/dashboard/tasks/add/payment"}}
-            onClick={() => {this._methodClicked()}}/>
-    )
+    let paymentMethods = this.props.user.paymentMethods;
+    for (var i=0; i<paymentMethods.length; i++) {
+      if (paymentMethods[i].default) {
+        return (
+          <Anchor primary={false} animateIcon={true}
+                title="Current payment method. Click to change"
+                icon={(paymentMethods[i].cardType && <CreditCard />) || <Paypal />}
+                label={(paymentMethods[i].cardType && paymentMethods[i].cardType + " " + paymentMethods[i].last4) || paymentMethods[i].email} path={{path: "/dashboard/tasks/add/payment"}}
+                onClick={() => {this._methodClicked()}}/>
+        )
+      }
+    }
+    console.log("wow");
+    return (<div></div>);
   },
 
   render() {
@@ -109,7 +116,7 @@ export default Component({
                 <Box justify="center" direction="column">
 
                   <Box justify="center" align="center" direction="row" margin={{bottom: "small"}} pad="small">
-                    {this.state.defaultPayment && this._renderDefaultPayment()}
+                    {this.props.user && this._renderDefaultPayment()}
                   </Box>
                   <Button label='Save task & Place deposit'
                     type='submit'
