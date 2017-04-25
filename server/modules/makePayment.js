@@ -7,16 +7,16 @@ if (process.env.NODE_ENV == "production") {
 }
 
 module.exports = (task, cb) => {
-  if (!task) return cb(false, "No task found");
+  if (!task) return cb(false, {error: "No task found"});
   // create the paypal payment
   var paypalOpt = {
-    url: settings.api_host + "/payment",
+    url: settings.api_host + "/payment/" + task.owner + "/pay/" + task.method,
     method: "POST",
     form: {
-      method: "paypal",
       amount: task.deposit,
       currency: task.currency,
-      description: task.label,
+      label: task.label,
+      token: task.paymentMethodToken,
       user_id: task.owner.toString(),
       task_id: task._id.toString()
     },
@@ -27,16 +27,13 @@ module.exports = (task, cb) => {
   };
 
   request(paypalOpt, (error, resp, body) => {
-    if (error) return cb(false, error);
-
+    if (error) return cb(false, {taskId: task._id.toString(), error: error});
     var payment;
     try {
       payment = JSON.parse(body);
-      return cb(true, payment);
+      return cb(true, {taskId: task._id.toString(), payment: payment});
     } catch (e) {
-      console.log(e);
-      console.log(body);
-      return cb(false, "Error parsing your request.");
+      return cb(true, {taskId: task._id, payment: payment});
     }
   });
 };

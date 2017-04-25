@@ -4,7 +4,6 @@ import { Component } from 'jumpsuit'
 const braintree = require('braintree-web');
 var paypal;
 
-import Label from 'grommet/components/Label'
 import Button from 'grommet/components/Button'
 import Box from 'grommet/components/Box'
 import Paypal from 'grommet/components/icons/base/SocialPaypal'

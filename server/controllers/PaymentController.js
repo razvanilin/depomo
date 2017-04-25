@@ -203,6 +203,34 @@ module.exports = (app, route) => {
   });
   // ------------------------------------------------
 
+  /** Route to make a payment **/
+  app.post("/payment/:userId/pay/:type", (req, res) => {
+    if (!req.body.amount || !req.body.token || !req.body.label || !req.body.currency)
+      return res.status(400).send("Fields missing from the request body");
+
+    // make the transaction
+    var transactionOpt = {
+      amount: req.body.amount,
+      paymentMethodToken: req.body.token,
+      options: {
+        submitForSettlement: true
+      }
+    };
+
+    if (req.params.type === 'paypal') {
+      transactionOpt.recurring = true;
+    }
+
+    app.braintree.transaction.sale(transactionOpt, (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send(err);
+      }
+
+      return res.status(200).send(result);
+    });
+  });
+
   return (req, res, next) => {
 
   }

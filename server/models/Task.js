@@ -36,6 +36,12 @@ var TaskSchema = new mongoose.Schema({
   paymentId: {
     type: String
   },
+  transactionId: {
+    type: String
+  },
+  paymentMethodToken: {
+    type: String
+  },
   status: {
     type: String,
     default: "initial"

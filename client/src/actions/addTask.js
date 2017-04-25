@@ -74,9 +74,11 @@ export default function addTask(task, user, cb) {
     var responseObj;
     try {
       responseObj = JSON.parse(body);
-      taskState.addTask(responseObj.task);
+      taskState.addTask(responseObj);
       cb(true);
-      window.location.href = responseObj.payment.links[1].href;
+      Goto({
+        path: "/dashboard/tasks"
+      });
     } catch (e) {
       console.log(e);
       console.log(body);

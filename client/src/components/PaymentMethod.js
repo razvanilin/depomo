@@ -8,7 +8,6 @@ import ListItem from 'grommet/components/ListItem'
 import Label from 'grommet/components/Label'
 import Footer from 'grommet/components/Footer'
 import Box from 'grommet/components/Box'
-import Button from 'grommet/components/Button'
 import Heading from 'grommet/components/Heading'
 
 import Paypal from 'grommet/components/icons/base/SocialPaypal'

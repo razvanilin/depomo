@@ -28,7 +28,7 @@ module.exports = (app, route) => {
 
   /** Route to record tasks **/
   app.post('/task', checkAccess, (req, res) => {
-    if (!req.body._id || !req.body.label || !req.body.due || !req.body.deposit || !req.body.currency) {
+    if (!req.body._id || !req.body.label || !req.body.due || !req.body.deposit || !req.body.currency || !req.body.defaultPayment) {
       return res.status(400).send("Request body is incomplete. (_id, label, due, deposit, currency)");
     }
 
@@ -38,34 +38,22 @@ module.exports = (app, route) => {
       label: req.body.label,
       deposit: req.body.deposit,
       due: req.body.due,
-      currency: req.body.currency
+      currency: req.body.currency,
+      paymentMethodToken: req.body.defaultPayment.token,
+      method: "paypal"
     };
+
+    if (req.body.defaultPayment.cardType) taskDoc.method = "card";
 
     Task.create(taskDoc, (error, task) => {
       if (error) return res.status(400).send(error);
-
-      makePayment(task, (success, payment) => {
-        if (!success) return res.status(400).send(payment);
-
-        // update the task document
-        Task.findByIdAndUpdate(task._id, {
-          $set: {
-            method: payment.payer.payment_method,
-            paymentId: payment.id
-          }
-        }, (err, task) => {
-
-          if (err) {
-            console.log(err);
-            return res.status(400).send(err);
-          }
-
-          return res.status(200).send({
-            task: task,
-            payment: payment
-          });
-        });
-      });
+      try {
+        return res.status(200).send(task);
+      } catch (e) {
+        console.log(e);
+        console.log(task);
+        return res.status(400).send("Error parsing the response");
+      }
     });
   });
   // ---------------------------------------------------
