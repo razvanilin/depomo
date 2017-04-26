@@ -6,6 +6,11 @@ export default State({
   },
   addTask(state, tasks) {
     if (!tasks) return state;
+    if (tasks.constructor !== Array) {
+      var tempTasks = state.tasks;
+      tempTasks.push(tasks);
+      return {...state, tempTasks};
+    }
 
     return {...state, tasks};
   }
