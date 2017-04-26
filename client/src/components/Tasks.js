@@ -90,7 +90,8 @@ export default Component({
           <Heading tag="h2"> Have you finished the task? 🤔</Heading>
           <Box direction="column" pad="medium" justify="center" align="center">
             <FormField label="Would you like to make a donation from your deposit?">
-              <NumberInput max={this.state.complete.deposit} min={0} value={this.state.donation} onChange={event => {this.setState({donation: event.target.value});}} />
+              <NumberInput max={this.state.complete.deposit} step={0.5} min={0} value={this.state.donation} onChange={event => {this.setState({donation: event.target.value});}} />
+              <input type="range" max={this.state.complete.deposit} step={0.5} min={0} value={this.state.donation} onChange={event => {this.setState({donation: event.target.value});}} />
             </FormField>
           </Box>
           <Box direction="row" pad="medium" justify="center" align="center">
