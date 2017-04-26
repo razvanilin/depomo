@@ -62,6 +62,7 @@ module.exports = (app, route) => {
     Task.findOne({_id: req.params.id}, (err, task) => {
       if (err) return res.status(400).send(err);
       if (!task) return res.status(404).send("No task found with that ID");
+      if (task.status !== 'failed' && task.status !== 'completed') return res.status(400).send("This task is not finished yet. Cannot process payment for it.");
 
       makePayment(app, task, (error, result) => {
         // update the task document
