@@ -183,7 +183,7 @@ export default Component({
                 //let task = this.props.task.tasks[index];
                 if (task.status === 'completed' || task.status === 'failed') {
                   return (
-                    <ListItem colorIndex="light-2" direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
+                    <ListItem colorIndex={task.status === 'completed' ? 'accent-2' : 'grey-3-a'} direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
                         <Box style={{width:this.state.labelWidth}} justify="center" align="start">
                           <Label truncate={true}>{task.label}</Label>
                         </Box>
