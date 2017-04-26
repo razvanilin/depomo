@@ -188,10 +188,10 @@ export default Component({
                           <Label truncate={true}>{task.label}</Label>
                         </Box>
                         <Box justify="start" align="start">
-                          <Anchor style={{fontSize:"90%"}} primary={false} title="Refund" icon={<Money/>} label={(task.refund === -1 ? 0 : task.refund) + " " + task.currency} />
+                          <Anchor style={{fontSize:"90%"}} primary={false} title="Deposit" icon={<Money/>} label={(task.deposit) + " " + task.currency} />
                         </Box>
                         <Box>
-                          <Anchor style={{fontSize:"90%"}} primary={false} title="Donation" icon={<Favorite title="Donation"/>} label={(task.refund === -1 ? task.deposit : task.deposit - task.refund) + " " + task.currency} />
+                          <Anchor style={{fontSize:"90%"}} primary={false} title="Donation" icon={<Favorite title="Donation"/>} label={(task.refund === -1 ? task.deposit : task.donation) + " " + task.currency} />
                         </Box>
                         <Box justify="start" align="start">
                           <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
@@ -206,7 +206,7 @@ export default Component({
                                       icon={<Alert colorIndex="warning"/>}
                                       onClick={() => { this._onCompletePayment(task._id) }} />}
 
-                          {task.refund < task.deposit && <Label title="Helped us with a donation <3">💗</Label>}
+                          {(task.refund < task.deposit || task.donation > 0) && <Label title="Helped us with a donation <3">💗</Label>}
                           {task.status === 'completed' && <Label title="Task completed">😎</Label>}
                           {task.status === 'failed' && <Label title="Task not completed in time.">😯</Label>}
                         </Box>

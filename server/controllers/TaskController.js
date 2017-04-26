@@ -99,58 +99,96 @@ module.exports = (app, route) => {
   /** ROUTE to mark activity as complete **/
   app.put('/task/:id/complete', verifyOwner, (req, res) => {
 
-    Task.findOne({ _id: req.params.id}, (err, task) => {
+    Task.findByIdAndUpdate(req.params.id, {
+      $set: {
+        status: "completed"
+      }
+    }, {new: true}, (err, task) => {
+      if (req.body.donation && req.body.donation > 0) {
+        task.deposit = req.body.donation;
 
-      app.paypal.payment.get(task.paymentId, (err, payment) => {
-        if (err) res.status(400).send("Could not get transaction");
-        getPaypalToken((success, data) => {
-          if (!success) return res.status(400).send("Could not authorize paypal action.");
-          console.log(data);
-
-          var refundOpt = {
-            url: app.settings.paypal.api_host + "/payments/sale/" + payment.transactions[0].related_resources[0].sale.id + "/refund",
-            method: "POST",
-            body: {},
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer " + data.access_token
-            }
-          };
-
-          var refund;
-          if (req.body.donation && req.body.donation > 0) {
-            refund = task.deposit - parseInt(req.body.donation, 10);
-            refundOpt.body.amount = {
-              total: refund,
-              currency: task.currency
-            };
-          }
-
-          console.log(refundOpt);
-
-          refundOpt.body = JSON.stringify(refundOpt.body);
-
-          request(refundOpt, (error, resp, body) => {
-            if (error) return res.status(400).send("Could not authorize refund");
-            console.log("Response Code: " + resp.statusCode);
-            console.log(body);
-
+        makePayment(app, task, (success, result) => {
+          if (!success) {
             Task.findByIdAndUpdate(req.params.id, {
               $set: {
-                status: "completed",
-                refund: refund ? refund : task.deposit,
-                payerId: ""
+                transactionStatus: result.error
               }
-            }, {new: true}, (err, task) => {
-              if (err) return res.status(400).send(err);
-              if (!task) return res.status(404).send("No task found with that ID");
-
-              return res.status(200).send(task);
+            }, {new: true}, (err, errorTask) => {
+              if (err) return res.status(400).send("Could not update the task.");
+              return res.status(200).send(errorTask);
             });
-          });
+
+          } else {
+            Task.findByIdAndUpdate(req.params.id, {
+              $set: {
+                transactionStatus: result.payment.transaction.status,
+                transactionId: result.payment.transaction.id,
+                currency: result.payment.transaction.currencyIsoCode,
+                donation: req.body.donation
+              }
+            }, {new: true}, (err, doneTask) => {
+              if (err) return res.status(400).send(err);
+              return res.status(200).send(doneTask);
+            });
+          }
         });
-      });
+      } else {
+        return res.status(200).send(task);
+      }
     });
+
+    // Task.findOne({ _id: req.params.id}, (err, task) => {
+    //
+    //   app.paypal.payment.get(task.paymentId, (err, payment) => {
+    //     if (err) res.status(400).send("Could not get transaction");
+    //     getPaypalToken((success, data) => {
+    //       if (!success) return res.status(400).send("Could not authorize paypal action.");
+    //       console.log(data);
+    //
+    //       var refundOpt = {
+    //         url: app.settings.paypal.api_host + "/payments/sale/" + payment.transactions[0].related_resources[0].sale.id + "/refund",
+    //         method: "POST",
+    //         body: {},
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //           "Authorization": "Bearer " + data.access_token
+    //         }
+    //       };
+    //
+    //       var refund;
+    //       if (req.body.donation && req.body.donation > 0) {
+    //         refund = task.deposit - parseInt(req.body.donation, 10);
+    //         refundOpt.body.amount = {
+    //           total: refund,
+    //           currency: task.currency
+    //         };
+    //       }
+    //
+    //       console.log(refundOpt);
+    //
+    //       refundOpt.body = JSON.stringify(refundOpt.body);
+    //
+    //       request(refundOpt, (error, resp, body) => {
+    //         if (error) return res.status(400).send("Could not authorize refund");
+    //         console.log("Response Code: " + resp.statusCode);
+    //         console.log(body);
+    //
+    //         Task.findByIdAndUpdate(req.params.id, {
+    //           $set: {
+    //             status: "completed",
+    //             refund: refund ? refund : task.deposit,
+    //             payerId: ""
+    //           }
+    //         }, {new: true}, (err, task) => {
+    //           if (err) return res.status(400).send(err);
+    //           if (!task) return res.status(404).send("No task found with that ID");
+    //
+    //           return res.status(200).send(task);
+    //         });
+    //       });
+    //     });
+    //   });
+    // });
   });
   // ---------------------------------------------------
 

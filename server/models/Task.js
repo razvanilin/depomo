@@ -27,6 +27,10 @@ var TaskSchema = new mongoose.Schema({
     type: Number,
     min: -1
   },
+  donation: {
+    type: String,
+    default: 0
+  },
   method: {
     type: String
   },
