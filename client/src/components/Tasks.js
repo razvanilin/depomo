@@ -154,7 +154,6 @@ export default Component({
                         </Box>
                         <Box justify="end" align="end">
                           <Menu inline={true} direction="row">
-                            {task.status === 'initial' && <Anchor animateIcon={true} title="The deposit failed to be processed. Click to retry." icon={<Alert colorIndex="warning"/>} onClick={() => { this._onCompletePayment(task._id) }} />}
                             <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} onClick={() => { this.setState({complete: task}); }} />
                             <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} onClick={() => {this._onRemoveTriggered(task._id)}} />
                           </Menu>
@@ -198,6 +197,15 @@ export default Component({
                           <Anchor style={{fontSize:"90%"}} icon={<Clock/>} label={task.due}/>
                         </Box>
                         <Box style={{flexDirection: "row"}} direction="row" justify="center" align="center">
+                          {(task.transactionStatus === 'authorization_expired' ||
+                            task.transactionStatus === 'processor_declined' ||
+                            task.transactionStatus === 'gateway_rejected' ||
+                            task.transactionStatus === 'failed' ||
+                            task.transactionStatus === 'settlement_declined') &&
+                              <Anchor animateIcon={true} title="The deposit failed to be processed. Click to retry."
+                                      icon={<Alert colorIndex="warning"/>}
+                                      onClick={() => { this._onCompletePayment(task._id) }} />}
+
                           {task.refund < task.deposit && <Label title="Helped us with a donation <3">💗</Label>}
                           {task.status === 'completed' && <Label title="Task completed">😎</Label>}
                           {task.status === 'failed' && <Label title="Task not completed in time.">😯</Label>}

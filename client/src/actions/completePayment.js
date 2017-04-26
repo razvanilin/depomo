@@ -3,6 +3,8 @@ const request = require('request');
 import settings from '../settings'
 import cookie from 'react-cookie'
 
+import taskState from '../state/task'
+
 export default function completePayment(taskId, userId, cb) {
   if (!taskId || !cookie.load('token')) cb(false, "Cannot process the request at this time.");
 
@@ -23,6 +25,7 @@ export default function completePayment(taskId, userId, cb) {
     try {
       var responseObj = JSON.parse(body);
       cb(true, body);
+      taskState.addTask(responseObj);
     } catch (e) {
       console.log(e);
       console.log(body);

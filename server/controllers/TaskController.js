@@ -71,7 +71,7 @@ module.exports = (app, route) => {
             transactionStatus: result.payment.transaction.status,
             transactionId: result.payment.transaction.id
           }
-        }, (err, task) => {
+        }, {new: true}, (err, task) => {
 
           if (err) {
             console.log(err);
