@@ -23,7 +23,6 @@ export default function completePayment(taskId, userId, cb) {
     try {
       var responseObj = JSON.parse(body);
       cb(true, body);
-      window.location.href = responseObj.payment.links[1].href;
     } catch (e) {
       console.log(e);
       console.log(body);

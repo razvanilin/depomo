@@ -39,7 +39,6 @@ module.exports = (app, route) => {
       deposit: req.body.deposit,
       due: req.body.due,
       currency: req.body.currency,
-      paymentMethodToken: req.body.defaultPayment.token,
       method: "paypal"
     };
 
@@ -64,12 +63,12 @@ module.exports = (app, route) => {
       if (err) return res.status(400).send(err);
       if (!task) return res.status(404).send("No task found with that ID");
 
-      makePayment(task, (error, payment) => {
+      makePayment(app, task, (error, result) => {
         // update the task document
         Task.findByIdAndUpdate(task._id, {
           $set: {
-            method: payment.payer.payment_method,
-            paymentId: payment.id
+            transactionStatus: result.payment.transaction.status,
+            transactionId: result.payment.transaction.id
           }
         }, (err, task) => {
 
@@ -78,10 +77,7 @@ module.exports = (app, route) => {
             return res.status(400).send(err);
           }
 
-          return res.status(200).send({
-            task: task,
-            payment: payment
-          });
+          return res.status(200).send({task: task});
         });
       });
     });

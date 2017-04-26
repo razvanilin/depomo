@@ -39,7 +39,7 @@ var TaskSchema = new mongoose.Schema({
   transactionId: {
     type: String
   },
-  paymentMethodToken: {
+  transactionStatus: {
     type: String
   },
   status: {

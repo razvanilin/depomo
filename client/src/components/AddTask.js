@@ -63,7 +63,6 @@ export default Component({
         )
       }
     }
-    console.log("wow");
     return (<div></div>);
   },
 

@@ -21,12 +21,12 @@ module.exports = (app) => {
 
     for (var i=0; i<tasks.length; i++) {
       if (moment().diff(moment(tasks[i].due), 'minutes') > 0) {
-        console.log("making payment");
-        makePayment(tasks[i], (success, result) => {
+        makePayment(app, tasks[i], (success, result) => {
           if (!success) {
             Task.update({_id: result.taskId}, {
               $set: {
-                status: "payment_failed"
+                transaction_status: "payment_failed",
+                status: "failed"
               }
             }, (err, task) => {
 
@@ -38,6 +38,7 @@ module.exports = (app) => {
                 $set: {
                   status: "failed",
                   transactionId: result.payment.transaction.id,
+                  transactionStatus: result.payment.transaction.status,
                   currency: result.payment.transaction.currencyIsoCode,
                   refund: -1
                 }
@@ -52,51 +53,4 @@ module.exports = (app) => {
       }
     }
   });
-
-  // Check to see if any tasks should be placed as completed
-  // Task.find({
-  //   status: "paid",
-  // }, (err, tasks) => {
-  //   if (err) {
-  //     console.log(err);
-  //     return false;
-  //   }
-  //
-  //   for (var i=0; i<tasks.length; i++) {
-  //     if (moment().diff(moment(tasks[i].due), 'minutes') > 0) {
-  //       Task.findByIdAndUpdate(tasks[i]._id, {
-  //         $set: {
-  //           status: "failed",
-  //           refund: 0
-  //         }
-  //       }, { new: true }, (err, task) => {
-  //         console.log(task._id + " was processed with: " + task.deposit + " " + task.currency);
-  //       });
-  //     }
-  //   }
-  // });
-
-  // Check to see if any tasks that were not paid for
-  // Task.find({
-  //   status: "initial",
-  // }, (err, tasks) => {
-  //   if (err) {
-  //     console.log(err);
-  //     return false;
-  //   }
-  //
-  //   for (var i=0; i<tasks.length; i++) {
-  //     if (moment().diff(moment(tasks[i].due), 'minutes') > 0) {
-  //       Task.findByIdAndUpdate(tasks[i]._id, {
-  //         $set: {
-  //           status: "failed",
-  //           deposit: 0,
-  //           refund: 0
-  //         }
-  //       }, { new: true }, (err, task) => {
-  //         console.log(task._id + " was processed with: " + task.deposit + " " + task.currency);
-  //       });
-  //     }
-  //   }
-  // });
 }
