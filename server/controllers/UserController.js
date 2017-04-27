@@ -11,7 +11,6 @@ module.exports = (app, route) => {
 
   // prepare the model
   var User = mongoose.model('user', app.models.user);
-  var PaymentMethod = mongoose.model('paymentMethod', app.models.paymentMethod);
 
   /** Route to get all the users **/
   app.get('/user', (req, res) => {

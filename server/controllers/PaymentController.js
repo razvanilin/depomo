@@ -7,7 +7,6 @@ module.exports = (app, route) => {
 
   var Task = mongoose.model('task', app.models.task);
   var User = mongoose.model('user', app.models.user);
-  var PaymentMethod = mongoose.model('paymentMethod', app.models.paymentMethod);
 
   /** Route to authorize a payment **/
   app.post("/payment", (req, res) => {
@@ -171,10 +170,10 @@ module.exports = (app, route) => {
           description: req.body.description || ""
         };
 
-        app.braintree.customer.find(user.customerId, (err, customer) => {
+        userResponse(app, user, (err, response) => {
           if (err) return res.status(400).send("Could not retrieve user information.");
 
-          return res.status(200).send(userResponse(user, customer.paymentMethods));
+          return res.status(200).send(response);
         });
       });
     })
@@ -193,10 +192,11 @@ module.exports = (app, route) => {
       User.findOne({_id: req.params.userId}, (err, user) => {
         if (err || !user) return res.status(400).send("Could not retrieve user information");
 
-        app.braintree.customer.find(user.customerId, (err, customer) => {
-          if (err) return res.status(400).send("Could not retrieve customer information");
 
-          return res.status(200).send(userResponse(user, customer.paymentMethods));
+        userResponse(app, user, (err, response) => {
+          if (err) return res.status(400).send("Could not retrieve user information.");
+
+          return res.status(200).send(response);
         });
       });
     });
