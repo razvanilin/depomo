@@ -1,4 +1,5 @@
 const request = require('request');
+const moment = require('moment');
 
 import { Goto } from 'jumpsuit'
 import settings from '../settings'
@@ -6,6 +7,8 @@ import userState from '../state/user'
 import cookie from 'react-cookie'
 
 export default function socialLogin(profile, cb) {
+
+  profile.timezone = moment().format("Z");
 
   var options = {
     url: settings.api_host + "/social/facebook/login",

@@ -88,7 +88,8 @@ module.exports = (app, route) => {
 
         var newUser = {
           name: req.body.name,
-          email: email
+          email: email,
+          timezone: req.body.timezone
         };
 
         bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {

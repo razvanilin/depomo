@@ -36,6 +36,12 @@ export default Component({
       viewPage: "addTask",
       method: "paypal"
     }
+
+    if (this.props.user.paymentMethods.length < 1) {
+      Goto({
+        path: "/dashboard/tasks/add/payment"
+      });
+    }
   },
 
   componentDidMount() {
@@ -136,7 +142,7 @@ export default Component({
         { window.location.pathname.indexOf('payment') > -1 &&
           <Box>
             <Box justify="start" align="start">
-              <Anchor primary={false} animateIcon={true} icon={<Previous size="medium" />} path={{path: "/dashboard/tasks/add"}} onClick={() => {this.setState({viewPage: "addTask"})}} />
+              {this.props.user.paymentMethods.length > 0 && <Anchor primary={false} animateIcon={true} icon={<Previous size="medium" />} path={{path: "/dashboard/tasks/add"}} onClick={() => {this.setState({viewPage: "addTask"})}} />}
             </Box>
             {this.props.children}
           </Box>
