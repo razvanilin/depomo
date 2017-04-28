@@ -5,7 +5,6 @@ import Layer from 'grommet/components/Layer';
 import LoginForm from 'grommet/components/LoginForm';
 import Box from 'grommet/components/Box';
 import Spinning from 'grommet/components/icons/Spinning';
-import Button from 'grommet/components/Button'
 
 // grommet icons
 import CloseIcon from 'grommet/components/icons/base/Close';
