@@ -53,14 +53,30 @@ module.exports = (app, route) => {
   app.use(passport.session());
 
   /** Route to login using Facebook **/
-  app.get("/oauth/facebook", passport.authenticate('facebook', {scope: 'email'}));
+  app.get("/oauth/facebook", (req, res) => {
+    console.log("asdddda");
+    passport.authenticate('facebook', {scope: 'email'}, (err, user, info) => {
+      console.log(err);
+      console.log("---------------User");
+      console.log(user);
+      console.log("------------------info");
+      console.log(info);
+    });
+  });
 
-  app.get('/oauth/facebook/callback',
-  passport.authenticate('facebook', {}), (req, res) => {
+  app.post('/social/facebook/login', (req, res) => {
+
+    if (!req.body.email || !req.body.accessToken || !req.body.signedRequest || !req.body.id || !req.body.userID) {
+      return res.status(400).send("Invalid Request");
+    }
+
     // check if user already exists and if not create a new one
-    var email = req.user.emails && req.user.emails[0] ? req.user.emails[0].value : "";
+    var email = req.body.email;
     User.findOne({email: email}, (err, user) => {
-      if (err) return cb(err);
+      if (err) {
+        console.log(err);
+        return res.status(400).send(err);
+      }
 
       if (user) {
         userResponse(app, user, (err, response) => {
@@ -71,8 +87,8 @@ module.exports = (app, route) => {
       } else {
 
         var newUser = {
-          name: req.user.displayName,
-          email: req.user.emails[0].value
+          name: req.body.name,
+          email: email
         };
 
         bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
@@ -87,7 +103,7 @@ module.exports = (app, route) => {
               return res.status(400).send(err + "");
             }
             newUser.password = hash;
-            User.create(req.body, (error, user) => {
+            User.create(newUser, (error, user) => {
               if (error) return res.status(400).send(error);
 
               // create a customer on braintree
@@ -97,32 +113,36 @@ module.exports = (app, route) => {
               }, (err, result) => {
                 if (err) {
                   console.log(err);
-                  return;
+                  return res.status(400).send("Could not create a customer ID");
                 }
 
                 if (result && result.customer && result.customer.id) {
-                  User.findByIdAndUpdate(user._id, { $set: { customerId: result.customer.id}}, {new:true}, (err, customer) => {
+                  User.findByIdAndUpdate(user._id, { $set: { customerId: result.customer.id}}, {new:true}, (err, user) => {
                     if (err) console.log(err);
-                    console.log(customer);
+
+                    // add user to the mailchimp list
+                    mailchimp.addUser(user);
+
+                    // send welcome message
+                    mailchimp.sendEmail(app, app.settings.mandrill.welcome_template, user, [{name: "fname", content: user.name}]);
+
+                    userResponse(app, user, (err, response) => {
+                      if (err) {
+                        console.log(err);
+                        return res.status(400).send(err);
+                      }
+                      return res.status(200).send(response);
+                    });
                   });
+                } else {
+                  return res.status(400).send("Could not create a customer ID");
                 }
-              });
-
-              // add user to the mailchimp list
-              mailchimp.addUser(user);
-
-              // send welcome message
-              mailchimp.sendEmail(app, app.settings.mandrill.welcome_template, user, [{name: "fname", content: user.name}]);
-
-              userResponse(app, user, (err, response) => {
-                return res.status(200).send(response);
               });
             });
           });
         });
       }
     });
-
   });
 
   return (req, res, next) => {
