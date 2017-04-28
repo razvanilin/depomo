@@ -8,7 +8,6 @@ if (process.env.NODE_ENV == "production") {
 
 module.exports = function(app, user, cb) {
 
-  console.log(user);
   app.braintree.customer.find(user.customerId, (err, customer) => {
 
     if (err) return cb(err);

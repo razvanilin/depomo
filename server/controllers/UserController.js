@@ -59,7 +59,6 @@ module.exports = (app, route) => {
               if (result && result.customer && result.customer.id) {
                 User.findByIdAndUpdate(user._id, { $set: { customerId: result.customer.id}}, {new:true}, (err, customer) => {
                   if (err) console.log(err);
-                  console.log(customer);
                 });
               }
             });
@@ -111,7 +110,6 @@ module.exports = (app, route) => {
             if (result && result.customer && result.customer.id) {
               User.findByIdAndUpdate(user._id, { $set: { customerId: result.customer.id}}, {new:true}, (err, customer) => {
                 if (err) console.log(err);
-                console.log(customer);
               });
             }
           });
@@ -191,7 +189,6 @@ module.exports = (app, route) => {
         console.log(err);
         return res.status(400).send(err ? err : 'No user with that email');
       }
-      console.log(user);
 
       User.findOne({email: req.body.email}, (err, user) => {
         if (err || !user || user.length < 1) {
@@ -248,7 +245,6 @@ module.exports = (app, route) => {
               ip_pool: "Main Pool"
             }, result => {
               console.log("email sent");
-              console.log(result);
             }, err => {
               console.log("email error");
               console.log(err);

@@ -71,18 +71,10 @@ export default function addTask(task, user, cb) {
 
     if (resp.statusCode !== 200) return cb(false, body);
 
-    var responseObj;
-    try {
-      responseObj = JSON.parse(body);
-      taskState.addTask(responseObj);
-      cb(true);
-      Goto({
-        path: "/dashboard/tasks"
-      });
-    } catch (e) {
-      console.log(e);
-      console.log(body);
-      cb(false, body);
-    }
+    taskState.addTask(task);
+    cb(true);
+    Goto({
+      path: "/dashboard/tasks"
+    });
   });
 }

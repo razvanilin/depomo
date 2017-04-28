@@ -40,7 +40,6 @@ module.exports = (app, route) => {
 
   passport.serializeUser(function(user, cb) {
     console.log("serializeUser");
-    console.log(user);
     cb(null, user);
   });
 

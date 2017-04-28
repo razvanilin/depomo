@@ -90,8 +90,8 @@ export default Component({
           <Heading tag="h2"> Have you finished the task? 🤔</Heading>
           <Box direction="column" pad="medium" justify="center" align="center">
             <FormField label="Would you like to make a donation from your deposit?">
-              <NumberInput max={this.state.complete.deposit} step={0.5} min={0} value={this.state.donation} onChange={event => {this.setState({donation: event.target.value});}} />
-              <input type="range" max={this.state.complete.deposit} step={0.5} min={0} value={this.state.donation} onChange={event => {this.setState({donation: event.target.value});}} />
+              <NumberInput max={parseInt(this.state.complete.deposit,10)} step={0.5} min={0} value={this.state.donation} onChange={event => {this.setState({donation: event.target.value});}} />
+              <input type="range" max={parseInt(this.state.complete.deposit,10)} step={0.5} min={0} value={this.state.donation} onChange={event => {this.setState({donation: event.target.value});}} />
             </FormField>
           </Box>
           <Box direction="row" pad="medium" justify="center" align="center">
@@ -148,7 +148,7 @@ export default Component({
                           <Label truncate={true}>{task.label}</Label>
                         </Box>
                         <Box justify="start" align="start">
-                          <Anchor style={{fontSize:"90%"}} title="Deposit" primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
+                          <Anchor style={{fontSize:"90%"}} title="Deposit at stake" primary={false} icon={<Money/>} label={task.deposit + " " + task.currency} />
                         </Box>
                         <Box justify="start" align="start">
                           <Anchor style={{fontSize:"90%"}} title="Due date" icon={<Clock/>} label={task.due}/>
@@ -189,7 +189,7 @@ export default Component({
                           <Label truncate={true}>{task.label}</Label>
                         </Box>
                         <Box justify="start" align="start">
-                          <Anchor style={{fontSize:"90%"}} primary={false} title="Deposit" icon={<Money/>} label={(task.deposit) + " " + task.currency} />
+                          <Anchor style={{fontSize:"90%"}} primary={false} title={task.status === 'completed' ? "You got the deposit back" : "The deposit was lost"} icon={<Money/>} label={(task.deposit) + " " + task.currency} />
                         </Box>
                         <Box>
                           <Anchor style={{fontSize:"90%"}} primary={false} title="Donation" icon={<Favorite title="Donation"/>} label={(task.refund === -1 ? task.deposit : task.donation) + " " + task.currency} />
