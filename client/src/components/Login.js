@@ -83,15 +83,19 @@ export default Component({
               });
             }}/>
 
-            <Button fill={true} icon={<SocialFacebook colorIndex="neutral-2" />} onClick={() => {this._facebookLogin()}} label="Login with Facebook" />
+            <Box justify="center" align="center" pad="medium">
+              <FacebookLogin
+                appId="627781417431814"
+                autoLoad={true}
+                fields="name,email,picture"
+                onClick={this._facebookLogin}
+                callback={this._facebookResponse}
+                icon={<SocialFacebook/>}
+                textButton=" Login with Facebok"
+                size="small"/>
+            </Box>
           </Box>
-          {/*}<div className="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false"></div>*/}
-          <FacebookLogin
-            appId="627781417431814"
-            autoLoad={true}
-            fields="name,email,picture"
-            onClick={this._facebookLogin}
-            callback={this._facebookResponse} />
+
 
           {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
       </Layer>
