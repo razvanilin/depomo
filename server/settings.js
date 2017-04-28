@@ -18,5 +18,14 @@ module.exports = {
   mandrill: {
     api_key: process.env.MANDRILL_API_KEY,
     welcome_template: "depomo-welcome"
+  },
+  facebook: {
+    client_id: process.env.FACEBOOK_ID,
+    client_secret: process.env.FACEBOOK_SECRET
+  },
+  braintree: {
+    merchant_id: process.env.BRAINTREE_MERCHANT_ID,
+    private_key: process.env.BRAINTREE_PRIVATE_KEY,
+    public_key: process.env.BRAINTREE_PUBLIC_KEY
   }
 }
