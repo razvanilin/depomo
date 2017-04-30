@@ -1,5 +1,5 @@
 const request = require('request');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 import settings from '../settings'
 import cookie from 'react-cookie'
@@ -31,27 +31,7 @@ export default function getTasks(user, cb) {
       // format the dates in a readable format
       for (var i=0; i<tasks.length; i++) {
         if (tasks[i].due) {
-          if (user.timezone.indexOf("+") > -1) {
-            let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("+")+1, user.timezone.indexOf(":")), 10);
-            if (user.timezone.indexOf(":30") > -1) {
-              modifier += 0.5;
-            } else if (user.timezone.indexOf(":45") > -1) {
-              modifier += 0.75;
-            }
-
-            tasks[i].due = moment(tasks[i].due).add(modifier, "hours").format("M/D/YYYY h:mm a");
-          } else if (user.timezone.indexOf("-") > -1) {
-            let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("-")+1, user.timezone.indexOf(":")), 10);
-            if (user.timezone.indexOf(":30") > -1) {
-              modifier += 0.5;
-            } else if (user.timezone.indexOf(":45") > -1) {
-              modifier += 0.75;
-            }
-
-            tasks[i].due = moment(tasks[i].due).subtract(modifier, "hours").format("M/D/YYYY h:mm a");
-          }
-          // console.log(moment(tasks[i].due).format("M/D/YYYY h:mm a"));
-          // tasks[i].due = moment(tasks[i].due).format("M/D/YYYY h:mm a");
+          tasks[i].due = moment.tz(tasks[i].due, user.timezone).format("M/D/YYYY h:mm a");
         }
       }
 

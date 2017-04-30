@@ -2,7 +2,7 @@ const checkAccess = require('../modules/checkAccess');
 const verifyOwner = require('../modules/verifyOwner');
 const mongoose = require('mongoose');
 const request = require('request');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const getPaypalToken = require('../modules/getPaypalToken');
 const makePayment = require('../modules/makePayment');
 
@@ -32,27 +32,35 @@ module.exports = (app, route) => {
       return res.status(400).send("Request body is incomplete. (_id, label, due, deposit, currency)");
     }
 
-    // prepare the document
-    var taskDoc = {
-      owner: req.body._id,
-      label: req.body.label,
-      deposit: req.body.deposit,
-      due: req.body.due,
-      currency: req.body.currency,
-      method: "paypal"
-    };
+    User.findOne({_id: req.body._id}, (err, user) => {
+      if (err) return res.status(400).send(err);
+      if (!user) return res.status(404).send("Could not retrieve the user information");
 
-    if (req.body.defaultPayment.cardType) taskDoc.method = "card";
+      // prepare the document
+      var taskDoc = {
+        owner: req.body._id,
+        label: req.body.label,
+        deposit: req.body.deposit,
+        due: req.body.due,
+        currency: req.body.currency,
+        method: "paypal"
+      };
 
-    Task.create(taskDoc, (error, task) => {
-      if (error) return res.status(400).send(error);
-      try {
-        return res.status(200).send(task);
-      } catch (e) {
-        console.log(e);
-        console.log(task);
-        return res.status(400).send("Error parsing the response");
-      }
+      // transform the date to UTC
+      //taskDoc.due = moment.tz(taskDoc.due, "M/D/YYYY h:mm a", user.timezone).utc().format();
+
+      if (req.body.defaultPayment.cardType) taskDoc.method = "card";
+
+      Task.create(taskDoc, (error, task) => {
+        if (error) return res.status(400).send(error);
+        try {
+          return res.status(200).send(task);
+        } catch (e) {
+          console.log(e);
+          console.log(task);
+          return res.status(400).send("Error parsing the response");
+        }
+      });
     });
   });
   // ---------------------------------------------------

@@ -1,5 +1,5 @@
 const request = require('request');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 import { Goto } from 'jumpsuit'
 import settings from '../settings'
@@ -11,7 +11,7 @@ export default function signup(user, cb) {
   }
 
   // get the default timezone
-  user.timezone = moment().format("Z");
+  user.timezone = moment.tz.guess();
 
   let signupOpt = {
     url: settings.api_host + "/user",

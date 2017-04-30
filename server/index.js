@@ -7,7 +7,7 @@ const _ = require('lodash');
 const cors = require('cors');
 const paypal = require('paypal-rest-sdk');
 const checkTasks = require('./modules/checkTasks');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const mandrill = require('mandrill-api/mandrill');
 const braintreeSdk = require('braintree');
 

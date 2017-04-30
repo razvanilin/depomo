@@ -9,6 +9,11 @@ export default function changeProfile(profile, userId, cb) {
   if (!cookie.load('token')) return cb(false, "Invalid token");
   if (!profile) return cb(false, "No profile information found");
 
+  if (profile.timezone) {
+    profile.timezone = profile.timezone.substring(0, profile.timezone.indexOf(" ("));
+    profile.timezone = profile.timezone.replace(" ", "_");
+  }
+
   var profileOpt = {
     url: settings.api_host + "/user/" + userId + "/profile",
     method: "PUT",
@@ -33,7 +38,7 @@ export default function changeProfile(profile, userId, cb) {
 
     // set new user in the state
     userState.set(newUser);
-    
+
     return cb(true, newUser);
   });
 }

@@ -8,7 +8,7 @@ import cookie from 'react-cookie'
 
 export default function socialLogin(profile, cb) {
 
-  profile.timezone = moment().format("Z");
+  profile.timezone = moment.tz.guess();
 
   var options = {
     url: settings.api_host + "/social/facebook/login",

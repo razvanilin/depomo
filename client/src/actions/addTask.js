@@ -1,10 +1,9 @@
 const request = require('request');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 import { Goto } from 'jumpsuit'
 import cookie from 'react-cookie'
 
-import taskState from '../state/task'
 import settings from '../settings'
 import getTasks from './getTasks'
 
@@ -25,36 +24,10 @@ export default function addTask(task, user, cb) {
   task._id = user._id;
 
   // format the date into the server format UTC
-  //task.due = moment(task.due, "M/D/YYYY h:mm a").format();
-  var taskDue;
-  // take the timezone into account
-  try {
-    if (user.timezone.indexOf("+") > -1) {
-      let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("+")+1, user.timezone.indexOf(":")), 10);
-      if (user.timezone.indexOf(":30") > -1) {
-        modifier += 0.5;
-      } else if (user.timezone.indexOf(":45") > -1) {
-        modifier += 0.75;
-      }
-
-      taskDue = moment(task.due, "M/D/YYYY h:mm a").subtract(modifier, "hours").format();
-    } else if (user.timezone.indexOf("-") > -1) {
-      let modifier = parseInt(user.timezone.substring(user.timezone.indexOf("-")+1, user.timezone.indexOf(":")), 10);
-      if (user.timezone.indexOf(":30") > -1) {
-        modifier += 0.5;
-      } else if (user.timezone.indexOf(":45") > -1) {
-        modifier += 0.75;
-      }
-
-      taskDue = moment(task.due, "M/D/YYYY h:mm a").add(modifier, "hours").format();
-    }
-  } catch(e) {
-    console.log(e);
-    return cb(false, "There was an error while processing the date due");
-  }
+  task.due = moment.tz(task.due, "M/D/YYYY h:mm a", user.timezone).utc().format();
 
   var requestBody = JSON.parse(JSON.stringify(task));
-  requestBody.due = taskDue;
+  // requestBody.due = taskDue;
 
   var taskOpt = {
     url: settings.api_host + "/task",
