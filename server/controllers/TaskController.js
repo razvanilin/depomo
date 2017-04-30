@@ -104,6 +104,13 @@ module.exports = (app, route) => {
         status: "completed"
       }
     }, {new: true}, (err, task) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send(err);
+      }
+
+      if (!task) return res.status(404).send("No task was found");
+
       if (req.body.donation && req.body.donation > 0) {
         task.deposit = req.body.donation;
 
