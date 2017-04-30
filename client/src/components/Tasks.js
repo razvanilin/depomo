@@ -67,6 +67,8 @@ export default Component({
   },
 
   _onTaskCompleted(taskId) {
+    // refresh the selected task
+    this.setState({complete: ""});
     completeTask(taskId, this.state.donation, this.props.user._id, (success, data) => {
       if (!success) {
         this.setState({completeError: true});

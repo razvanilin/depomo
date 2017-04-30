@@ -6,6 +6,7 @@ import cookie from 'react-cookie'
 
 import taskState from '../state/task'
 import settings from '../settings'
+import getTasks from './getTasks'
 
 export default function addTask(task, user, cb) {
   if (!task || !task.due || !task.label || !task.deposit || !task.currency) {
@@ -71,10 +72,12 @@ export default function addTask(task, user, cb) {
 
     if (resp.statusCode !== 200) return cb(false, body);
 
-    taskState.addTask(task);
-    cb(true);
-    Goto({
-      path: "/dashboard/tasks"
+    //taskState.addTask(task);
+    getTasks(user, (success, message) => {
+      cb(true);
+      Goto({
+        path: "/dashboard/tasks"
+      });
     });
   });
 }
