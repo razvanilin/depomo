@@ -32,6 +32,12 @@ module.exports = (app, route) => {
       return res.status(400).send("Request body is incomplete. (_id, label, due, deposit, currency)");
     }
 
+    var taskDue = moment(req.body.due);
+
+    if (moment().diff(taskDue, 'minutes') > 0) {
+      return res.status(400).send("Cannot set a date in the past");
+    }
+
     User.findOne({_id: req.body._id}, (err, user) => {
       if (err) return res.status(400).send(err);
       if (!user) return res.status(404).send("Could not retrieve the user information");
