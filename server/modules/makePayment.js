@@ -20,6 +20,7 @@ module.exports = (app, task, cb) => {
     if (!user.customerId) return cb(false, {error: "User does not have a Braintree customer ID"});
 
     app.braintree.customer.find(user.customerId, (err, customer) => {
+      if (!err || !customer) return cb(false, {error: "Could not retrieve the customer details"});
       if (!customer.paymentMethods) return cb(false, {error: "Could not retrieve customer payment methods"});
 
       for (var i=0; i<customer.paymentMethods.length; i++) {
