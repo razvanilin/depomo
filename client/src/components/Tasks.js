@@ -112,7 +112,7 @@ export default Component({
   _onTaskRemoved() {
     removeTask(this.state.deleteSelected, this.props.user._id, (success, data) => {
       if (!success) {
-        this.setState({removeError: true});
+        this.setState({removeError: data});
       } else {
         this.setState({removeSuccess: true});
 
@@ -251,7 +251,7 @@ export default Component({
 
         {this.state.removeError &&
           <Toast status='critical' onClose={ () => { this.setState({removeError: false}) }}>
-            Oh no 🙀 There was an error with removing the task. Please try again 🙏
+            Oh no 🙀 {this.state.removeError}
           </Toast>
         }
 

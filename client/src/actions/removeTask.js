@@ -18,7 +18,8 @@ export default function removeTask(taskId, userId, cb) {
 
   request(requestOpt, (error, resp, body) => {
     if (error) return cb(false, error);
-
+    if (resp.statusCode !== 200) return cb(false, body);
+    
     return cb(true, body);
   });
 }

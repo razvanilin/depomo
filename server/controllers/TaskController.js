@@ -162,10 +162,20 @@ module.exports = (app, route) => {
 
   /** ROUTE to remove a task **/
   app.put('/task/:id/remove', (req, res) => {
-    Task.findByIdAndRemove(req.params.id, err => {
-      if (err) return res.status(400).send(err);
+    Task.findOne({_id: req.params.id}, (err, task) => {
+      if (err || !task) {
+        return res.status(400).send("Could not retrieve the task information");
+      }
 
-      return res.status(200).send("Task removed");
+      if (moment().diff(moment(task.createdAt), 'minutes') > 5) {
+        return res.status(400).send("More than 5 minutes have past since the task was created. The task cannot be removed anymore");
+      }
+
+      Task.findByIdAndRemove(req.params.id, err => {
+        if (err) return res.status(400).send(err);
+
+        return res.status(200).send("Task removed");
+      });
     });
   });
   // ---------------------------------------------------
