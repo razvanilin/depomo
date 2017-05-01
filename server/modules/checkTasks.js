@@ -20,12 +20,13 @@ module.exports = (app) => {
     }
 
     for (var i=0; i<tasks.length; i++) {
-      if (moment().diff(moment(tasks[i].due), 'minutes') > 0) {
+      if (moment.tz().diff(moment(tasks[i].due), 'minutes') > 0) {
+        console.log("making payment for: " + tasks[i]._id);
         makePayment(app, tasks[i], (success, result) => {
           if (!success) {
             Task.update({_id: result.taskId}, {
               $set: {
-                transaction_status: "payment_failed",
+                transactionStatus: "payment_failed",
                 status: "failed"
               }
             }, (err, task) => {

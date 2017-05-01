@@ -204,7 +204,8 @@ export default Component({
                             task.transactionStatus === 'processor_declined' ||
                             task.transactionStatus === 'gateway_rejected' ||
                             task.transactionStatus === 'failed' ||
-                            task.transactionStatus === 'settlement_declined') &&
+                            task.transactionStatus === 'settlement_declined' ||
+                            task.transactionStatus === 'payment_failed') &&
                               <Anchor animateIcon={true} title="The deposit failed to be processed. Click to retry."
                                       icon={<Alert colorIndex="warning"/>}
                                       onClick={() => { this._onCompletePayment(task._id) }} />}

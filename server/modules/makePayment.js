@@ -15,13 +15,15 @@ module.exports = (app, task, cb) => {
   // get the owner information and then the default payment associated with the user
   var defaultToken;
   User.findOne({_id: task.owner}, (err, user) => {
-    if (err || !user) return cb(false, {error: "Could not retrieve user"});
+    if (err || !user) return cb(false, {error: "Could not retrieve user", taskId: task._id});
 
-    if (!user.customerId) return cb(false, {error: "User does not have a Braintree customer ID"});
-
+    if (!user.customerId) return cb(false, {error: "User does not have a Braintree customer ID", taskId: task._id});
+    console.log(user.customerId);
     app.braintree.customer.find(user.customerId, (err, customer) => {
-      if (!err || !customer) return cb(false, {error: "Could not retrieve the customer details"});
-      if (!customer.paymentMethods) return cb(false, {error: "Could not retrieve customer payment methods"});
+      if (err || !customer){
+        return cb(false, {error: "Could not retrieve the customer details", taskId: task._id});
+      }
+      if (!customer.paymentMethods) return cb(false, {error: "Could not retrieve customer payment methods", taskId: task._id});
 
       for (var i=0; i<customer.paymentMethods.length; i++) {
         if (customer.paymentMethods[i].default) {
