@@ -1,5 +1,5 @@
 import React from 'react';
-import { Component, Link } from 'jumpsuit';
+import { Component, Goto } from 'jumpsuit';
 // grommet
 import Layer from 'grommet/components/Layer';
 import Box from 'grommet/components/Box';
@@ -11,12 +11,16 @@ import Heading from 'grommet/components/Heading';
 import Footer from 'grommet/components/Footer';
 import Button from 'grommet/components/Button';
 import CheckBox from 'grommet/components/CheckBox';
-import Columns from 'grommet/components/Columns';
 import Label from 'grommet/components/Label';
 import Spinning from 'grommet/components/icons/Spinning';
 
-// grommet icons
-import CloseIcon from 'grommet/components/icons/base/Close';
+import SocialFacebook from 'grommet/components/icons/base/SocialFacebook'
+import SocialGoogle from 'grommet/components/icons/base/PlatformGoogle'
+
+import socialLogin from '../actions/socialLogin'
+
+import FacebookLogin from 'react-facebook-login'
+import GoogleLogin from 'react-google-login'
 
 // actions
 import signup from '../actions/signup';
@@ -34,13 +38,30 @@ export default Component({
       agreeError: ""
     };
   },
+
+  _facebookLogin() {
+    this.setState({loading: true});
+  },
+
+  _facebookResponse(response) {
+    socialLogin(response, (err, result) => {
+      this.setState({loading: false});
+    });
+  },
+
+  _googleLogin (response) {
+    this.setState({loading: true});
+    var tempResponse = response.profileObj;
+    tempResponse.accessToken = response.accessToken;
+    socialLogin(tempResponse, (err, result) => {
+      this.setState({loading: false})
+    });
+  },
+
   render() {
     return(
-      <Layer closer={true} flush={true}>
-        <Box pad="medium" align="end" justify="start" alignContent="end">
-          <Link to="/"><CloseIcon /></Link>
-        </Box>
-        <Box align="center" justify="center">
+      <Layer closer={true} flush={true} onClose={() => {Goto({path:"/"})}}>
+        <Box direction="column">
           <Form pad="medium" onSubmit={e => {
             e.preventDefault();
 
@@ -100,8 +121,7 @@ export default Component({
                 onChange={event => {this.setState({agree: event.target.value})}} />
             </FormField>
 
-            <Footer pad={{"vertical": "medium"}} justify="center">
-              <Columns justify="center">
+            <Footer pad={{"vertical": "medium"}} justify="center" direction="column">
                 <Box justify="center">
                   <Button label='Join depomo'
                     type='submit'
@@ -112,12 +132,37 @@ export default Component({
 
                   </Button>
                 </Box>
-
                 {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
                 {this.state.errorMessage && <Label style={{color:'red'}}>{this.state.errorMessage}</Label>}
-              </Columns>
             </Footer>
           </Form>
+
+          <Box justify="center" align="center" colorIndex="light-2">
+            <Box justify="center" align="center" margin={{top:"medium"}}>
+              <FacebookLogin
+                appId="627781417431814"
+                cssClass="something"
+                autoLoad={true}
+                style={{width:"100%"}}
+                fields="name,email,picture"
+                onClick={this._facebookLogin}
+                callback={this._facebookResponse}
+                disableMobileRedirect={true}
+                icon={<SocialFacebook/>}
+                textButton=" Sign up with Facebok"
+                size="small"/>
+            </Box>
+
+            <Box justify="center" align="center" pad="small">
+              <GoogleLogin
+                tag="span"
+                style={{width:"100%"}}
+                clientId="1038035792459-rqukqe4nbf5ksih8i1qlr0ak4689v0ff.apps.googleusercontent.com"
+                onSuccess={this._googleLogin}>
+                <Button full={true} label="Sign up with Google" icon={<SocialGoogle />} onClick={()=>{console.log("google");}}/>
+              </GoogleLogin>
+            </Box>
+          </Box>
         </Box>
       </Layer>
     )

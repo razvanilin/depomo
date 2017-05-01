@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Component } from 'jumpsuit';
+import { Goto, Link, Component } from 'jumpsuit';
 // grommet
 import Layer from 'grommet/components/Layer';
 import LoginForm from 'grommet/components/LoginForm';
@@ -8,7 +8,6 @@ import Spinning from 'grommet/components/icons/Spinning';
 import Button from 'grommet/components/Button'
 
 // grommet icons
-import CloseIcon from 'grommet/components/icons/base/Close';
 import SocialFacebook from 'grommet/components/icons/base/SocialFacebook'
 import SocialGoogle from 'grommet/components/icons/base/PlatformGoogle'
 
@@ -52,10 +51,7 @@ export default Component({
 
   render() {
     return(
-      <Layer closer={true} flush={true}>
-        <Box pad="medium" align="end" justify="start" alignContent="end">
-          <Link to="/"><CloseIcon /></Link>
-        </Box>
+      <Layer closer={true} flush={true} onClose={() => {Goto({path:"/"})}}>
         <Box direction="column">
           <LoginForm
             title='Login'
@@ -93,28 +89,30 @@ export default Component({
               });
             }}/>
 
-            <Box justify="center" align="center" pad="small">
-              <FacebookLogin
-                appId="627781417431814"
-                cssClass="something"
-                autoLoad={true}
-                fields="name,email,picture"
-                onClick={this._facebookLogin}
-                callback={this._facebookResponse}
-                disableMobileRedirect={true}
-                icon={<SocialFacebook/>}
-                textButton=" Login with Facebok"
-                size="small"/>
-            </Box>
+            <Box justify="center" align="center" colorIndex="light-2">
+              <Box justify="center" align="center" margin={{top:"medium"}}>
+                <FacebookLogin
+                  appId="627781417431814"
+                  cssClass="something"
+                  autoLoad={true}
+                  fields="name,email,picture"
+                  onClick={this._facebookLogin}
+                  callback={this._facebookResponse}
+                  disableMobileRedirect={true}
+                  icon={<SocialFacebook/>}
+                  textButton=" Login with Facebok"
+                  size="small"/>
+              </Box>
 
-            <Box justify="center" align="center" pad="medium">
-              <GoogleLogin
-                tag="span"
-                style={{}}
-                clientId="1038035792459-rqukqe4nbf5ksih8i1qlr0ak4689v0ff.apps.googleusercontent.com"
-                onSuccess={this._googleLogin}>
-                <Button label="Login with Google" icon={<SocialGoogle />} onClick={()=>{console.log("google");}}/>
-              </GoogleLogin>
+              <Box justify="center" align="center" pad="medium">
+                <GoogleLogin
+                  tag="span"
+                  style={{}}
+                  clientId="1038035792459-rqukqe4nbf5ksih8i1qlr0ak4689v0ff.apps.googleusercontent.com"
+                  onSuccess={this._googleLogin}>
+                  <Button label="Login with Google" icon={<SocialGoogle />} onClick={()=>{console.log("google");}}/>
+                </GoogleLogin>
+              </Box>
             </Box>
           </Box>
 
