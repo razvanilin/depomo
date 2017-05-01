@@ -89,6 +89,7 @@ export default Component({
                 fields="name,email,picture"
                 onClick={this._facebookLogin}
                 callback={this._facebookResponse}
+                disableMobileRedirect={true}
                 icon={<SocialFacebook/>}
                 textButton=" Login with Facebok"
                 size="small"/>
