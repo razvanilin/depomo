@@ -1,5 +1,6 @@
 import React from 'react'
 import { Component, Link } from 'jumpsuit';
+const moment = require('moment-timezone');
 
 import Section from 'grommet/components/Section'
 import Header from 'grommet/components/Header'
@@ -158,7 +159,10 @@ export default Component({
                         <Box justify="end" align="end">
                           <Menu inline={true} direction="row">
                             <Anchor animateIcon={true} icon={<Checkmark colorIndex="ok"/>} onClick={() => { this.setState({complete: task}); }} />
-                            <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} onClick={() => {this._onRemoveTriggered(task._id)}} />
+                            {/* Check if more than 5 minutes passed from creation*/
+                              moment.tz().utc().diff(moment(task.createdAt), 'minutes') < 5 &&
+                              <Anchor animateIcon={true} icon={<Trash colorIndex="critical"/>} onClick={() => {this._onRemoveTriggered(task._id)}} />
+                            }
                           </Menu>
                         </Box>
                     </ListItem>
