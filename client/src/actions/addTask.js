@@ -20,6 +20,11 @@ export default function addTask(task, user, cb) {
     });
   }
 
+  // check if date is in the past
+  if (moment.tz(user.timezone).diff(moment.tz(task.due, "M/D/YYYY h:mm a", user.timezone), 'minutes') > 0) {
+    return cb(false, "Cannot select a date in the past");
+  }
+
   // add the user ID to the request body
   task._id = user._id;
 

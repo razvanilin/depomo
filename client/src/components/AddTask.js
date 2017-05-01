@@ -83,6 +83,7 @@ export default Component({
             this.setState({loading: true});
             this.setState({labelError: ""});
             this.setState({dueError: ""});
+            this.setState({errorMessage: ""});
 
             if (!this.state.label) this.setState({labelError: "Please add a label to the task"});
             if (!this.state.due) this.setState({dueError: "Please add a due date"});
@@ -130,7 +131,8 @@ export default Component({
                     style={{width:"100%"}}
                     onClick={function() { console.log("track");}}>
                   </Button>
-                  {this.state.loading && <Box direction="column" justify="center" align="center" pad="small"><Label>Redirecting you to PayPal</Label><Spinning /></Box>}
+                  {this.state.errorMessage && <Label style={{color:'red'}}>{this.state.errorMessage}</Label>}
+                  {this.state.loading && <Box direction="column" justify="center" align="center" pad="small"><Spinning /></Box>}
                 </Box>
 
             </Footer>
