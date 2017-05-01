@@ -5,14 +5,17 @@ import Layer from 'grommet/components/Layer';
 import LoginForm from 'grommet/components/LoginForm';
 import Box from 'grommet/components/Box';
 import Spinning from 'grommet/components/icons/Spinning';
+import Button from 'grommet/components/Button'
 
 // grommet icons
 import CloseIcon from 'grommet/components/icons/base/Close';
 import SocialFacebook from 'grommet/components/icons/base/SocialFacebook'
+import SocialGoogle from 'grommet/components/icons/base/PlatformGoogle'
 
 import socialLogin from '../actions/socialLogin'
 
 import FacebookLogin from 'react-facebook-login'
+import GoogleLogin from 'react-google-login'
 
 // actions
 import login from '../actions/login'
@@ -29,13 +32,21 @@ export default Component({
   },
 
   _facebookLogin() {
-    this.setState({facebookLoading: true});
+    this.setState({loading: true});
   },
 
   _facebookResponse(response) {
     socialLogin(response, (err, result) => {
-      this.setState({facebookLoading: false});
-      console.log(response);
+      this.setState({loading: false});
+    });
+  },
+
+  _googleLogin (response) {
+    this.setState({loading: true});
+    var tempResponse = response.profileObj;
+    tempResponse.accessToken = response.accessToken;
+    socialLogin(tempResponse, (err, result) => {
+      this.setState({loading: false})
     });
   },
 
@@ -82,9 +93,10 @@ export default Component({
               });
             }}/>
 
-            <Box justify="center" align="center" pad="medium">
+            <Box justify="center" align="center" pad="small">
               <FacebookLogin
                 appId="627781417431814"
+                cssClass="something"
                 autoLoad={true}
                 fields="name,email,picture"
                 onClick={this._facebookLogin}
@@ -93,6 +105,16 @@ export default Component({
                 icon={<SocialFacebook/>}
                 textButton=" Login with Facebok"
                 size="small"/>
+            </Box>
+
+            <Box justify="center" align="center" pad="medium">
+              <GoogleLogin
+                tag="span"
+                style={{}}
+                clientId="1038035792459-rqukqe4nbf5ksih8i1qlr0ak4689v0ff.apps.googleusercontent.com"
+                onSuccess={this._googleLogin}>
+                <Button label="Login with Google" icon={<SocialGoogle />} onClick={()=>{console.log("google");}}/>
+              </GoogleLogin>
             </Box>
           </Box>
 

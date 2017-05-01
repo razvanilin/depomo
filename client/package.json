@@ -58,6 +58,7 @@
     "react-cookie": "^1.0.4",
     "react-dom": "^15.4.2",
     "react-facebook-login": "^3.5.0",
+    "react-google-login": "^2.8.9",
     "request": "^2.81.0"
   },
   "scripts": {

@@ -65,7 +65,7 @@ module.exports = (app, route) => {
 
   app.post('/social/facebook/login', (req, res) => {
 
-    if (!req.body.email || !req.body.accessToken || !req.body.signedRequest || !req.body.id || !req.body.userID) {
+    if (!req.body.email || !req.body.accessToken) {
       return res.status(400).send("Invalid Request");
     }
 
