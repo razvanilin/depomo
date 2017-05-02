@@ -11,7 +11,7 @@ export default function socialLogin(profile, cb) {
   profile.timezone = moment.tz.guess();
 
   var options = {
-    url: settings.api_host + "/social/facebook/login",
+    url: settings.api_host + "/social/login",
     method: "POST",
     form: profile,
     headers: {

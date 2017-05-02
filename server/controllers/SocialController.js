@@ -1,5 +1,3 @@
-const passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
 const mongoose = require('mongoose');
 const userResponse = require('../modules/userResponse');
 const uuid = require('uuid/v4');
@@ -12,58 +10,7 @@ module.exports = (app, route) => {
 
   User = mongoose.model('user', app.models.user);
 
-  passport.use(new FacebookStrategy({
-    clientID: app.settings.facebook.client_id,
-    clientSecret: app.settings.facebook.client_secret,
-    callbackURL: app.settings.host + "/login/facebook",
-    profileFields: ['email', 'displayName']
-  }, (accessToken, refreshToken, profile, cb) => {
-    // console.log(profile);
-
-    // check if user already exists and if not create a new one
-    var email = profile.emails && profile.emails[0] ? profile.emails[0].value : "";
-    User.findOne({email: email}, (err, user) => {
-      if (err) return cb(err);
-
-      if (user) {
-        userResponse(app, user, (err, response) => {
-          return cb(null, response);
-        });
-      } else {
-        console.log("lol");
-        return cb("error");
-      }
-    });
-
-    return cb(null, profile);
-  }));
-
-  passport.serializeUser(function(user, cb) {
-    console.log("serializeUser");
-    cb(null, user);
-  });
-
-  passport.deserializeUser(function(obj, cb) {
-    console.log("deserializeUser");
-    cb(null, obj);
-  });
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  /** Route to login using Facebook **/
-  app.get("/oauth/facebook", (req, res) => {
-    console.log("asdddda");
-    passport.authenticate('facebook', {scope: 'email'}, (err, user, info) => {
-      console.log(err);
-      console.log("---------------User");
-      console.log(user);
-      console.log("------------------info");
-      console.log(info);
-    });
-  });
-
-  app.post('/social/facebook/login', (req, res) => {
+  app.post('/social/login', (req, res) => {
 
     if (!req.body.email || !req.body.accessToken) {
       return res.status(400).send("Invalid Request");
