@@ -91,6 +91,14 @@ module.exports = (app, route) => {
       }
     });
   });
+  // ---------------------------------------------------
+
+  /** Route to connect Google calendar and create a push notification channel **/
+  app.post("/social/connect/google", (req, res) => {
+    
+  });
+  // ---------------------------------------------------
+
 
   return (req, res, next) => {
     next();

@@ -25,9 +25,11 @@ app.use(cors());
 
 // get the environment specific settings
 if (process.env.NODE_ENV == "production") {
-  app.settings = require('./settings');
+  app.settings = require('../settings');
+} else if (process.env.NODE_ENV == "staging") {
+  app.settings = require('../settings-staging');
 } else {
-  app.settings = require('./settings-dev');
+  app.settings = require('../settings-dev');
 }
 
 app.get('/', function(req, res, next) {

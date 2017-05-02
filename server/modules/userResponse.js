@@ -1,7 +1,10 @@
 const jwt = require('jsonwebtoken');
+// get the environment specific settings
 var settings;
 if (process.env.NODE_ENV == "production") {
   settings = require('../settings');
+} else if (process.env.NODE_ENV == "staging") {
+  settings = require('../settings-staging');
 } else {
   settings = require('../settings-dev');
 }

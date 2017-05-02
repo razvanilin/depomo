@@ -180,6 +180,11 @@ module.exports = (app, route) => {
   });
   // ---------------------------------------------------
 
+  /** Webhook route for the Google calendar **/
+  app.post("/task/webhook/google", (req, res) => {
+    console.log(req.body);
+  });
+  // ---------------------------------------------------
 
   return (req, res, next) => {
     next();
