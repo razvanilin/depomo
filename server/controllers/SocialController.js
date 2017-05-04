@@ -173,8 +173,6 @@ module.exports = (app, route) => {
         request(options, (error, resp, body) => {
           if (error) return res.status(400).send(error);
           console.log("done");
-          console.log(body);
-
           return res.status(resp.statusCode).send(body);
         });
       });
