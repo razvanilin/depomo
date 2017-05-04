@@ -31,6 +31,12 @@ var UserSchema = new mongoose.Schema({
   },
   preferedPayment: {
     type: String
+  },
+  googleAccessToken: {
+    type: String
+  },
+  googleRefreshToken: {
+    type: String
   }
 });
 

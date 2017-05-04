@@ -10,6 +10,8 @@ const checkTasks = require('./modules/checkTasks');
 const moment = require('moment-timezone');
 const mandrill = require('mandrill-api/mandrill');
 const braintreeSdk = require('braintree');
+const google = require('googleapis');
+var googleOauth = google.auth.OAuth2;
 
 var CronJob = require('cron').CronJob;
 
@@ -25,11 +27,11 @@ app.use(cors());
 
 // get the environment specific settings
 if (process.env.NODE_ENV == "production") {
-  app.settings = require('../settings');
+  app.settings = require('./settings');
 } else if (process.env.NODE_ENV == "staging") {
-  app.settings = require('../settings-staging');
+  app.settings = require('./settings-staging');
 } else {
-  app.settings = require('../settings-dev');
+  app.settings = require('./settings-dev');
 }
 
 app.get('/', function(req, res, next) {
@@ -51,6 +53,13 @@ app.braintree = braintreeSdk.connect({
     publicKey:    app.settings.braintree.public_key,
     privateKey:   app.settings.braintree.private_key
 });
+
+// configure google
+app.google = new googleOauth(
+  app.settings.google.clientId,
+  app.settings.google.clientSecret,
+  app.settings.google.redirectUrl
+);
 
 // configure mandrill
 app.mandrill = new mandrill.Mandrill(app.settings.mandrill.api_key);

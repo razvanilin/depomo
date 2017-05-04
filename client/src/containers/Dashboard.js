@@ -23,8 +23,12 @@ import PlanIcon from 'grommet/components/icons/base/Plan'
 import CloseIcon from 'grommet/components/icons/base/Close'
 import MenuIcon from 'grommet/components/icons/base/Menu'
 
+import GoogleLogin from 'react-google-login'
+import SocialGoogle from 'grommet/components/icons/base/PlatformGoogle'
+
 import login from '../actions/login'
 import logout from '../actions/logout'
+import connectGoogleCalendar from '../actions/connectGoogleCalendar'
 
 export default Component({
 
@@ -47,6 +51,14 @@ export default Component({
     }
 
     this.state = {showMenu: true, responsive: 'multiple'};
+  },
+
+  _onGoogleResponse(response) {
+    console.log(response);
+    connectGoogleCalendar(this.props.user, response.profileObj, (err, success) => {
+      if (err) console.error(err);
+      console.log(success);
+    });
   },
 
   _onResponsive(responsive) {
@@ -116,6 +128,14 @@ export default Component({
             <Anchor label="Profile" icon={<UserIcon />} animateIcon={true} />
             <Anchor label="History" icon={<HistoryIcon />} animateIcon={true} />
             <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true} />
+            <GoogleLogin
+              tag="span"
+              scope="https://www.googleapis.com/auth/calendar.readonly"
+              style={{width:"100%"}}
+              clientId="1038035792459-rqukqe4nbf5ksih8i1qlr0ak4689v0ff.apps.googleusercontent.com"
+              onSuccess={this._onGoogleResponse}>
+              <Button label="Connect to Google Calendar" icon={<SocialGoogle />} onClick={()=>{console.log("google");}}/>
+            </GoogleLogin>
           </Menu>
         </Box>
 

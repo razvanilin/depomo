@@ -50,6 +50,7 @@ export default Component({
   },
 
   _googleLogin (response) {
+    console.log(response);
     this.setState({loading: true});
     var tempResponse = response.profileObj;
     tempResponse.accessToken = response.accessToken;
@@ -156,6 +157,7 @@ export default Component({
             <Box justify="center" align="center" pad="small">
               <GoogleLogin
                 tag="span"
+                scope="profile email https://www.googleapis.com/auth/calendar.readonly"
                 style={{width:"100%"}}
                 clientId="1038035792459-rqukqe4nbf5ksih8i1qlr0ak4689v0ff.apps.googleusercontent.com"
                 onSuccess={this._googleLogin}>
