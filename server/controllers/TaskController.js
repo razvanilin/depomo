@@ -182,12 +182,7 @@ module.exports = (app, route) => {
 
   /** Webhook route for the Google calendar **/
   app.post("/task/webhook/google", (req, res) => {
-    console.log(req.headers);
-
     if (!req.get('x-goog-channel-id')) return res.status(400).send("request is missing headers.");
-
-    console.log(req.get('x-goog-channel-id'));
-    console.log(req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + req.get('x-goog-resource-id'));
 
     User.findOne({googleNotificationChannel: req.get('x-goog-channel-id')}, (err, user) => {
       if (err) {
@@ -197,7 +192,20 @@ module.exports = (app, route) => {
 
       if (!user) {
         console.log("No user");
-        return res.status(404).send("Cannot retrieve user information");
+
+        // attempt to delete the channel if no user is using it
+        app.calendar.channels.stop({
+          resource: {
+            id: req.get('x-goog-channel-id'),
+            resourceId: req.get('x-goog-resource-id')
+          }
+        }, (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(result);
+          return res.status(404).send("Cannot retrieve user information");
+        });
       }
 
       app.google.setCredentials({
@@ -210,7 +218,7 @@ module.exports = (app, route) => {
       app.google.refreshAccessToken((err, tokens) => {
         // get the event details
         var options = {
-          url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + req.get('x-goog-resource-id'),
+          url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + "/" + req.get('x-goog-resource-id'),
           method: "GET",
           headers: {
             "Accept": "application/json",
