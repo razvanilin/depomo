@@ -193,47 +193,69 @@ module.exports = (app, route) => {
       if (!user) {
         console.log("No user");
 
-        // attempt to delete the channel if no user is using it
-        app.calendar.channels.stop({
-          resource: {
-            id: req.get('x-goog-channel-id'),
-            resourceId: req.get('x-goog-resource-id')
-          }
-        }, (err, result) => {
-          if (err) {
-            console.log(err);
-          }
-          console.log(result);
-          return res.status(404).send("Cannot retrieve user information");
+        app.google.setCredentials({
+          access_token: user.googleAccessToken || "ya29.GltABFUZCE0T3E9LRCJFtietNmmMPk3z-ArfGZIM8KfEv-VyYhnbPq8Y11uDC6ixEi_lc7BhShRMx4hyXhhtDKoRJAXplzn8TjAqUgd61ReJZImDYEIU2X4Eh9Cf",
+          refresh_token: user.googleRefreshToken || "1/z96eaxmwoYyfBjFPPAsGtxvkfG3p-hnt-5zPvy9l4i8"
+          // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
+          // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
+        });
+
+        app.google.refreshAccessToken((err, tokens) => {
+          // attempt to delete the channel if no user is using it
+          app.calendar.channels.stop({
+            resource: {
+              id: req.get('x-goog-channel-id'),
+              resourceId: req.get('x-goog-resource-id')
+            },
+            auth: app.google
+          }, (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log(result);
+            return res.status(404).send("Cannot retrieve user information");
+          });
         });
       } else {
         app.google.setCredentials({
-          access_token: user.googleAccessToken,
-          refresh_token: user.googleRefreshToken
+          access_token: user.googleAccessToken || "ya29.GltABFUZCE0T3E9LRCJFtietNmmMPk3z-ArfGZIM8KfEv-VyYhnbPq8Y11uDC6ixEi_lc7BhShRMx4hyXhhtDKoRJAXplzn8TjAqUgd61ReJZImDYEIU2X4Eh9Cf",
+          refresh_token: user.googleRefreshToken || "1/z96eaxmwoYyfBjFPPAsGtxvkfG3p-hnt-5zPvy9l4i8"
           // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
           // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
         });
 
         app.google.refreshAccessToken((err, tokens) => {
           // get the event details
-          var options = {
-            url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + "/" + req.get('x-goog-resource-id'),
-            method: "GET",
-            headers: {
-              "Accept": "application/json",
-              "Authorization": "Bearer " + tokens.access_token
-            }
-          };
-
-          request(options, (error, resp, body) => {
-            if (error) {
-              console.log(error);
-              return res.status(400).send(error);
+          app.calendar.events.get({
+            resourceId: req.get('x-goog-resource-id'),
+            auth: app.google
+          }, (err, response) => {
+            if (err) {
+              console.log(err);
+              return res.status(400).send(err);
             }
 
-            console.log(body);
-            return res.status(resp.statusCode).send(body);
-          });
+            console.log(response);
+            return res.status(200).send(response);
+          })
+          // var options = {
+          //   url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + "/" + req.get('x-goog-resource-id'),
+          //   method: "GET",
+          //   headers: {
+          //     "Accept": "application/json",
+          //     "Authorization": "Bearer " + tokens.access_token
+          //   }
+          // };
+          //
+          // request(options, (error, resp, body) => {
+          //   if (error) {
+          //     console.log(error);
+          //     return res.status(400).send(error);
+          //   }
+          //
+          //   console.log(body);
+          //   return res.status(resp.statusCode).send(body);
+          // });
         });
       }
     });
