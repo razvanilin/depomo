@@ -37,6 +37,9 @@ var UserSchema = new mongoose.Schema({
   },
   googleRefreshToken: {
     type: String
+  },
+  googleNotificationChannel: {
+    type: String
   }
 });
 

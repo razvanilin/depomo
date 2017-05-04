@@ -182,7 +182,41 @@ module.exports = (app, route) => {
 
   /** Webhook route for the Google calendar **/
   app.post("/task/webhook/google", (req, res) => {
-    console.log(req.body);
+    console.log(req.headers);
+
+    if (!req.get('x-goog-channel-id')) return res.status(400).send("request is missing headers.");
+
+    User.findOne({googleNotificationChannel: req.get('x-goog-channel-id')}, (err, user) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send(err);
+      }
+
+      if (!user) {
+        console.log("No user");
+        return res.status(404).send("Cannot retrieve user information");
+      }
+
+      // get the event details
+      var options = {
+        url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + req.get('x-goog-resource-id'),
+        method: "GET",
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer " + user.googleAccessToken
+        }
+      };
+
+      request(options, (error, resp, body) => {
+        if (error) {
+          console.log(error);
+          return res.status(400).send(error);
+        }
+
+        console.log(body);
+        return res.status(resp.statusCode).send(body);
+      });
+    });
   });
   // ---------------------------------------------------
 

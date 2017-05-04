@@ -30,6 +30,7 @@ module.exports = {
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    redirectUrl: "http://localhost:3010/social/oauth/google"
+    redirectUrl: "http://localhost:3010/social/oauth/google",
+    webhookUrl: "https://api1.depomo.com/task/webhook/google"
   }
 }

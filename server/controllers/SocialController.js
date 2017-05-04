@@ -174,6 +174,7 @@ module.exports = (app, route) => {
           if (error) return res.status(400).send(error);
           console.log("done");
           console.log(body);
+
           return res.status(resp.statusCode).send(body);
         });
       });
@@ -188,14 +189,18 @@ module.exports = (app, route) => {
 
       if (!user.googleAccessToken) return res.status(401).send("The user is missing the google authentication token");
 
+      var channelId = uuid();
       var options = {
         url: "https://www.googleapis.com/calendar/v3/calendars/" + req.query.calendarId + "/events/watch",
         method: "POST",
-        form: {
-          id: uuid(),
+        body: JSON.stringify({
+          id: channelId,
           type: "web_hook",
-          address: "https://api1.depomo.com/task/webhook/google"
-        },
+          address: app.settings.google.webhookUrl,
+          params: {
+            userId: user._id
+          }
+        }),
         headers: {
           "Authorization": "Bearer " + user.googleAccessToken,
           "Content-Type": "application/json",
@@ -206,7 +211,13 @@ module.exports = (app, route) => {
       request(options, (error, resp, body) => {
         if (error) return res.status(400).send(error);
 
-        return res.status(resp.statusCode).send(body);
+        User.findByIdAndUpdate(user._id, {
+          $set: {
+            googleNotificationChannel: channelId
+          }
+        }, {new: true}, (err, user) => {
+          return res.status(resp.statusCode).send(body);
+        })
       });
     });
   });

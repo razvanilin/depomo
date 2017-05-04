@@ -46,6 +46,9 @@ var TaskSchema = new mongoose.Schema({
   transactionStatus: {
     type: String
   },
+  googleId: {
+    type: String
+  },
   status: {
     type: String,
     default: "initial"
