@@ -11,7 +11,7 @@ const moment = require('moment-timezone');
 const mandrill = require('mandrill-api/mandrill');
 const braintreeSdk = require('braintree');
 const google = require('googleapis');
-var calendar = google.plus('v3');
+var calendar = google.calendar('v3');
 var googleOauth = google.auth.OAuth2;
 
 var CronJob = require('cron').CronJob;
