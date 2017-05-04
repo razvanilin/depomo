@@ -201,8 +201,8 @@ module.exports = (app, route) => {
       }
 
       app.google.setCredentials({
-        access_token: 'ACCESS TOKEN HERE',
-        refresh_token: 'REFRESH TOKEN HERE'
+        access_token: user.googleAccessToken,
+        refresh_token: user.googleRefreshToken
         // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
         // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
       });

@@ -151,7 +151,7 @@ module.exports = (app, route) => {
 
     app.google.getToken(req.query.code, function (err, tokens) {
       if (err || !tokens) return res.status(400).send(err);
-
+      console.log(tokens);
       // Now tokens contains an access_token and an optional refresh_token. Save them.
       User.findByIdAndUpdate(userId, {
         $set: {
