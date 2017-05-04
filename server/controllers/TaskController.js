@@ -186,6 +186,9 @@ module.exports = (app, route) => {
 
     if (!req.get('x-goog-channel-id')) return res.status(400).send("request is missing headers.");
 
+    console.log(req.get('x-goog-channel-id'));
+    console.log(req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + req.get('x-goog-resource-id'));
+
     User.findOne({googleNotificationChannel: req.get('x-goog-channel-id')}, (err, user) => {
       if (err) {
         console.log(err);
@@ -197,24 +200,33 @@ module.exports = (app, route) => {
         return res.status(404).send("Cannot retrieve user information");
       }
 
-      // get the event details
-      var options = {
-        url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + req.get('x-goog-resource-id'),
-        method: "GET",
-        headers: {
-          "Accept": "application/json",
-          "Authorization": "Bearer " + user.googleAccessToken
-        }
-      };
+      app.google.setCredentials({
+        access_token: 'ACCESS TOKEN HERE',
+        refresh_token: 'REFRESH TOKEN HERE'
+        // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
+        // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
+      });
 
-      request(options, (error, resp, body) => {
-        if (error) {
-          console.log(error);
-          return res.status(400).send(error);
-        }
+      app.google.refreshAccessToken((err, tokens) => {
+        // get the event details
+        var options = {
+          url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + req.get('x-goog-resource-id'),
+          method: "GET",
+          headers: {
+            "Accept": "application/json",
+            "Authorization": "Bearer " + tokens.access_token
+          }
+        };
 
-        console.log(body);
-        return res.status(resp.statusCode).send(body);
+        request(options, (error, resp, body) => {
+          if (error) {
+            console.log(error);
+            return res.status(400).send(error);
+          }
+
+          console.log(body);
+          return res.status(resp.statusCode).send(body);
+        });
       });
     });
   });
