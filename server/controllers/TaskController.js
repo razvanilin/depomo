@@ -206,36 +206,36 @@ module.exports = (app, route) => {
           console.log(result);
           return res.status(404).send("Cannot retrieve user information");
         });
-      }
-
-      app.google.setCredentials({
-        access_token: user.googleAccessToken,
-        refresh_token: user.googleRefreshToken
-        // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
-        // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
-      });
-
-      app.google.refreshAccessToken((err, tokens) => {
-        // get the event details
-        var options = {
-          url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + "/" + req.get('x-goog-resource-id'),
-          method: "GET",
-          headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer " + tokens.access_token
-          }
-        };
-
-        request(options, (error, resp, body) => {
-          if (error) {
-            console.log(error);
-            return res.status(400).send(error);
-          }
-
-          console.log(body);
-          return res.status(resp.statusCode).send(body);
+      } else {
+        app.google.setCredentials({
+          access_token: user.googleAccessToken,
+          refresh_token: user.googleRefreshToken
+          // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
+          // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
         });
-      });
+
+        app.google.refreshAccessToken((err, tokens) => {
+          // get the event details
+          var options = {
+            url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + "/" + req.get('x-goog-resource-id'),
+            method: "GET",
+            headers: {
+              "Accept": "application/json",
+              "Authorization": "Bearer " + tokens.access_token
+            }
+          };
+
+          request(options, (error, resp, body) => {
+            if (error) {
+              console.log(error);
+              return res.status(400).send(error);
+            }
+
+            console.log(body);
+            return res.status(resp.statusCode).send(body);
+          });
+        });
+      }
     });
   });
   // ---------------------------------------------------
