@@ -217,15 +217,24 @@ module.exports = (app, route) => {
       } else {
         app.google.setCredentials({
           access_token: user.googleAccessToken,
-          refresh_token: user.googleRefreshToken
+          refresh_token: user.googleRefreshToken,
           // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
           // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
+          expiry_date: moment().add(30, 'days').format('x')
         });
 
         app.google.refreshAccessToken((err, tokens) => {
+
+          var resUri = req.get('x-goog-resource-uri');
+          var calendarId = resUri.substring(resUri.indexOf('calendars/'));
+          calendarId = calendarId.replace('calendars/', '');
+          calendarId = calendarId.substring(0, calendarId.indexOf('/events'));
+
           // get the event details
-          app.calendar.events.get({
-            resourceId: req.get('x-goog-resource-id'),
+          app.calendar.events.list({
+            calendarId: calendarId,
+            timeMin: moment.tz().utc(),
+            alwaysIncludeEmail: true,
             auth: app.google
           }, (err, response) => {
             if (err) {
@@ -233,27 +242,13 @@ module.exports = (app, route) => {
               return res.status(400).send(err);
             }
 
+            if (!response.items || reponse.items.length < 1) return res.status(404).send('No calendar entries detected');
+
+            //for (var i=0; i<response.items)
+
             console.log(response);
             return res.status(200).send(response);
-          })
-          // var options = {
-          //   url: req.get('x-goog-resource-uri').substring(0, req.get('x-goog-resource-uri').indexOf("?maxResults")) + "/" + req.get('x-goog-resource-id'),
-          //   method: "GET",
-          //   headers: {
-          //     "Accept": "application/json",
-          //     "Authorization": "Bearer " + tokens.access_token
-          //   }
-          // };
-          //
-          // request(options, (error, resp, body) => {
-          //   if (error) {
-          //     console.log(error);
-          //     return res.status(400).send(error);
-          //   }
-          //
-          //   console.log(body);
-          //   return res.status(resp.statusCode).send(body);
-          // });
+          });
         });
       }
     });
