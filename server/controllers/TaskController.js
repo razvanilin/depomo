@@ -204,7 +204,7 @@ module.exports = (app, route) => {
           // attempt to delete the channel if no user is using it
           app.calendar.channels.stop({
               id: req.get('x-goog-channel-id'),
-              resourceId: req.get('x-goog-resource-id')
+              resourceId: req.get('x-goog-resource-id'),
               auth: app.google
           }, (err, result) => {
             if (err) {
