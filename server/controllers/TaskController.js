@@ -194,8 +194,8 @@ module.exports = (app, route) => {
         console.log("No user");
 
         app.google.setCredentials({
-          access_token: user.googleAccessToken || "ya29.GltABFUZCE0T3E9LRCJFtietNmmMPk3z-ArfGZIM8KfEv-VyYhnbPq8Y11uDC6ixEi_lc7BhShRMx4hyXhhtDKoRJAXplzn8TjAqUgd61ReJZImDYEIU2X4Eh9Cf",
-          refresh_token: user.googleRefreshToken || "1/z96eaxmwoYyfBjFPPAsGtxvkfG3p-hnt-5zPvy9l4i8"
+          access_token: "ya29.GltABFUZCE0T3E9LRCJFtietNmmMPk3z-ArfGZIM8KfEv-VyYhnbPq8Y11uDC6ixEi_lc7BhShRMx4hyXhhtDKoRJAXplzn8TjAqUgd61ReJZImDYEIU2X4Eh9Cf",
+          refresh_token: "1/z96eaxmwoYyfBjFPPAsGtxvkfG3p-hnt-5zPvy9l4i8"
           // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
           // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
         });
@@ -218,8 +218,8 @@ module.exports = (app, route) => {
         });
       } else {
         app.google.setCredentials({
-          access_token: user.googleAccessToken || "ya29.GltABFUZCE0T3E9LRCJFtietNmmMPk3z-ArfGZIM8KfEv-VyYhnbPq8Y11uDC6ixEi_lc7BhShRMx4hyXhhtDKoRJAXplzn8TjAqUgd61ReJZImDYEIU2X4Eh9Cf",
-          refresh_token: user.googleRefreshToken || "1/z96eaxmwoYyfBjFPPAsGtxvkfG3p-hnt-5zPvy9l4i8"
+          access_token: user.googleAccessToken,
+          refresh_token: user.googleRefreshToken
           // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
           // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
         });
