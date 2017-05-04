@@ -26,5 +26,10 @@ module.exports = {
     merchant_id: process.env.BRAINTREE_MERCHANT_ID,
     private_key: process.env.BRAINTREE_PRIVATE_KEY,
     public_key: process.env.BRAINTREE_PUBLIC_KEY
+  },
+  google: {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    redirectUrl: "http://localhost:3010/social/oauth/google"
   }
 }
