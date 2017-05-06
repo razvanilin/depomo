@@ -29,7 +29,7 @@ module.exports = (app, route) => {
 
   /** Route to record tasks **/
   app.post('/task', checkAccess, (req, res) => {
-    if (!req.body._id || !req.body.label || !req.body.due || !req.body.deposit || !req.body.currency || !req.body.defaultPayment) {
+    if (!req.body._id || !req.body.label || !req.body.due || !req.body.deposit || !req.body.currency) {
       return res.status(400).send("Request body is incomplete. (_id, label, due, deposit, currency)");
     }
 
@@ -55,8 +55,6 @@ module.exports = (app, route) => {
 
       // transform the date to UTC
       //taskDoc.due = moment.tz(taskDoc.due, "M/D/YYYY h:mm a", user.timezone).utc().format();
-
-      if (req.body.defaultPayment.cardType) taskDoc.method = "card";
 
       Task.create(taskDoc, (error, task) => {
         if (error) return res.status(400).send(error);
@@ -172,7 +170,11 @@ module.exports = (app, route) => {
         return res.status(400).send("More than 5 minutes have past since the task was created. The task cannot be removed anymore");
       }
 
-      Task.findByIdAndRemove(req.params.id, err => {
+      Task.findByIdAndUpdate(req.params.id, {
+        $set: {
+          status: "deleted"
+        }
+      }, { new: true }, (err, task) => {
         if (err) return res.status(400).send(err);
 
         return res.status(200).send("Task removed");

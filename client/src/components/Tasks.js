@@ -144,7 +144,7 @@ export default Component({
             {
               this.props.task.tasks.map((task) => {
                 //let task = this.props.task.tasks[index];
-                if (task.status !== 'completed' && task.status !== 'failed') {
+                if (task.status === 'initial') {
                   return (
                     <ListItem direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
                         <Box style={{width:this.state.labelWidth}} justify="center" align="start">
