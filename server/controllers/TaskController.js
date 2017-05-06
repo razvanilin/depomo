@@ -5,6 +5,7 @@ const request = require('request');
 const moment = require('moment-timezone');
 const getPaypalToken = require('../modules/getPaypalToken');
 const makePayment = require('../modules/makePayment');
+const fs = require('fs');
 
 module.exports = (app, route) => {
 
@@ -246,7 +247,12 @@ module.exports = (app, route) => {
 
             //for (var i=0; i<response.items)
 
-            console.log(response);
+            fs.writeFile('../../calendar.json', JSON.stringify(response), (err) => {
+              if (err) console.log(err);
+
+              console.log("calendar finished");
+            });
+
             return res.status(200).send(response);
           });
         });
