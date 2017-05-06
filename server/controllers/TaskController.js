@@ -254,12 +254,12 @@ module.exports = (app, route) => {
             var calendarDepo = [];
             // get depomo items
             for (var i=0; i<response.items.length; i++) {
-              var eventSummary = response.items[i].summary.toLowerCase();
-              var eventDescription = response.items[i].description.toLowerCase();
+              var eventSummary = response.items[i].summary ? response.items[i].summary.toLowerCase() : "";
+              var eventDescription = response.items[i].description ? response.items[i].description.toLowerCase() : "";
 
               // search for the depomo keyword
               if (eventSummary.indexOf('depomo') > -1 || eventDescription.indexOf('depomo') > -1) {
-                calendarDepo.push(response.items[i]);
+                calendarDepo.push(response.items[i]);:
               }
             }
 
