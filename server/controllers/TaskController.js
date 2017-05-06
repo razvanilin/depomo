@@ -286,6 +286,11 @@ module.exports = (app, route) => {
                 }
               }
 
+              if (finalDepo.length < 1) {
+                console.log("could not detect deposit");
+                return;
+              }
+
               console.log("Deposit " + finalDepo);
               var parsedFinalDepo = parseFloat(finalDepo);
               console.log("Parsed deposit " + parsedFinalDepo);
