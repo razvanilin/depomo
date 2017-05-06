@@ -234,7 +234,7 @@ module.exports = (app, route) => {
           // get the event details
           app.calendar.events.list({
             calendarId: calendarId,
-            timeMin: moment.tz().utc(),
+//            timeMin: moment.tz().utc(),
             alwaysIncludeEmail: true,
             auth: app.google
           }, (err, response) => {
@@ -243,7 +243,7 @@ module.exports = (app, route) => {
               return res.status(400).send(err);
             }
 
-            if (!response.items || reponse.items.length < 1) return res.status(404).send('No calendar entries detected');
+            if (!response.items || response.items.length < 1) return res.status(404).send('No calendar entries detected');
 
             //for (var i=0; i<response.items)
 
