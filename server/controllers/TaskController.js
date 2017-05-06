@@ -306,6 +306,8 @@ module.exports = (app, route) => {
               var parsedFinalDepo = parseFloat(finalDepo);
               console.log("Parsed deposit " + parsedFinalDepo);
 
+              if (isNaN(parsedFinalDepo)) return;
+
               var newTask = {
                 label: event.summary,
                 due: moment.tz(event.start.dateTime, "Europe/London").utc().format(),
