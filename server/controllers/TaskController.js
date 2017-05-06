@@ -234,7 +234,7 @@ module.exports = (app, route) => {
           // get the event details
           app.calendar.events.list({
             calendarId: calendarId,
-//            timeMin: moment.tz().utc(),
+            timeMin: moment.tz().utc().format(),
             alwaysIncludeEmail: true,
             auth: app.google
           }, (err, response) => {
