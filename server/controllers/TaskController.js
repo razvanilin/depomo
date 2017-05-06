@@ -285,7 +285,7 @@ module.exports = (app, route) => {
                 // if the char is a number add it to the result
                 if (!isNaN(deposit[s])) {
                   finalDepo += deposit[s];
-                } else if (isNaN(deposit[s]) && (deposit[s] !== '.' || deposit[s] !== ',') && finalDepo.length > 0) {
+                } else if (isNaN(deposit[s]) && (deposit[s] !== '.' && deposit[s] !== ',') && finalDepo.length > 0) {
                   // break if the deposit is populated with some numbers and a non number char is detected afterwards
                   // also check for . and , because some people might use that as a delimiter
                   break;
