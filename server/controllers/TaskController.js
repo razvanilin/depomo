@@ -283,7 +283,7 @@ module.exports = (app, route) => {
               var finalDepo = '';
               for (var s=0; s<deposit.length; s++) {
                 // if the char is a number add it to the result
-                if (!isNaN(deposit[s])) {
+                if (!isNaN(deposit[s]) && deposit[s] !== " ") {
                   finalDepo += deposit[s];
                 } else if (isNaN(deposit[s]) && (deposit[s] !== '.' && deposit[s] !== ',') && finalDepo.length > 0) {
                   // break if the deposit is populated with some numbers and a non number char is detected afterwards
@@ -298,13 +298,10 @@ module.exports = (app, route) => {
               }
 
               if (!finalDepo || finalDepo.length < 1) {
-                console.log("could not detect deposit");
                 return;
               }
 
-              console.log("Deposit " + finalDepo);
               var parsedFinalDepo = parseFloat(finalDepo);
-              console.log("Parsed deposit " + parsedFinalDepo);
 
               if (isNaN(parsedFinalDepo)) return;
 
