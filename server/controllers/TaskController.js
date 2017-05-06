@@ -278,15 +278,15 @@ module.exports = (app, route) => {
                   // break if the deposit is populated with some numbers and a non number char is detected afterwards
                   // also check for . and , because some people might use that as a delimiter
                   break;
+                } else if ((deposit[s] === '.' || deposit[s] === ',') && finalDepo.length > 0 && finalDepo.indexOf(".") > -1) {
+                   break;
                 } else if ((deposit[s] === '.' || deposit[s] === ',') && finalDepo.length > 0 && finalDepo.indexOf(".") === -1) {
                   // dot for decimals
                   finalDepo += ".";
-                } else if ((deposit[s] === '.' || deposit[s] === ',') && finalDepo.length > 0 && finalDepo.indexOf(".") > -1) {
-                  break;
                 }
               }
 
-              if (finalDepo.length < 1) {
+              if (!finalDepo || finalDepo.length < 1) {
                 console.log("could not detect deposit");
                 return;
               }
@@ -301,7 +301,7 @@ module.exports = (app, route) => {
                 if (!task) {
                   var newTask = {
                     label: event.summary,
-                    due: moment(event.start.dateTime).tz().utc(),
+                    due: moment.tz(event.start.dateTime, "Europe/London").utc().format(),
                     deposit: parsedFinalDepo,
                     currency: "USD",
                     googleId: event.id,
@@ -315,12 +315,6 @@ module.exports = (app, route) => {
                 }
               });
             }
-
-            // fs.writeFile('../calendar.json', JSON.stringify(calendarDepo), (err) => {
-            //   if (err) console.log(err);
-            //
-            //   console.log("calendar finished");
-            // });
 
             return res.status(200).send(calendarDepo);
           });
