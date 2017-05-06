@@ -253,7 +253,7 @@ module.exports = (app, route) => {
 
             var calendarDepo = [];
             // get depomo items
-            for (var i=0; i<response.items; i++) {
+            for (var i=0; i<response.items.length; i++) {
               var eventSummary = response.items[i].summary.toLowerCase();
               var eventDescription = response.items[i].description.toLowerCase();
 
