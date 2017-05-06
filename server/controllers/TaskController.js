@@ -263,11 +263,59 @@ module.exports = (app, route) => {
               }
             }
 
-            fs.writeFile('../calendar.json', JSON.stringify(calendarDepo), (err) => {
-              if (err) console.log(err);
+            // go through all the found items and sync them with depomo
+            for (var i=0; i<calendarDepo.length; i++) {
+              var event = calendarDepo[i];
 
-              console.log("calendar finished");
-            });
+              var deposit = event.summary.substring(event.summary.toLowerCase().indexOf('depomo'));
+              // extract the deposit from the summary
+              var finalDepo = '';
+              for (var s=0; s<deposit.length; s++) {
+                // if the char is a number add it to the result
+                if (!isNaN(deposit[s])) {
+                  finalDepo += deposit[s];
+                } else if (isNaN(deposit[s]) && (deposit[s] !== '.' || deposit[s] !== ',') && finalDepo.length > 0) {
+                  // break if the deposit is populated with some numbers and a non number char is detected afterwards
+                  // also check for . and , because some people might use that as a delimiter
+                  break;
+                } else if ((deposit[s] === '.' || deposit[s] === ',') && finalDepo.length > 0 && finalDepo.indexOf(".") === -1) {
+                  // dot for decimals
+                  finalDepo += ".";
+                } else if ((deposit[s] === '.' || deposit[s] === ',') && finalDepo.length > 0 && finalDepo.indexOf(".") > -1) {
+                  break;
+                }
+              }
+
+              console.log("Deposit " + finalDepo);
+              var parsedFinalDepo = parseFloat(finalDepo);
+              console.log("Parsed deposit " + parsedFinalDepo);
+
+              Task.findOne({googleId: event.id}, (err, task) => {
+                if (err || task) return;
+
+                if (!task) {
+                  var newTask = {
+                    label: event.summary,
+                    due: moment(event.start.dateTime).tz().utc(),
+                    deposit: parsedFinalDepo,
+                    currency: "USD",
+                    googleId: event.id,
+                    owner: req.params.userId
+                  };
+
+                  Task.create(newTask, (err, task) => {
+                    if (err) console.log(err);
+                    console.log(task);
+                  });
+                }
+              });
+            }
+
+            // fs.writeFile('../calendar.json', JSON.stringify(calendarDepo), (err) => {
+            //   if (err) console.log(err);
+            //
+            //   console.log("calendar finished");
+            // });
 
             return res.status(200).send(calendarDepo);
           });
