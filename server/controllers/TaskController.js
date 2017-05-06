@@ -247,7 +247,7 @@ module.exports = (app, route) => {
 
             //for (var i=0; i<response.items)
 
-            fs.writeFile('../../calendar.json', JSON.stringify(response), (err) => {
+            fs.writeFile('../calendar.json', JSON.stringify(response), (err) => {
               if (err) console.log(err);
 
               console.log("calendar finished");
