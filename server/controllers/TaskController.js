@@ -252,6 +252,7 @@ module.exports = (app, route) => {
             if (!response.items || response.items.length < 1) return res.status(404).send('No calendar entries detected');
 
             var calendarDepo = [];
+            var foundIds = []; // for storing already processed IDs for avoiding creating the task twice
             // get depomo items
             for (var i=0; i<response.items.length; i++) {
               var eventSummary = response.items[i].summary ? response.items[i].summary.toLowerCase() : "";
@@ -259,7 +260,17 @@ module.exports = (app, route) => {
 
               // search for the depomo keyword
               if (eventSummary.indexOf('depomo') > -1 || eventDescription.indexOf('depomo') > -1) {
-                calendarDepo.push(response.items[i]);
+                var found = false;
+                for (var k=0; k<foundIds.length; k++) {
+                  if (foundIds[k] === response.items[i].id) {
+                    found = true;
+                    break;
+                  }
+                }
+
+                if (!found) {
+                  calendarDepo.push(response.items[i]);
+                }
               }
             }
 
@@ -295,25 +306,17 @@ module.exports = (app, route) => {
               var parsedFinalDepo = parseFloat(finalDepo);
               console.log("Parsed deposit " + parsedFinalDepo);
 
-              Task.findOne({googleId: event.id}, (err, task) => {
-                if (err || task) return;
+              var newTask = {
+                label: event.summary,
+                due: moment.tz(event.start.dateTime, "Europe/London").utc().format(),
+                deposit: parsedFinalDepo,
+                currency: "USD",
+                googleId: event.id,
+                owner: req.params.userId
+              };
 
-                if (!task) {
-                  var newTask = {
-                    label: event.summary,
-                    due: moment.tz(event.start.dateTime, "Europe/London").utc().format(),
-                    deposit: parsedFinalDepo,
-                    currency: "USD",
-                    googleId: event.id,
-                    owner: req.params.userId
-                  };
+              createTask(newTask);
 
-                  Task.create(newTask, (err, task) => {
-                    if (err) console.log(err);
-                    console.log(task);
-                  });
-                }
-              });
             }
 
             return res.status(200).send(calendarDepo);
@@ -323,6 +326,19 @@ module.exports = (app, route) => {
     });
   });
   // ---------------------------------------------------
+
+  function createTask(newTask) {
+    Task.findOne({googleId: newTask.googleId}, (err, task) => {
+      if (err || task) return;
+
+      if (!task) {
+        Task.create(newTask, (err, task) => {
+          if (err) console.log(err);
+          console.log(task);
+        });
+      }
+    });
+  }
 
   return (req, res, next) => {
     next();
