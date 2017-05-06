@@ -96,25 +96,6 @@ module.exports = (app, route) => {
 
   /** Route to connect Google calendar and create a push notification channel **/
   app.get("/social/connect/google", (req, res) => {
-    // if (!req.body.email && !req.body.accessToken) return res.status(400).send("The request body is missing email or access token.");
-    //
-    // console.log("yo");
-    // var options = {
-    //   url: "https://www.googleapis.com/calendar/v3/users/me/calendarList",
-    //   method: "GET",
-    //   headers: {
-    //     "Accept": "application/json",
-    //     "Authorization": "Bearer " + req.body.accessToken
-    //   }
-    // };
-    //
-    // request(options, (error, resp, body) => {
-    //   if (error) return res.status(400).send(error);
-    //   console.log("done");
-    //   console.log(body);
-    //   return res.status(resp.statusCode).send(body);
-    // });
-
     // generate a url that asks permissions for Google+ and Google Calendar scopes
     console.log(req.query.userId);
     var scopes = [
@@ -138,7 +119,7 @@ module.exports = (app, route) => {
   /** Google oauth redirect **/
   app.get("/social/oauth/google", (req, res) => {
     if (!req.query.code) return res.status(400).send("Authorization code is missing");
-    if (!req.query.state) return res.status(400).send("Additional query p[arameters are missing");
+    if (!req.query.state) return res.status(400).send("Additional query parameters are missing");
 
     var userId;
     try {
@@ -157,7 +138,7 @@ module.exports = (app, route) => {
         googleAccessToken: tokens.access_token
       };
       if (tokens.refresh_token) googleTokens.googleRefreshToken = tokens.refresh_token;
-      
+
       // Now tokens contains an access_token and an optional refresh_token. Save them.
       User.findByIdAndUpdate(userId, {
         $set: googleTokens
@@ -197,7 +178,7 @@ module.exports = (app, route) => {
         body: JSON.stringify({
           id: channelId,
           type: "web_hook",
-          address: app.settings.google.webhookUrl,
+          address: app.settings.google.webhookUrl + '/' + req.query.userId,
           params: {
             userId: user._id
           }

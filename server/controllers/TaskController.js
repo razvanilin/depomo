@@ -182,10 +182,12 @@ module.exports = (app, route) => {
   // ---------------------------------------------------
 
   /** Webhook route for the Google calendar **/
-  app.post("/task/webhook/google", (req, res) => {
+  app.post("/task/webhook/google/:userId", (req, res) => {
     if (!req.get('x-goog-channel-id')) return res.status(400).send("request is missing headers.");
 
-    User.findOne({googleNotificationChannel: req.get('x-goog-channel-id')}, (err, user) => {
+    User.findOne({
+      _id: req.params.userId
+    }, (err, user) => {
       if (err) {
         console.log(err);
         return res.status(400).send(err);
@@ -193,15 +195,18 @@ module.exports = (app, route) => {
 
       if (!user) {
         console.log("No user");
+        return res.status(404).send("Cannot retrieve user information");
+      }
 
+      if (!user.googleNotificationChannel) {
         app.google.setCredentials({
-          access_token: "ya29.GltABFUZCE0T3E9LRCJFtietNmmMPk3z-ArfGZIM8KfEv-VyYhnbPq8Y11uDC6ixEi_lc7BhShRMx4hyXhhtDKoRJAXplzn8TjAqUgd61ReJZImDYEIU2X4Eh9Cf",
-          refresh_token: "1/z96eaxmwoYyfBjFPPAsGtxvkfG3p-hnt-5zPvy9l4i8"
-          // Optional, provide an expiry_date (milliseconds since the Unix Epoch)
-          // expiry_date: (new Date()).getTime() + (1000 * 60 * 60 * 24 * 7)
+          access_token: user.access_token,
+          refresh_token: user.refresh_token,
+          expiry_date: moment().add(30, 'days').format('x')
         });
 
         app.google.refreshAccessToken((err, tokens) => {
+          if (err) return res.status(400).send("Cannot authenticate the request");
           // attempt to delete the channel if no user is using it
           app.calendar.channels.stop({
               id: req.get('x-goog-channel-id'),
@@ -210,9 +215,10 @@ module.exports = (app, route) => {
           }, (err, result) => {
             if (err) {
               console.log(err);
+              return res.status(400).send("Channel not found in the system. Could not stop it.")
             }
             console.log(result);
-            return res.status(404).send("Cannot retrieve user information");
+            return res.status(404).send("Channel not found in the system. Channel stopped.");
           });
         });
       } else {
@@ -245,15 +251,25 @@ module.exports = (app, route) => {
 
             if (!response.items || response.items.length < 1) return res.status(404).send('No calendar entries detected');
 
-            //for (var i=0; i<response.items)
+            var calendarDepo = [];
+            // get depomo items
+            for (var i=0; i<response.items; i++) {
+              var eventSummary = response.items[i].summary.toLowerCase();
+              var eventDescription = response.items[i].description.toLowerCase();
 
-            fs.writeFile('../calendar.json', JSON.stringify(response), (err) => {
+              // search for the depomo keyword
+              if (eventSummary.indexOf('depomo') > -1 || eventDescription.indexOf('depomo') > -1) {
+                calendarDepo.push(response.items[i]);
+              }
+            }
+
+            fs.writeFile('../calendar.json', JSON.stringify(calendarDepo), (err) => {
               if (err) console.log(err);
 
               console.log("calendar finished");
             });
 
-            return res.status(200).send(response);
+            return res.status(200).send(calendarDepo);
           });
         });
       }
