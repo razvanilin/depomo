@@ -259,7 +259,7 @@ module.exports = (app, route) => {
 
               // search for the depomo keyword
               if (eventSummary.indexOf('depomo') > -1 || eventDescription.indexOf('depomo') > -1) {
-                calendarDepo.push(response.items[i]);:
+                calendarDepo.push(response.items[i]);
               }
             }
 
