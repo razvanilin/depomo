@@ -12,9 +12,11 @@ import Heading from 'grommet/components/Heading'
 import Spinning from 'grommet/components/icons/Spinning'
 import Toast from 'grommet/components/Toast'
 import Select from 'grommet/components/Select'
+import SocialGoogle from 'grommet/components/icons/base/PlatformGoogle'
 
 import changeProfile from '../actions/changeProfile'
 import changePassword from '../actions/changePassword'
+import removeGoogleConnection from '../actions/removeGoogleConnection'
 
 export default Component({
   componentWillMount() {
@@ -40,6 +42,15 @@ export default Component({
     if (this.props.user) {
       console.log(this.props.user.name);
     }
+  },
+
+  _removeGoogle() {
+    this.setState({connectionLoading: true});
+    removeGoogleConnection(this.props.user, (err, response) =>{
+      if (err) return this.setState({connectionLoading: false, connectionError: true});
+
+      this.setState({connectionLoading: false, connectionSuccess: true});
+    });
   },
 
   _onSubmitProfileForm() {
@@ -693,6 +704,30 @@ export default Component({
           {this.state.passProfileError &&
             <Toast status="critical" onClose={()=>{this.setState({passProfileError: false}) }}>
               Oh no! 🙀 There was an error: <i>{this.state.passProfileError}</i>
+            </Toast>
+          }
+        </Box>
+
+        <Box pad="medium">
+          <Heading tag="h3">Google Calendar Integration</Heading>
+
+          {this.props.user && this.props.user._id && !this.props.user.googleNotificationChannel &&
+            <Button id="google-integration" primary={true} label="Connect to Google Calendar" icon={<SocialGoogle />} path="/dashboard/integration" />
+          }
+
+          {this.props.user && this.props.user._id && this.props.user.googleNotificationChannel &&
+            <Button id="google-integration" primary={false} label="Disconnect from Google Calendar" icon={<SocialGoogle />} onClick={this._removeGoogle} />
+          }
+
+          {this.state.connectionLoading && <Spinning />}
+          {this.state.connectionError &&
+            <Toast status="critical" onClose={()=>{this.setState({connectionError: false})}}>
+              {"Oh no! 🙀 We couldn't process your request. Please try again."}
+            </Toast>
+          }
+          {this.state.connectionSuccess &&
+            <Toast status="ok" onClose={()=>{this.setState({connectionSuccess: false}) }}>
+              Success! Your Google Calendar connection has been successfully removed 😼
             </Toast>
           }
         </Box>

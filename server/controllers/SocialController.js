@@ -206,6 +206,54 @@ module.exports = (app, route) => {
   });
   // ---------------------------------------------------
 
+  /** Route to remove the Notification Channels **/
+  app.put('/social/google/remove', checkAccess, (req, res) => {
+    var userId = req.query.userId || req.body.userId;
+
+    User.findOne({_id: userId}, (err, user) => {
+      if (err) return res.status(400).send(err);
+
+      if (!user) return res.status(404).send("Could not retrieve user information.");
+
+      // app.google.setCredentials({
+      //   access_token: user.access_token,
+      //   refresh_token: user.refresh_token,
+      //   expiry_date: moment().add(30, 'days').format('x')
+      // });
+      //
+      // app.google.refreshAccessToken((err, tokens) => {
+      //   if (err) return res.status(400).send("Cannot authenticate the request");
+      //   // attempt to delete the channel if no user is using it
+      //   app.calendar.channels.stop({
+      //       id: req.get('x-goog-channel-id'),
+      //       resourceId: req.get('x-goog-resource-id'),
+      //       auth: app.google
+      //   }, (err, result) => {
+      //     if (err) {
+      //       console.log(err);
+      //       return res.status(400).send("Channel not found in the system. Could not stop it.")
+      //     }
+      //     console.log(result);
+      //     return res.status(404).send("Channel not found in the system. Channel stopped.");
+      //   });
+      // });
+
+      User.findByIdAndUpdate(userId, {
+        $set: {
+          googleNotificationChannel: ""
+        }
+      }, {new: true}, (err, user) => {
+        if (err) return res.status(400).send("Could not update the user information");
+
+        userResponse(app, user, (err, response) => {
+          return res.status(200).send(response);
+        });
+      });
+    })
+  });
+  // ---------------------------------------------------
+
+
   return (req, res, next) => {
     next();
   }

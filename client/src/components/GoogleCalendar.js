@@ -52,7 +52,7 @@ export default Component({
 
   render() {
     return(
-      <Layer closer={true} onClose={() => {Goto({path:"/dashboard"})}}>
+      <Layer closer={true} onClose={() => {Goto({path:"/dashboard/tasks"})}}>
         <Box justify="center" align="center" pad="small" direction="column">
           <Heading tag="h3">Google Calendar Integration</Heading>
           {this.state.listLoading && <Spinning />}
