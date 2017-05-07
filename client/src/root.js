@@ -18,6 +18,7 @@ import AddTask from './components/AddTask'
 import ForgotPassword from './components/ForgotPassword'
 import ProfileSettings from './components/ProfileSettings'
 import PaymentMethod from './components/PaymentMethod'
+import GoogleCalendar from './components/GoogleCalendar'
 
 // Screens
 // import Home from './components/Home'
@@ -38,6 +39,7 @@ Render(states, (
         </Route>
       </Route>
       <Route path='settings' component={ProfileSettings} />
+      <Route path='integration' component={GoogleCalendar} />
     </Route>
     <Route path="/payment" component={ProcessPayment} />
     <Route path="/reset" component={ResetPassword} />

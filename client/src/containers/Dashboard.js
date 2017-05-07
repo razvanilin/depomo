@@ -28,7 +28,6 @@ import SocialGoogle from 'grommet/components/icons/base/PlatformGoogle'
 
 import login from '../actions/login'
 import logout from '../actions/logout'
-import connectGoogleCalendar from '../actions/connectGoogleCalendar'
 
 export default Component({
 
@@ -51,14 +50,6 @@ export default Component({
     }
 
     this.state = {showMenu: true, responsive: 'multiple'};
-  },
-
-  _onGoogleResponse(response) {
-    console.log(response);
-    connectGoogleCalendar(this.props.user, response.profileObj, (err, success) => {
-      if (err) console.error(err);
-      console.log(success);
-    });
   },
 
   _onResponsive(responsive) {
@@ -116,26 +107,21 @@ export default Component({
       );
     }
     return (
-      <Sidebar colorIndex="accent-1" fixed={true} size="small">
+      <Sidebar colorIndex="accent-1" fixed={true} size="small" wrap={true}>
         <Header pad="medium" justify="between">
           {title}
           {closer}
         </Header>
 
-        <Box flex='grow' pad="small">
-          <Menu primary={true}>
+        <Box flex='grow' pad="small" wrap={true}>
+          <Menu primary={true} wrap={true}>
             <Anchor label="Tasks" icon={<PlanIcon />} animateIcon={true} path={{path: "/dashboard/tasks", index: true}}/>
             <Anchor label="Profile" icon={<UserIcon />} animateIcon={true} />
             <Anchor label="History" icon={<HistoryIcon />} animateIcon={true} />
             <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true} />
-            <GoogleLogin
-              tag="span"
-              scope="https://www.googleapis.com/auth/calendar.readonly"
-              style={{width:"100%"}}
-              clientId="1038035792459-rqukqe4nbf5ksih8i1qlr0ak4689v0ff.apps.googleusercontent.com"
-              onSuccess={this._onGoogleResponse}>
-              <Button label="Connect to Google Calendar" icon={<SocialGoogle />} onClick={()=>{console.log("google");}}/>
-            </GoogleLogin>
+            {this.props.user && !this.props.user.googleNotificationChannel &&
+              <Anchor id="google-integration" primary={true} label="Google calendar" icon={<SocialGoogle />} path={{path:"/dashboard/integration", index: true}}/>
+            }
           </Menu>
         </Box>
 

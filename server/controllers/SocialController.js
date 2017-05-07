@@ -4,6 +4,7 @@ const uuid = require('uuid/v4');
 const mailchimp = require('../modules/mailchimp');
 const bcrypt = require('bcryptjs');
 const request = require('request');
+const checkAccess = require('../modules/checkAccess');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -95,7 +96,7 @@ module.exports = (app, route) => {
   // ---------------------------------------------------
 
   /** Route to connect Google calendar and create a push notification channel **/
-  app.get("/social/connect/google", (req, res) => {
+  app.get("/social/connect/google", checkAccess, (req, res) => {
     // generate a url that asks permissions for Google+ and Google Calendar scopes
     console.log(req.query.userId);
     var scopes = [
@@ -112,12 +113,13 @@ module.exports = (app, route) => {
       // Optional property that passes state parameters to redirect URI
       state: encodeURIComponent(JSON.stringify({ 'userId': req.query.userId }))
     });
-    res.redirect(url);
+
+    return res.status(200).send({url: url});
   });
   // ---------------------------------------------------
 
   /** Google oauth redirect **/
-  app.get("/social/oauth/google", (req, res) => {
+  app.get("/social/oauth/google", checkAccess, (req, res) => {
     if (!req.query.code) return res.status(400).send("Authorization code is missing");
     if (!req.query.state) return res.status(400).send("Additional query parameters are missing");
 
@@ -165,10 +167,9 @@ module.exports = (app, route) => {
   // ---------------------------------------------------
 
   /** Route to select a google calendar **/
-  app.get('/social/google/calendar', (req, res) => {
+  app.get('/social/google/calendar', checkAccess, (req, res) => {
     User.findOne({_id: req.query.userId}, (err, user) => {
       if (err) return res.status(400).send(err);
-
       if (!user.googleAccessToken) return res.status(401).send("The user is missing the google authentication token");
 
       var channelId = uuid();

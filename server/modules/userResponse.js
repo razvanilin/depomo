@@ -25,6 +25,7 @@ module.exports = function(app, user, cb) {
       name: user.name,
       timezone: user.timezone,
       paymentMethods: customer.paymentMethods || [],
+      googleNotificationChannel: user.googleNotificationChannel,
       token: token
     });
   });
