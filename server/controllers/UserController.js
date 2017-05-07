@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const verifyOwner = require('../modules/verifyOwner');
 const mailchimp = require('../modules/mailchimp');
 const uuid = require('uuid/v4');
+const userResponse = require('../modules/userResponse');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -115,29 +116,15 @@ module.exports = (app, route) => {
           });
         }
 
-        // get the payment Mehtods associated with the user
-        app.braintree.customer.find(user.customerId, (err, customer) => {
+        userResponse(app, user, (err, response) => {
 
           if (err) {
             console.log(err);
             customer = {};
           }
 
-          let token = jwt.sign(user, app.settings.secret, {
-            expiresIn: 604800 // a week
-          });
+          return res.status(200).send(response);
 
-          var userResponse = {
-            _id: user._id,
-            email: user.email,
-            name: user.name,
-            timezone: user.timezone,
-            preferedPayment: user.preferedPayment,
-            paymentMethods: customer.paymentMethods || [],
-            token: token
-          }
-
-          return res.status(200).send(userResponse);
         });
       });
     });
@@ -155,24 +142,15 @@ module.exports = (app, route) => {
       }, (err, user) => {
         if (!user || err) return res.status(400).send("Could not process your user information. Try again later.")
 
+        userResponse(app, user, (err, response) => {
+
         // get the payment methods
-        app.braintree.customer.find(user.customerId, (err, customer) => {
           if (err) {
             console.log(err);
             customer = {};
           }
-
-          var userResponse = {
-            _id: user._id,
-            email: user.email,
-            name: user.name,
-            timezone: user.timezone,
-            preferedPayment: user.preferedPayment,
-            paymentMethods: customer.paymentMethods || [],
-            token: req.body.token
-          }
           // return the decoded information
-          return res.status(200).send(userResponse);
+          return res.status(200).send(response);
         });
       });
     });

@@ -119,7 +119,7 @@ export default Component({
             <Anchor label="Profile" icon={<UserIcon />} animateIcon={true} />
             <Anchor label="History" icon={<HistoryIcon />} animateIcon={true} />
             <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true} />
-            {this.props.user && !this.props.user.googleNotificationChannel &&
+            {this.props.user && this.props.user._id && !this.props.user.googleNotificationChannel &&
               <Anchor id="google-integration" primary={true} label="Google calendar" icon={<SocialGoogle />} path={{path:"/dashboard/integration", index: true}}/>
             }
           </Menu>
