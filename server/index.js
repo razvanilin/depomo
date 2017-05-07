@@ -7,6 +7,7 @@ const _ = require('lodash');
 const cors = require('cors');
 const paypal = require('paypal-rest-sdk');
 const checkTasks = require('./modules/checkTasks');
+const checkNotificationChannels = require('./modules/checkNotificationChannels');
 const moment = require('moment-timezone');
 const mandrill = require('mandrill-api/mandrill');
 const braintreeSdk = require('braintree');
@@ -88,6 +89,10 @@ var server = app.listen(app.settings.port, function() {
   new CronJob('0 */1 * * * *', () => {
     console.log(moment().format('MMMM Do YYYY, h:mm:ss a') + " - Running Cron");
     checkTasks(app);
+    checkNotificationChannels(app, (err, response) => {
+      if (err) console.log(err);
+      else console.log(response);
+    })
   }, () => {
     console.log("Cron Stop");
   }, true);

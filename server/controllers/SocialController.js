@@ -11,6 +11,7 @@ const SALT_WORK_FACTOR = 10;
 module.exports = (app, route) => {
 
   User = mongoose.model('user', app.models.user);
+  NotificationChannel = mongoose.model('notificationChannel', app.models.notificationChannel);
 
   app.post('/social/login', (req, res) => {
 
@@ -173,6 +174,7 @@ module.exports = (app, route) => {
       if (!user.googleAccessToken) return res.status(401).send("The user is missing the google authentication token");
 
       var channelId = uuid();
+
       var options = {
         url: "https://www.googleapis.com/calendar/v3/calendars/" + req.query.calendarId + "/events/watch",
         method: "POST",
@@ -193,6 +195,14 @@ module.exports = (app, route) => {
 
       request(options, (error, resp, body) => {
         if (error) return res.status(400).send(error);
+
+        //record the notification channel
+        NotificationChannel.create({
+          owner: user._id,
+          channelId: channelId
+        }, (err, channel) => {
+          if (err) console.log(err);
+        });
 
         User.findByIdAndUpdate(user._id, {
           $set: {
