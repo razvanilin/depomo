@@ -94,7 +94,6 @@ export default Component({
                 <FacebookLogin
                   appId="627781417431814"
                   cssClass="something"
-                  autoLoad={true}
                   fields="name,email,picture"
                   onClick={this._facebookLogin}
                   callback={this._facebookResponse}
