@@ -290,7 +290,8 @@ module.exports = (app, route) => {
       User.findByIdAndUpdate(user._id, {
         $set: {
           notificationToken: uuid(),
-          reminderNotification: req.body.reminderNotification
+          reminderNotification: req.body.reminderNotification,
+          reminderOffset: req.body.reminderOffset
         }
       }, {new: true}, (err, updatedUser) => {
         if (err) return res.status(400).send(err);
@@ -309,7 +310,8 @@ module.exports = (app, route) => {
       if (!user) return res.status(404).send("Could not get the user details");
 
       return res.status(200).send({
-        reminderNotification: user.reminderNotification
+        reminderNotification: user.reminderNotification,
+        reminderOffset: user.reminderOffset
       });
     });
   });
