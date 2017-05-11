@@ -25,7 +25,7 @@ import Image from 'grommet/components/Image';
 export default React.createClass({
   componentWillMount() {
     if (cookie.load("token")) {
-      login(null, cookie.load("token"));
+      login(null, cookie.load("token"), ()=>{});
     }
   },
   render() {

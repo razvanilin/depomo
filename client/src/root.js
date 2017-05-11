@@ -1,5 +1,5 @@
 import React from 'react'
-import { Render, Router, Route } from 'jumpsuit'
+import { Render, Router, Route, IndexRedirect } from 'jumpsuit'
 // Styles
 import '../node_modules/grommet/scss/aruba/index.scss';
 // State
@@ -10,6 +10,7 @@ import App from './containers/App'
 import Dashboard from './containers/Dashboard'
 import ProcessPayment from './containers/ProcessPayment'
 import ResetPassword from './containers/ResetPassword'
+import NotFound from './containers/NotFound'
 
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -33,6 +34,7 @@ Render(states, (
       <Route path='forgot' component={ForgotPassword} />
     </Route>
     <Route path='/dashboard' component={Dashboard}>
+      <IndexRedirect to='/dashboard/tasks' />
       <Route path='tasks' component={Tasks}>
         <Route path='add' component={AddTask}>
           <Route path='payment' component={PaymentMethod} />
@@ -43,6 +45,7 @@ Render(states, (
     </Route>
     <Route path="/payment" component={ProcessPayment} />
     <Route path="/reset" component={ResetPassword} />
+    <Route path="*" component={NotFound} />
   </Router>
 ))
 
