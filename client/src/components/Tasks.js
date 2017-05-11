@@ -136,13 +136,26 @@ export default Component({
 
   _renderTasks() {
     if (this.props.task && this.props.task.tasks && this.props.task.tasks.length > 0) {
+      var arrangedTasks = [];
+      var tasks = this.props.task.tasks;
+
+      for (var i=0; i<tasks.length; i++) {
+        if (tasks[i].status === 'initial') {
+          arrangedTasks.push(tasks[i]);
+        }
+      }
+
+      arrangedTasks.sort(function sortTasks(a, b) {
+        return moment(a.due, "M/D/YYYY h:mm a").diff(moment(b.due, "M/D/YYYY h:mm a"));
+      });
+
       return (
         <Box margin={{vertical:"medium"}}>
           <Label style={{paddingLeft:"20px"}}>Current tasks</Label>
 
           <List selectable={true}>
             {
-              this.props.task.tasks.map((task) => {
+              arrangedTasks.map((task) => {
                 //let task = this.props.task.tasks[index];
                 if (task.status === 'initial') {
                   return (

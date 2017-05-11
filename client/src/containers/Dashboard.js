@@ -23,7 +23,6 @@ import PlanIcon from 'grommet/components/icons/base/Plan'
 import CloseIcon from 'grommet/components/icons/base/Close'
 import MenuIcon from 'grommet/components/icons/base/Menu'
 
-import GoogleLogin from 'react-google-login'
 import SocialGoogle from 'grommet/components/icons/base/PlatformGoogle'
 
 import login from '../actions/login'
