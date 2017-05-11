@@ -6,6 +6,7 @@ import LoginForm from 'grommet/components/LoginForm';
 import Box from 'grommet/components/Box';
 import Spinning from 'grommet/components/icons/Spinning';
 import Button from 'grommet/components/Button'
+import Label from 'grommet/components/Label'
 
 // grommet icons
 import SocialFacebook from 'grommet/components/icons/base/SocialFacebook'
@@ -49,6 +50,17 @@ export default Component({
     });
   },
 
+  _automaticLogin() {
+    setTimeout(() => {
+      Goto({path:'/dashboard/tasks'});
+    }, 1000);
+    return (
+      <Box justify="center" align="center">
+        <Label>Logging you automatically...</Label>
+      </Box>
+    )
+  },
+
   render() {
     return(
       <Layer closer={true} flush={true} onClose={() => {Goto({path:"/"})}}>
@@ -88,6 +100,10 @@ export default Component({
                 this.setState({loading: false});
               });
             }}/>
+
+            {this.props.user && this.props.user._id &&
+              this._automaticLogin()
+            }
 
             <Box justify="center" align="center" colorIndex="light-2">
               <Box justify="center" align="center" margin={{top:"medium"}}>

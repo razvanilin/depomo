@@ -59,6 +59,17 @@ export default Component({
     });
   },
 
+  _automaticLogin() {
+    setTimeout(() => {
+      Goto({path:'/dashboard/tasks'});
+    }, 1000);
+    return (
+      <Box justify="center" align="center">
+        <Label>Logging you automatically...</Label>
+      </Box>
+    )
+  },
+
   render() {
     return(
       <Layer closer={true} flush={true} onClose={() => {Goto({path:"/"})}}>
@@ -138,12 +149,15 @@ export default Component({
             </Footer>
           </Form>
 
+          {this.props.user && this.props.user._id &&
+            this._automaticLogin()
+          }
+
           <Box justify="center" align="center" colorIndex="light-2">
             <Box justify="center" align="center" margin={{top:"medium"}}>
               <FacebookLogin
                 appId="627781417431814"
                 cssClass="something"
-                autoLoad={true}
                 style={{width:"100%"}}
                 fields="name,email,picture"
                 onClick={this._facebookLogin}
@@ -161,7 +175,7 @@ export default Component({
                 style={{width:"100%"}}
                 clientId="1038035792459-rqukqe4nbf5ksih8i1qlr0ak4689v0ff.apps.googleusercontent.com"
                 onSuccess={this._googleLogin}>
-                <Button full={true} label="Sign up with Google" icon={<SocialGoogle />} onClick={()=>{console.log("google");}}/>
+                <Button label="Sign up with Google" icon={<SocialGoogle />} onClick={()=>{console.log("google");}}/>
               </GoogleLogin>
             </Box>
           </Box>

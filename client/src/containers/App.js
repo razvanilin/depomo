@@ -17,15 +17,21 @@ import Section from 'grommet/components/Section'
 import Menu from 'grommet/components/Menu'
 import Box from 'grommet/components/Box'
 import Anchor from 'grommet/components/Anchor'
-import GrommetIcon from 'grommet/components/icons/base/BrandGrommetOutline';
-import Button from 'grommet/components/Button';
-import Heading from 'grommet/components/Heading';
-import Image from 'grommet/components/Image';
+import GrommetIcon from 'grommet/components/icons/base/BrandGrommetOutline'
+import Button from 'grommet/components/Button'
+import Heading from 'grommet/components/Heading'
+import Image from 'grommet/components/Image'
+import LinkNext from 'grommet/components/icons/base/LinkNext'
 
 export default React.createClass({
   componentWillMount() {
+    this.state = {
+      userLoaded: false
+    }
     if (cookie.load("token")) {
-      login(null, cookie.load("token"), ()=>{});
+      login(null, cookie.load("token"), (success)=>{
+        if (success) this.setState({userLoaded: true});
+      });
     }
   },
   render() {
@@ -66,19 +72,27 @@ export default React.createClass({
               </Box>
             </Box>
 
-            <Box direction="row" justify="center" align="center">
-              <Box pad="small">
-                <Link to="login">
-                  <Button onClick={function() {console.log("login");}} label='Login' primary={true} />
-                </Link>
-              </Box>
+            {!this.state.userLoaded &&
+              <Box direction="row" justify="center" align="center">
+                <Box pad="small">
+                  <Link to="login">
+                    <Button onClick={function() {console.log("login");}} label='Login' primary={true} />
+                  </Link>
+                </Box>
 
-              <Box pad="small">
-                <Link to="signup">
-                  <Button onClick={function() {console.log("signup");}} label='Signup' primary={true} />
-                </Link>
+                <Box pad="small">
+                  <Link to="signup">
+                    <Button onClick={function() {console.log("signup");}} label='Signup' primary={true} />
+                  </Link>
+                </Box>
               </Box>
-            </Box>
+            }
+
+            {this.state.userLoaded &&
+              <Box justify="center" align="center">
+                <Button primary={true} label="Go to your dashboard" icon={<LinkNext />} path="/dashboard/tasks" />
+              </Box>
+            }
           </Hero>
           <Section>
             {this.props.children}
@@ -87,12 +101,6 @@ export default React.createClass({
       </App>
     )
   }
-})
-//
-// <div className='App'>
-//   <div className='App-header'>
-//     <img src={logo} className='App-logo' alt='logo' />
-//     <h2>Welcome to React + Jumpsuit!</h2>
-//   </div>
-//   {this.props.children}
-// </div>
+}, state => ({
+  user: state.user
+}))
