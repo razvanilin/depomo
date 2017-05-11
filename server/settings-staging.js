@@ -16,7 +16,8 @@ module.exports = {
   },
   mandrill: {
     api_key: process.env.MANDRILL_API_KEY,
-    welcome_template: "depomo-welcome"
+    welcome_template: "depomo-welcome",
+    reminderTemplate: "depomo-task-reminder"
   },
   facebook: {
     client_id: process.env.FACEBOOK_ID,

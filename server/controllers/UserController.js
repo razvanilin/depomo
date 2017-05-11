@@ -278,6 +278,44 @@ module.exports = (app, route) => {
   });
   // ----------------------------------------------------------
 
+  /** Route to update notification preferences from the email **/
+  app.put("/user/notification/update", (req, res) => {
+    if (!req.body.token) return res.status(400).send("The token is missing");
+
+    User.findOne({notificationToken: req.body.token}, (err, user) => {
+      if (err) return res.status(400).send(err);
+      if (!user) return res.status(404).send("Could not get the user information.");
+
+      // update the user
+      User.findByIdAndUpdate(user._id, {
+        $set: {
+          notificationToken: uuid(),
+          reminderNotification: req.body.reminderNotification
+        }
+      }, {new: true}, (err, updatedUser) => {
+        if (err) return res.status(400).send(err);
+        console.log(updatedUser);
+      });
+    });
+  });
+  // ----------------------------------------------------------
+
+  /** Route to get the notification switches **/
+  app.get("/user/notification/get", (req, res) => {
+    if (!req.query.token) return res.status(400).send("The token is missing");
+
+    User.findOne({notificationToken: req.query.token}, (err, user) => {
+      if (err) return res.status(400).send(err);
+      if (!user) return res.status(404).send("Could not get the user details");
+
+      return res.status(200).send({
+        reminderNotification: user.reminderNotification
+      });
+    });
+  });
+  // ----------------------------------------------------------
+
+
   /** Route to change the user's profile **/
   app.put('/user/:userId/profile', verifyOwner, (req, res) => {
     var updates = {};
@@ -286,6 +324,7 @@ module.exports = (app, route) => {
     if (req.body.email) updates.email = req.body.email;
     if (req.body.timezone) updates.timezone = req.body.timezone;
     if (req.body.preferedPayment) updates.preferedPayment = req.body.preferedPayment;
+    if (req.body.reminderNotification) updates.reminderNotification = req.body.reminderNotification;
 
     User.findByIdAndUpdate(req.params.userId, { $set: updates}, {new: true}, (err, user) => {
       if (err) return res.status(400).send(err);

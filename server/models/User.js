@@ -32,6 +32,7 @@ var UserSchema = new mongoose.Schema({
   preferedPayment: {
     type: String
   },
+// GOOGLE
   googleAccessToken: {
     type: String
   },
@@ -40,6 +41,16 @@ var UserSchema = new mongoose.Schema({
   },
   googleNotificationChannel: {
     type: String
+  },
+// NOTIFICATIONS
+  notificationToken: {
+    type: String
+  },
+  reminderNotification: {
+    type: Boolean
+  },
+  reminderOffset: {
+    type: Number
   }
 });
 
