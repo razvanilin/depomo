@@ -8,9 +8,12 @@ import RadioButton from 'grommet/components/RadioButton'
 import Notification from 'grommet/components/Notification'
 import Button from 'grommet/components/Button'
 import FormField from 'grommet/components/FormField'
-import Spinning from 'grommet/components/icons/Spinning';
+import Spinning from 'grommet/components/icons/Spinning'
+import Form from 'grommet/components/Form'
+import Footer from 'grommet/components/Footer'
 
 import notifications from '../actions/notifications'
+import changeProfile from '../actions/changeProfile'
 
 function getQueryStringValue (key) {
   return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
@@ -29,27 +32,49 @@ export default Component({
       }
     }
 
-    notifications.getNotificationPreferences(getQueryStringValue('token'), (err, response) => {
-      if (err) {console.log(err);return;}
-      console.log(response);
-      response.offsetType = 'minutes';
-      this.setState({user: response});
-    });
+    // check to see if this is accessed while the user is logged in
+    if (!getQueryStringValue('token') && this.props.user && this.props.user._id) {
+      this.setState({
+        user: {
+          reminderOffset: this.props.user.reminderOffset,
+          reminderNotification: this.props.user.reminderNotification,
+          offsetType: 'minutes'
+        }
+      });
+    } else {
+      notifications.getNotificationPreferences(getQueryStringValue('token'), (err, response) => {
+        if (err) {console.log(err);return;}
+        console.log(response);
+        response.offsetType = 'minutes';
+        this.setState({user: response});
+      });
+    }
   },
 
   _saveNotificationPreferences() {
     this.setState({loading: true});
-    notifications.updateNotificationPreferences(getQueryStringValue('token'), this.state.user, (err, response) => {
-      if (err) this.setState({error: err});
-      else this.setState({success: true});
-      console.log(response);
-      this.setState({loading: false});
-    });
+
+    var resource;
+    if (getQueryStringValue('token')) {
+      notifications.updateNotificationPreferences(getQueryStringValue('token'), this.state.user, (err, response) => {
+        if (err) this.setState({error: err});
+        else this.setState({success: true});
+        console.log(response);
+        this.setState({loading: false});
+      });
+    } else {
+      changeProfile(this.state.user, this.props.user._id, (success, data) => {
+        if (!success) this.setState({error: data});
+        else this.setState({success: true});
+        console.log(data);
+        this.setState({loading: false});
+      });
+    }
   },
 
   render() {
     return(
-        <Box direction="column" justify="center" align="center">
+        <Form pad="medium">
           <FormField>
           <CheckBox label="Get reminders for your tasks" checked={this.state.user.reminderNotification}
             toggle={true}
@@ -61,8 +86,8 @@ export default Component({
             }} />
           </FormField>
 
-          <Box justify="center" align="center" style={{width:"100%"}} responsive={true} margin={{top:"medium", bottom:"medium"}}>
-            <FormField style={{width:"100%"}} label="Send reminder">
+          <Box justify="center" align="center" responsive={true} margin={{top:"medium", bottom:"medium"}}>
+            <FormField label="Send reminder">
             <NumberInput min={1}
               value={parseInt(this.state.user.reminderOffset, 10)}
               disabled={!this.state.user.reminderNotification}
@@ -102,9 +127,9 @@ export default Component({
             </FormField>
           </Box>
 
-          <Box margin={{bottom:"large"}} justify="center" align="center">
-            <Button fill={true} label="Save" primary={true} onClick={() => this._saveNotificationPreferences()} />
-          </Box>
+          <Footer margin={{bottom:"large"}}>
+            <Button label="Save" primary={true} onClick={() => this._saveNotificationPreferences()} />
+          </Footer>
 
           {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
           {this.state.error &&
@@ -114,7 +139,7 @@ export default Component({
             <Notification size="small" status="ok" message="Success! 😺" state="Your settings have been updated." />
           }
 
-        </Box>
+        </Form>
     )
   }
 }, state =>({

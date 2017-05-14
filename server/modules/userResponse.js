@@ -26,6 +26,8 @@ module.exports = function(app, user, cb) {
       timezone: user.timezone,
       paymentMethods: customer.paymentMethods || [],
       googleNotificationChannel: user.googleNotificationChannel,
+      reminderOffset: user.reminderOffset,
+      reminderNotification: user.reminderNotification,
       token: token
     });
   });

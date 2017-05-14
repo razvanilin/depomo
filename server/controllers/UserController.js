@@ -334,6 +334,7 @@ module.exports = (app, route) => {
     if (req.body.timezone) updates.timezone = req.body.timezone;
     if (req.body.preferedPayment) updates.preferedPayment = req.body.preferedPayment;
     if (req.body.reminderNotification) updates.reminderNotification = req.body.reminderNotification;
+    if (req.body.reminderOffset) updates.reminderOffset = req.body.reminderOffset;
 
     User.findByIdAndUpdate(req.params.userId, { $set: updates}, {new: true}, (err, user) => {
       if (err) return res.status(400).send(err);

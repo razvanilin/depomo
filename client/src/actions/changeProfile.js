@@ -9,9 +9,18 @@ export default function changeProfile(profile, userId, cb) {
   if (!cookie.load('token')) return cb(false, "Invalid token");
   if (!profile) return cb(false, "No profile information found");
 
+  // make a copy of the profile object
+  profile = JSON.parse(JSON.stringify(profile));
+
   if (profile.timezone) {
     profile.timezone = profile.timezone.substring(0, profile.timezone.indexOf(" ("));
     profile.timezone = profile.timezone.replace(" ", "_");
+  }
+
+  if (profile.offsetType === 'hours') {
+    profile.reminderOffset *= 60;
+  } else if (profile.offsetType === 'days') {
+    profile.reminderOffset *= 24*60;
   }
 
   var profileOpt = {

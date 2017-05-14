@@ -1,8 +1,6 @@
 const request = require('request');
 
 import settings from '../settings'
-import cookie from 'react-cookie'
-
 
 function getNotificationPreferences(token, cb) {
   if (!token) return cb("No token found");
@@ -28,9 +26,9 @@ function getNotificationPreferences(token, cb) {
 }
 
 function updateNotificationPreferences(token, notificationObj, cb) {
-  if (!token) return cb("No token found");
-  var notifications;
+  if (token === null) return cb("token is missing");
 
+  var notifications;
   try {
     notifications = JSON.parse(JSON.stringify(notificationObj));
   } catch (e) {
