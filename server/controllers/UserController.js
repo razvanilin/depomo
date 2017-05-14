@@ -302,7 +302,7 @@ module.exports = (app, route) => {
         }
       }, {new: true}, (err, updatedUser) => {
         if (err) return res.status(400).send(err);
-        console.log(updatedUser);
+        return res.status(200).send("Settings saved.");
       });
     });
   });

@@ -14,6 +14,7 @@ import RadioButton from 'grommet/components/RadioButton'
 import Notification from 'grommet/components/Notification'
 import Button from 'grommet/components/Button'
 import FormField from 'grommet/components/FormField'
+import Spinning from 'grommet/components/icons/Spinning';
 
 import notifications from '../actions/notifications'
 
@@ -26,6 +27,7 @@ export default Component({
     this.state = {
       error: false,
       success: false,
+      loading: false,
       user: {
         reminderNotification: false,
         reminderOffset: false,
@@ -34,15 +36,20 @@ export default Component({
     }
 
     notifications.getNotificationPreferences(getQueryStringValue('token'), (err, response) => {
-      if (err) return;
-
+      if (err) {console.log(err);return;}
+      console.log(response);
+      response.offsetType = 'minutes';
       this.setState({user: response});
     });
   },
 
   _saveNotificationPreferences() {
-    notifications.updateNotificationPreferences(getQueryStringValue('token'), this.state.user, (err) => {
+    this.setState({loading: true});
+    notifications.updateNotificationPreferences(getQueryStringValue('token'), this.state.user, (err, response) => {
       if (err) this.setState({error: err});
+      else this.setState({success: true});
+      console.log(response);
+      this.setState({loading: false});
     });
   },
 
@@ -51,22 +58,25 @@ export default Component({
       <Box pad="large" justify="center" align="center" direction="column">
         <Image size="large" src={LogoImage}/>
 
-        <Heading tag="h2">Update your Depomo subscriptions 📰</Heading>
+        <Heading tag="h3">Update your Depomo subscriptions 📰</Heading>
 
-        <Box direction="column" justify="start" align="start">
+        <Box direction="column" justify="center" align="center">
           <FormField>
-          <CheckBox label="Get reminders for your tasks" value={this.state.user.reminderNotification}
+          <CheckBox label="Get reminders for your tasks" checked={this.state.user.reminderNotification}
+            toggle={true}
             onChange={event => {
               var user = this.state.user;
-              user.reminderNotification = event.target.value === 'true';
+              user.reminderNotification = !user.reminderNotification;
+              console.log(user);
               this.setState({user: user});
             }} />
           </FormField>
 
-          <Box style={{width:"100%"}} margin={{top:"medium", bottom:"medium"}}>
-            <FormField label="Send reminder">
+          <Box justify="center" align="center" style={{width:"100%"}} responsive={true} margin={{top:"medium", bottom:"medium"}}>
+            <FormField style={{width:"100%"}} label="Send reminder">
             <NumberInput min={1}
-              disabled={this.state.user.reminderNotification}
+              value={parseInt(this.state.user.reminderOffset, 10)}
+              disabled={!this.state.user.reminderNotification}
               onChange={event => {
                 var user = this.state.user;
                 user.reminderOffset = event.target.value;
@@ -75,7 +85,7 @@ export default Component({
 
             <RadioButton checked={this.state.user.offsetType === 'minutes'} value="minutes"
               id="radio-minutes"
-              disabled={this.state.user.reminderNotification}
+              disabled={!this.state.user.reminderNotification}
               label="minutes"
               onChange={event => {
                 var user = this.state.user;
@@ -84,7 +94,7 @@ export default Component({
               }} />
             <RadioButton checked={this.state.user.offsetType === 'hours'} value="hours"
               id="radio-hours"
-              disabled={this.state.user.reminderNotification}
+              disabled={!this.state.user.reminderNotification}
               label="hours"
               onChange={event => {
                 var user = this.state.user;
@@ -93,7 +103,7 @@ export default Component({
               }} />
             <RadioButton checked={this.state.user.offsetType === 'days'} value="days"
               id="radio-days"
-              disabled={this.state.user.reminderNotification}
+              disabled={!this.state.user.reminderNotification}
               label="days"
               onChange={event => {
                 var user = this.state.user;
@@ -103,15 +113,16 @@ export default Component({
             </FormField>
           </Box>
 
-          <Box margin={{bottom:"medium"}} justify="center" align="center">
-            <Button fill={true} label="Save" primary={true} onClick={() => this._saveNotificationPreferences} />
+          <Box margin={{bottom:"large"}} justify="center" align="center">
+            <Button fill={true} label="Save" primary={true} onClick={() => this._saveNotificationPreferences()} />
           </Box>
 
+          {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
           {this.state.error &&
-            <Notification state="Oh no! 🙀" message="There was an error while updating your profile. Please try again." />
+            <Notification status="critical" message="Oh no! 🙀" state="There was an error while updating your profile. Please try again." />
           }
           {this.state.success &&
-            <Notification state="Success! 😺" message="Your settings have been updated." />
+            <Notification status="ok" message="Success! 😺" state="Your settings have been updated." />
           }
 
         </Box>

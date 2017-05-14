@@ -17,7 +17,7 @@ function getNotificationPreferences(token, cb) {
 
   request(options, (error, resp, body) => {
     if (error) return cb(error);
-    if (resp !== 200) return cb(body);
+    if (resp.statusCode !== 200) return cb(body);
 
     try {
       return cb(null, JSON.parse(body));
@@ -27,8 +27,23 @@ function getNotificationPreferences(token, cb) {
   });
 }
 
-function updateNotificationPreferences(token, notifications, cb) {
+function updateNotificationPreferences(token, notificationObj, cb) {
   if (!token) return cb("No token found");
+  var notifications;
+
+  try {
+    notifications = JSON.parse(JSON.stringify(notificationObj));
+  } catch (e) {
+    return cb(e);
+  }
+
+  if (notifications.offsetType === 'hours') {
+    notifications.reminderOffset *= 60;
+  } else if (notifications.offsetType === 'days') {
+    notifications.reminderOffset *= 24*60;
+  }
+
+  notifications.token = token;
 
   var options = {
     url: settings.api_host + "/user/notification/update",
@@ -42,13 +57,10 @@ function updateNotificationPreferences(token, notifications, cb) {
 
   request(options, (error, resp, body) => {
     if (error) return cb(error);
-    if (resp !== 200) return cb(body);
+    if (resp.statusCode !== 200) return cb(body);
 
-    try {
-      return cb(null, JSON.parse(body));
-    } catch (e) {
-      return cb(e);
-    }
+    return cb(null, body);
+
   });
 }
 
