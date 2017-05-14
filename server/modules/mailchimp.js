@@ -45,7 +45,7 @@ function addUser(user) {
   });
 }
 
-function sendEmail(app, template, user, vars, tags) {
+function sendEmail(app, template, user, vars, tags, cb) {
   // send user a welcome message
   var templateName = template;
   var templateContent = [{
@@ -79,10 +79,8 @@ function sendEmail(app, template, user, vars, tags) {
     async: true,
     ip_pool: "Main Pool"
   }, result => {
-    console.log("email sent");
-    console.log(result);
+    cb && typeof cb === 'function' && cb(null, result);
   }, err => {
-    console.log("email error");
-    console.log(err);
+    cb && typeof cb === 'function' && cb(err);
   });
 }

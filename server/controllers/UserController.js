@@ -68,7 +68,14 @@ module.exports = (app, route) => {
             mailchimp.addUser(user);
 
             // send welcome message
-            mailchimp.sendEmail(app, app.settings.mandrill.welcome_template, user, [{name: "fname", content: user.name}]);
+            mailchimp.sendEmail(
+              app,
+              app.settings.mandrill.welcome_template,
+              user,
+              [{name: "fname", content: user.name}],
+              null, (err) => {
+                if (err) console.log(err);
+              });
 
             return res.status(200).send("User Created");
         });

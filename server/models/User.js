@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const timestamp = require('mongoose-timestamp');
 const bcrypt = require('bcryptjs');
+const uuid = require('uuid/v4');
 
 var UserSchema = new mongoose.Schema({
   email: {
@@ -21,7 +22,16 @@ var UserSchema = new mongoose.Schema({
     default: false
   },
   resetToken: {
-    type: String
+    type: String,
+    default: () => {
+      return uuid();
+    }
+  },
+  completeTaskToken: {
+    type: String,
+    default: () => {
+      return uuid();
+    }
   },
   timezone: {
     type: String
@@ -44,13 +54,18 @@ var UserSchema = new mongoose.Schema({
   },
 // NOTIFICATIONS
   notificationToken: {
-    type: String
+    type: String,
+    default: () => {
+      return uuid();
+    }
   },
   reminderNotification: {
-    type: Boolean
+    type: Boolean,
+    default: true
   },
   reminderOffset: {
-    type: Number
+    type: Number,
+    default: 30
   }
 });
 

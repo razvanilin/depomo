@@ -49,6 +49,10 @@ var TaskSchema = new mongoose.Schema({
   googleId: {
     type: String
   },
+  reminderSent: {
+    type: Boolean,
+    default: false
+  },
   status: {
     type: String,
     default: "initial"
