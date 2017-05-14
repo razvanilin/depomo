@@ -14,6 +14,8 @@ import Toast from 'grommet/components/Toast'
 import Select from 'grommet/components/Select'
 import SocialGoogle from 'grommet/components/icons/base/PlatformGoogle'
 
+import NotificationPreferences from './NotificationPreferences'
+
 import changeProfile from '../actions/changeProfile'
 import changePassword from '../actions/changePassword'
 import removeGoogleConnection from '../actions/removeGoogleConnection'
@@ -730,6 +732,11 @@ export default Component({
               Success! Your Google Calendar connection has been successfully removed 😼
             </Toast>
           }
+        </Box>
+
+        <Box pad="medium">
+          <Heading tag="h3">Notification Preferences</Heading>
+          <NotificationPreferences />
         </Box>
       </Section>
     )

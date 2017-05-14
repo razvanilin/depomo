@@ -1,7 +1,7 @@
 const request = require('request');
 
 import settings from '../settings'
-
+import cookie from 'react-cookie'
 
 
 function getNotificationPreferences(token, cb) {
