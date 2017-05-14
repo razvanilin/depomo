@@ -52,7 +52,7 @@ function updateNotificationPreferences(token, notifications, cb) {
   });
 }
 
-export default Notification = {
+export default {
   getNotificationPreferences: getNotificationPreferences,
   updateNotificationPreferences: updateNotificationPreferences
 }
