@@ -85,6 +85,28 @@ $brand-color: #236863 !default;
   padding: 1.875em;
 }
 
-.kep-login-facebook {
-  
+.header-video {
+  background: linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7));
+  filter: unquote("progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3000000', endColorstr='#b3000000',GradientType=0 )");
+}
+
+.videowrapper {
+    float: none;
+    clear: both;
+    width: 100%;
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 25px;
+    height: 0;
+}
+.videowrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.cloud-bg {
+  background: url(./images/cloud_bg.png) no-repeat center center; 
 }
