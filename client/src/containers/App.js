@@ -8,7 +8,7 @@ import './App.scss';
 import '../index.scss';
 
 // import HeaderImage from '../images/header1.png';
-import HeaderImage from '../images/clouds.jpeg'
+import HeaderImage from '../images/clouds.jpg'
 import LogoImage from '../images/depomo_logo.png'
 import DepomotyImage from '../images/depomo_logo4.png'
 import InfographicImage from '../images/Infographic_jpg.jpg'
