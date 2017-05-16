@@ -7,7 +7,11 @@ import login from "../actions/login";
 import './App.scss';
 import '../index.scss';
 
-import HeaderImage from '../images/header1.png';
+// import HeaderImage from '../images/header1.png';
+import HeaderImage from '../images/clouds.jpeg'
+import LogoImage from '../images/depomo_logo.png'
+import DepomotyImage from '../images/depomo_logo4.png'
+import InfographicImage from '../images/Infographic_jpg.jpg'
 
 import App from 'grommet/components/App'
 import Article from 'grommet/components/Article'
@@ -42,21 +46,18 @@ export default React.createClass({
             <Box size={{width: {max: 'xxlarge'}}} direction="row"
               responsive={false} justify="center" align="center"
               pad={{horizontal: 'medium'}} flex="grow">
-              <GrommetIcon colorIndex="brand" size="large" />
+              <Image style={{width: "3.5em"}} src={DepomotyImage} />
               <Box pad="small" />
               <Menu label="Menu" inline={true} direction="row" flex="grow">
-                <Anchor href="#">Solutions</Anchor>
-                <Anchor href="#">Services</Anchor>
-                <Anchor href="#">Products</Anchor>
-                <Anchor href="#">About Us</Anchor>
-                <Anchor href="#">Support</Anchor>
+                <Anchor href="#">How it works</Anchor>
+                <Anchor href="#">About</Anchor>
               </Menu>
             </Box>
           </Header>
           <Hero background={<Image src={HeaderImage}
             fit='cover'
             full={true}
-            align={{"top": true}} />}
+            align={{"left": true}} />}
             backgroundColorIndex='dark'
             size='large'>
             <Box direction='row'
@@ -67,13 +68,13 @@ export default React.createClass({
                 pad='medium'
                 >
                 <Heading margin='none'>
-                  Depomo
+                  <Image src={LogoImage} />
                 </Heading>
               </Box>
             </Box>
 
             {!this.state.userLoaded &&
-              <Box direction="row" justify="center" align="center">
+              <Box responsive={false} direction="row" justify="center" align="center">
                 <Box pad="small">
                   <Link to="login">
                     <Button onClick={function() {console.log("login");}} label='Login' primary={true} />
@@ -94,6 +95,12 @@ export default React.createClass({
               </Box>
             }
           </Hero>
+
+          <Section style={{padding: "0px", margin: "0px"}}>
+          <Image style={{margin: "0px"}} src={InfographicImage} fit="cover" full="horizontal"/>
+
+          </Section>
+
           <Section>
             {this.props.children}
           </Section>
