@@ -19,7 +19,7 @@ module.exports = (app, cb) => {
     for (var i=0; i<channels.length; i++) {
       User.findOne({googleNotificationChannel: channels[i].channelId}, (err, user) => {
         if (!err && !user) {
-          app.calendar.channel.stop({
+          app.calendar.channels.stop({
             id: channels[i].channelId,
             resourceId: channels[i].resourceId,
             auth: settings.google.apiKey
