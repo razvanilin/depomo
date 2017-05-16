@@ -31,7 +31,7 @@ module.exports = function(app, cb) {
         tasks.map( task => {
           if (!task || !task._id) return;
 
-          if (moment().add(user.reminderOffset, 'minutes').diff(task.due) >= 0) {
+          if (moment.tz(moment().add(user.reminderOffset, 'minutes'), "Europe/London").utc() >= moment(task.due)) {
             let vars = [{
               name: "tasklabel",
               content: task.label,
