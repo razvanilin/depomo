@@ -53,7 +53,7 @@ function sendEmail(app, template, user, vars, tags, cb) {
     content: "Get ready to break procrastination"
   }];
   var message = {
-    from_email: "razvan@depomo.com",
+    from_email: "hello@depomo.com",
     from_name: "Razvan",
     to: [{
       email: user.email,
@@ -61,7 +61,7 @@ function sendEmail(app, template, user, vars, tags, cb) {
       type: "to"
     }],
     headers: {
-      "Reply-To": "razvan@depomo.com"
+      "Reply-To": "hello@depomo.com"
     },
     track_opens: true,
     track_clicks: true,
