@@ -93,7 +93,6 @@ var server = app.listen(app.settings.port, function() {
 
     checkNotificationChannels(app, (err, response) => {
       if (err) console.log(err);
-      else console.log(response);
     });
 
     sendReminders(app, (err) => {

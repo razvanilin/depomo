@@ -19,15 +19,13 @@ module.exports = (app, cb) => {
     for (var i=0; i<channels.length; i++) {
       User.findOne({googleNotificationChannel: channels[i].channelId}, (err, user) => {
         if (!err && !user) {
-          NotificationChannel.findOne({channelId: user.googleNotificationChannel}, (err, channel) => {
-            app.calendar.channel.stop({
-              id: user.googleNotificationChannel,
-              resourceId: channel.resourceId,
-              auth: settings.google.apiKey
-            }, (error, result) => {
-              if (error) console.log("Could not stop channel -> " + channel.channelId);
-              else console.log("Channel stopped -> " + channel.channelId);
-            });
+          app.calendar.channel.stop({
+            id: channels[i].channelId,
+            resourceId: channels[i].resourceId,
+            auth: settings.google.apiKey
+          }, (error, result) => {
+            if (error) console.log("Could not stop channel -> " + channel.channelId);
+            else console.log("Channel stopped -> " + channel.channelId);
           });
         }
       });
