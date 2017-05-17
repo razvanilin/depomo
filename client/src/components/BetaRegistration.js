@@ -1,14 +1,11 @@
 import React from 'react'
 
-import Header from 'grommet/components/Header'
 import Box from 'grommet/components/Box'
 import Button from 'grommet/components/Button';
 import Heading from 'grommet/components/Heading';
-import Image from 'grommet/components/Image';
 import Form from 'grommet/components/Form'
 import FormField from 'grommet/components/FormField'
 import Columns from 'grommet/components/Columns'
-import Headline from 'grommet/components/Headline'
 import Footer from 'grommet/components/Footer'
 import TextInput from 'grommet/components/TextInput'
 import Label from 'grommet/components/Label'
