@@ -25,6 +25,7 @@ module.exports = (app, route) => {
 
   /** Route to create a user **/
   app.post('/user', (req, res) => {
+    if (app.settings.env === 'production') return res.status(400).send("Registration not yet open");
     if (!req.body.email) return res.status(400).send("Request is missing the email field.");
     if (!req.body.password) return res.status(400).send("Request is missing the password field.");
     if (!req.body.name) return res.status(400).send("Request is missing the name field");

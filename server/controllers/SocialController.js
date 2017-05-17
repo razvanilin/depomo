@@ -15,6 +15,8 @@ module.exports = (app, route) => {
 
   app.post('/social/login', (req, res) => {
 
+    if (app.settings.env === 'production') return res.status(400).send("Registration not yet open");
+
     if (!req.body.email || !req.body.accessToken) {
       return res.status(400).send("Invalid Request");
     }

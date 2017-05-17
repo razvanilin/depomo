@@ -29,6 +29,8 @@ import LinkNext from 'grommet/components/icons/base/LinkNext'
 import Paragraph from 'grommet/components/Paragraph'
 import Responsive from 'grommet/utils/Responsive'
 
+import BetaRegistration from '../components/BetaRegistration'
+import settings from '../settings'
 
 export default React.createClass({
   componentWillMount() {
@@ -105,7 +107,7 @@ export default React.createClass({
             </Box>
             }
 
-            {!this.state.userLoaded &&
+            {!this.state.userLoaded && settings.env !== 'production' &&
               <Box pad="medium" justify="center" align="center">
                 {this.state.mobile && <Heading tag="h3" align="center">Procrastination is no longer an issue</Heading>}
                 <Box responsive={false} direction="row" justify="center" align="center">
@@ -121,6 +123,12 @@ export default React.createClass({
                     </Link>
                   </Box>
                 </Box>
+              </Box>
+            }
+
+            {settings.env === 'production' &&
+              <Box pad="meidum" justify="center" align="center">
+                <BetaRegistration />
               </Box>
             }
 
@@ -174,8 +182,7 @@ export default React.createClass({
                     <Heading tag="h3">Scenarion 2. Not completed the task on time 🙀</Heading>
                     <Paragraph>
                       Your deposit will be automatically extracted from your account.
-
-                      <strong>Not to worry</strong>, Depomo will use all the profits to develop the service more and to help build schools in the poor regions of Africa 🏫.
+                      <strong> Not to worry</strong>, Depomo will use all the profits to develop the service more and to help build schools in the poor regions of Africa 🏫.
                       All users will receive detailed monthly expenses and the amount sent towards charities.
                     </Paragraph>
                   </Box>
@@ -205,6 +212,12 @@ export default React.createClass({
                   Each month, there will be a financial report made available to everyone here on the website.
                   This way you will be able to follow us in the journey of conquering procrastination and help educating children along the way.
                 </Paragraph>
+
+                {settings.env === 'production' &&
+                  <Box pad="large" justify="center" align="center">
+                    <BetaRegistration />
+                  </Box>
+                }
               </Box>
             </Box>
 
