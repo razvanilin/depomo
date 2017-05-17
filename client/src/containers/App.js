@@ -98,22 +98,28 @@ export default React.createClass({
                 <Heading margin='none'>
                   <Image src={LogoImage} />
                 </Heading>
+                <Heading tag="h2">
+                  Procrastination is no longer an issue
+                </Heading>
               </Box>
             </Box>
             }
 
             {!this.state.userLoaded &&
-              <Box responsive={false} direction="row" justify="center" align="center">
-                <Box pad="small">
-                  <Link to="login">
-                    <Button onClick={function() {console.log("login");}} label='Login' primary={true} />
-                  </Link>
-                </Box>
+              <Box pad="medium" justify="center" align="center">
+                {this.state.mobile && <Heading tag="h3" align="center">Procrastination is no longer an issue</Heading>}
+                <Box responsive={false} direction="row" justify="center" align="center">
+                  <Box pad="small">
+                    <Link to="login">
+                      <Button onClick={function() {console.log("login");}} label='Login' primary={true} />
+                    </Link>
+                  </Box>
 
-                <Box pad="small">
-                  <Link to="signup">
-                    <Button onClick={function() {console.log("signup");}} label='Signup' primary={true} />
-                  </Link>
+                  <Box pad="small">
+                    <Link to="signup">
+                      <Button onClick={function() {console.log("signup");}} label='Signup' primary={true} />
+                    </Link>
+                  </Box>
                 </Box>
               </Box>
             }
