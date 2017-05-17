@@ -54,7 +54,6 @@ export default Component({
   _saveNotificationPreferences() {
     this.setState({loading: true});
 
-    var resource;
     if (getQueryStringValue('token')) {
       notifications.updateNotificationPreferences(getQueryStringValue('token'), this.state.user, (err, response) => {
         if (err) this.setState({error: err});
