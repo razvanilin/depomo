@@ -10,8 +10,9 @@ import Footer from 'grommet/components/Footer'
 import TextInput from 'grommet/components/TextInput'
 import Label from 'grommet/components/Label'
 import Spinning from 'grommet/components/icons/Spinning'
-import Notification from 'grommet/components/Notification'
+import Toast from 'grommet/components/Toast'
 import Responsive from 'grommet/utils/Responsive'
+import SocialShare from 'grommet/components/SocialShare'
 
 import subscribeEmail from '../actions/subscribeEmail'
 
@@ -21,7 +22,8 @@ export default React.createClass({
       email: "",
       emailError: "",
       errorMessage: "",
-      loading: false
+      loading: false,
+      toastOpen: false
     };
   },
 
@@ -65,9 +67,9 @@ export default React.createClass({
   render() {
     return (
       <Form compact={this.state.isMobile} onSubmit={e => {e.preventDefault(); this._onSubmitForm()}}>
-            <Heading align="center" tag="h3">{"Beta registrations are now open 🎉"}</Heading>
-        <FormField label="Enter your email to be one of the first one to try it" error={this.state.emailError}>
-          <TextInput name="email" value={this.state.email} onDOMChange={event => {this.setState({email: event.target.value})}} />
+            <Heading align="center" tag="h3">{"Beta registration is now open 🎉"}</Heading>
+        <FormField style={{backgroundColor: "white"}} error={this.state.emailError}>
+          <TextInput style={{color: "black"}} placeHolder="Enter your Email" name="email" value={this.state.email} onDOMChange={event => {this.setState({email: event.target.value})}} />
         </FormField>
 
         <Footer pad={{"vertical": "medium"}} justify="center">
@@ -84,7 +86,15 @@ export default React.createClass({
 
             {this.state.loading && <Box justify="center" align="center" pad="small"><Spinning /></Box>}
             {this.state.errorMessage && <Label style={{color:'red'}}>{this.state.errorMessage}</Label>}
-            {this.state.success && <Notification message='Thank you for registering! 😻 The beta will start soon' status='ok' />}
+            {this.state.success &&
+              <Toast message='Thank you for registering! 😻 The beta will start soon' status='ok' onClose={() => {this.setState({success: false})}}>
+                <Box direction="row">
+                  <Label>Thank you for registering! 😻 The beta will start soon. Share this on Twitter
+                    <SocialShare type="twitter" link="https://depomo.com" text="A new way to get rid of procrastination 🙀 I just registered for the beta here: "/>
+                  </Label>
+                </Box>
+              </Toast>
+            }
           </Columns>
         </Footer>
       </Form>

@@ -30,6 +30,7 @@ import Responsive from 'grommet/utils/Responsive'
 import Label from 'grommet/components/Label'
 import Footer from 'grommet/components/Footer'
 import Title from 'grommet/components/Title'
+import SocialShare from 'grommet/components/SocialShare'
 
 import BetaRegistration from '../components/BetaRegistration'
 import settings from '../settings'
@@ -101,11 +102,11 @@ export default React.createClass({
               <Box
                 align='center'
                 pad='large'
+                margin={{top:"large"}}
                 >
-                <Heading align="center" tag="h2" style={{maxWidth: "900px"}}>
+                <Heading strong={true} align="center" tag="h2" style={{maxWidth: "900px"}}>
                   Depomo comes to the rescue when procrastination becomes a problem
                 </Heading>
-                <Label>Sometimes you need to try new ways to motivate yourself to concentrate on tasks at hand</Label>
               </Box>
             </Box>
             }
@@ -130,7 +131,7 @@ export default React.createClass({
             }
 
             {settings.env === 'production' &&
-              <Box pad="medium" justify="center" align="center">
+              <Box margin={{top:"medium"}} justify="center" align="center">
                 <BetaRegistration />
               </Box>
             }
@@ -140,6 +141,16 @@ export default React.createClass({
                 <Button primary={true} label="Go to your dashboard" icon={<LinkNext />} path="/dashboard/tasks" />
               </Box>
             }
+
+            <Box direction="column" justify="center" align="center" pad="small" margin={{bottom:"medium"}}>
+              <Label size="small" style={{padding: "0px"}} margin="none">Spread the word 😻</Label>
+              <Box responsive={false} direction="row" justify="center" align="center">
+                <SocialShare type="facebook" link="https://depomo.com" />
+                <SocialShare type="twitter" link="https://depomo.com" text="Just came across this app 🙀 that uses deposits to break your procrastination 💪 😻" />
+                <SocialShare type="linkedin" link="https://depomo.com" text="A novel way to break procrastination using deposits. Check it out 👇" />
+                <SocialShare type="google" link="https://depomo.com" />
+              </Box>
+            </Box>
 
           </Hero>
 
