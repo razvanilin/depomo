@@ -193,6 +193,7 @@ export default Component({
 
   _renderPast() {
     if (this.props.task && this.props.task.tasks && this.props.task.tasks.length > 0) {
+      var count = 0;
       return (
         <Box>
           <Label style={{paddingLeft:"20px"}}>Past tasks</Label>
@@ -202,6 +203,8 @@ export default Component({
               this.props.task.tasks.map((task) => {
                 //let task = this.props.task.tasks[index];
                 if (task.status === 'completed' || task.status === 'failed') {
+                  count ++;
+                  if (count > 3) return (<span key={task._id}></span>)
                   return (
                     <ListItem colorIndex={task.status === 'completed' ? 'accent-2' : 'grey-3-a'} direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
                         <Box style={{width:this.state.labelWidth}} justify="center" align="start">
@@ -239,6 +242,7 @@ export default Component({
               })
             }
           </List>
+          <Heading tag="h3" align="center"><Anchor href="#" primary={true} label="Check history for more" /></Heading>
         </Box>
       )
     }
