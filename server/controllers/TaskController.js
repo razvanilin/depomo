@@ -16,8 +16,7 @@ module.exports = (app, route) => {
 
   /** Route to get user's tasks **/
   app.get('/task', verifyOwner, (req, res) => {
-    var tasksExclusionFields = "-paymentId -payerId";
-    Task.find({owner: req.query.userId}, tasksExclusionFields, (err, tasks) => {
+    Task.find({owner: req.query.userId}, null, {sort: '-createdAt'}, (err, tasks) => {
       if (err) {
         console.log(err);
         return res.status(400).send(err);
