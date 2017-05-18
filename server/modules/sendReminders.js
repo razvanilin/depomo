@@ -43,7 +43,7 @@ module.exports = function(app, cb) {
               content: task.deposit + " " + task.currency
             }, {
               name: 'completed',
-              content: settings.host + "/complete?userId=" + user._id + "&token=" + user.completeTaskToken
+              content: settings.host + "/complete?taskId=" + task._id + "&token=" + user.completeTaskToken
             }, {
               name: 'unsub',
               content: settings.host + "/notifications?userId=" + user._id + "&token=" + user.notificationToken

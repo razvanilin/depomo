@@ -12,6 +12,7 @@ import ProcessPayment from './containers/ProcessPayment'
 import ResetPassword from './containers/ResetPassword'
 import NotFound from './containers/NotFound'
 import UpdateNotifications from './containers/UpdateNotifications'
+import CompletionScreen from './containers/CompletionScreen'
 
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -47,6 +48,7 @@ Render(states, (
     <Route path="/payment" component={ProcessPayment} />
     <Route path="/reset" component={ResetPassword} />
     <Route path="/notifications" component={UpdateNotifications} />
+    <Route path="/complete" component={CompletionScreen} />
 
     <Route path="*" component={NotFound} />
   </Router>

@@ -28,7 +28,7 @@ import Alert from 'grommet/components/icons/base/Alert'
 import Responsive from 'grommet/utils/Responsive'
 
 import getTasks from '../actions/getTasks'
-import completeTask from '../actions/completeTask'
+import {completeTask} from '../actions/completeTask'
 import removeTask from '../actions/removeTask'
 import completePayment from '../actions/completePayment'
 

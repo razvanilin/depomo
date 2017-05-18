@@ -6,6 +6,7 @@ const moment = require('moment-timezone');
 const getPaypalToken = require('../modules/getPaypalToken');
 const makePayment = require('../modules/makePayment');
 const fs = require('fs');
+const uuid = require('uuid/v4');
 
 module.exports = (app, route) => {
 
@@ -158,6 +159,48 @@ module.exports = (app, route) => {
     });
   });
   // ---------------------------------------------------
+
+  /** Route to complete the task using a token **/
+  app.put('/task/:id/complete/token', (req, res) => {
+    if (!req.body.token) return res.status(400).send("The request is missing the required token.");
+
+    User.findOne({completeTaskToken: req.body.token}, (err, user) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send("Unable to retrieve the user information");
+      }
+
+      if (!user) return res.status(404).send("The token is invalid");
+
+      Task.findByIdAndUpdate(req.params.id, {
+        $set: {
+          status: "completed"
+        }
+      }, {new: true}, (err, task) => {
+        if (err) {
+          console.log(err);
+          return res.status(400).send("Unable to update the task");
+        }
+
+        if (!task) return res.status(404).send("The task ID is invalid");
+
+        // change the token for the user
+        User.findByIdAndUpdate(user._id, {
+          $set: {
+            completeTaskToken: uuid()
+          }
+        }, (err, newUser) => {
+          if (err) console.log(err);
+
+          return res.status(200).send({
+            label: task.label,
+            deposit: task.deposit,
+            currency: task.currency
+          });
+        });
+      })
+    });
+  });
 
   /** ROUTE to remove a task **/
   app.put('/task/:id/remove', (req, res) => {

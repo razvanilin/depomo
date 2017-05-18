@@ -3,7 +3,7 @@ const request = require('request');
 import settings from '../settings'
 import cookie from 'react-cookie'
 
-export default function completeTask(taskId, donation, userId, cb) {
+export function completeTask(taskId, donation, userId, cb) {
   if (!taskId || !cookie.load('token')) cb(false, "Cannot process the request at this time.");
 
   var requestOpt = {
@@ -12,6 +12,7 @@ export default function completeTask(taskId, donation, userId, cb) {
     form: { userId: userId, donation: donation },
     headers: {
       'Accept': 'application/json',
+      'Content-Type': 'application/json',
       'x-access-token': cookie.load('token')
     }
   };
@@ -22,4 +23,28 @@ export default function completeTask(taskId, donation, userId, cb) {
 
     return cb(true, body);
   });
+}
+
+export function completeTaskWithToken(taskId, token, cb) {
+
+  var options = {
+    url: settings.api_host + "/task/" + taskId + "/complete/token",
+    method: "PUT",
+    form: {token: token},
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    }
+  };
+
+  request(options, (error, resp, body) => {
+    if (error) return cb(error);
+
+    try {
+      cb(null, JSON.parse(body));
+    } catch (e) {
+      cb(e);
+    }
+  });
+
 }
