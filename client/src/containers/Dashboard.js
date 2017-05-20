@@ -114,8 +114,12 @@ export default Component({
 
         <Box flex='grow' pad="small" wrap={true}>
           <Menu primary={true} wrap={true}>
-            <Anchor label="Tasks" icon={<PlanIcon />} animateIcon={true} path={{path: "/dashboard/tasks", index: true}}/>
-            <Anchor label="Profile" icon={<UserIcon />} animateIcon={true} />
+            <Anchor label="Tasks" icon={<PlanIcon />} animateIcon={true}
+              onClick={() => { this.setState({showMenu: false})}}
+              path={{path: "/dashboard/tasks", index: true}} />
+            <Anchor label="Profile" icon={<UserIcon />} animateIcon={true}
+              onClick={() => { this.setState({showMenu: false})}}
+              path={{path: "/dashboard/profile", index: true}} />
             <Anchor label="History" icon={<HistoryIcon />} animateIcon={true} />
             <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true} />
             {this.props.user && this.props.user._id && !this.props.user.googleNotificationChannel &&
