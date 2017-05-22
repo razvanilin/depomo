@@ -150,7 +150,7 @@ export default Component({
     }
 
     try {
-      return parseInt((completed * 100) / (completed+failed));
+      return parseInt((completed * 100) / (completed+failed),10);
     } catch (e) {
       return (completed * 100) / (completed+failed);
     }
