@@ -89,8 +89,7 @@ export default Component({
   },
 
   _makeActive(path) {
-    console.log(this.props.location.pathname);
-    if (this.props.location.pathname === path) {
+    if (this.props.location.pathname.indexOf(path) > -1) {
       return true;
     }
 
@@ -116,12 +115,22 @@ export default Component({
           <Menu primary={true} wrap={true}>
             <Anchor label="Tasks" icon={<PlanIcon />} animateIcon={true}
               onClick={() => { this.setState({showMenu: false})}}
-              path={{path: "/dashboard/tasks", index: true}} />
+              path={{path: "/dashboard/tasks", index: true}}
+              className={this._makeActive("/dashboard/tasks") ? 'active' : ''}/>
+
             <Anchor label="Profile" icon={<UserIcon />} animateIcon={true}
               onClick={() => { this.setState({showMenu: false})}}
-              path={{path: "/dashboard/profile", index: true}} />
-            <Anchor label="History" icon={<HistoryIcon />} animateIcon={true} />
-            <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true} />
+              path={{path: "/dashboard/profile", index: true}}
+              className={this._makeActive("/dashboard/profile") ? 'active' : ''}/>
+
+            <Anchor label="History" icon={<HistoryIcon />} animateIcon={true}
+              onClick={() => { this.setState({showMenu: false})}}
+              path={{path: "/dashboard/history", index: true}}
+              className={this._makeActive("/dashboard/history") ? 'active' : ''}/>
+
+            <Anchor label="Achievements" icon={<TrophyIcon />} animateIcon={true}
+            className={this._makeActive("/dashboard/achievements") ? 'active' : ''}/>
+
             {this.props.user && this.props.user._id && !this.props.user.googleNotificationChannel &&
               <Anchor id="google-integration" primary={true} label="Google calendar" icon={<SocialGoogle />} path={{path:"/dashboard/integration", index: true}}/>
             }
@@ -173,5 +182,6 @@ export default Component({
 }, state => ({
   user: state.user,
   task: state.task,
-  location: state.routing.locationBeforeTransitions
+  location: state.routing.locationBeforeTransitions,
+  route: state.route
 }))

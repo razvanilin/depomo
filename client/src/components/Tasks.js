@@ -242,7 +242,9 @@ export default Component({
               })
             }
           </List>
-          <Heading tag="h3" align="center"><Anchor href="#" primary={true} label="Check history for more" /></Heading>
+          <Heading tag="h3" align="center">
+            <Anchor path={{path: '/dashboard/history', index: true}} href="#" primary={true} label="Check history for more" onClick={() => {this.setState({historyClicked: true})}}/>
+          </Heading>
         </Box>
       )
     }

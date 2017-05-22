@@ -23,6 +23,7 @@ import ProfileSettings from './components/ProfileSettings'
 import PaymentMethod from './components/PaymentMethod'
 import GoogleCalendar from './components/GoogleCalendar'
 import Profile from './components/Profile'
+import History from './components/History'
 
 // Screens
 // import Home from './components/Home'
@@ -46,6 +47,7 @@ Render(states, (
       <Route path='settings' component={ProfileSettings} />
       <Route path='integration' component={GoogleCalendar} />
       <Route path='profile' component={Profile} />
+      <Route path='history' component={History} />
     </Route>
     <Route path="/payment" component={ProcessPayment} />
     <Route path="/reset" component={ResetPassword} />
