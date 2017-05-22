@@ -76,6 +76,10 @@ export default Component({
           return [];
         });
 
+        totalEur = totalEur + savedEur + depositEur;
+        totalGbp = totalGbp + savedGbp + depositGbp;
+        totalUsd = totalUsd + savedUsd + savedGbp;
+
         this.setState({
           tasksLoaded: true,
           depositGbp: depositGbp,
@@ -84,10 +88,14 @@ export default Component({
           savedGbp: savedGbp,
           savedEur: savedEur,
           savedUsd: savedUsd,
-          totalEur: totalEur + savedEur + depositEur,
-          totalGbp: totalGbp + savedGbp + depositGbp,
-          totalUsd: totalUsd + savedUsd + savedGbp
+          totalEur: totalEur,
+          totalGbp: totalGbp,
+          totalUsd: totalUsd
         });
+
+        if (totalEur === 0) this.setState({hideEur: true});
+        if (totalGbp === 0) this.setState({hideGbp: true});
+        if (totalUsd === 0) this.setState({hideUsd: true});
       });
     }
   },
@@ -141,7 +149,11 @@ export default Component({
       }
     }
 
-    return (completed * 100) / (completed+failed);
+    try {
+      return parseInt((completed * 100) / (completed+failed));
+    } catch (e) {
+      return (completed * 100) / (completed+failed);
+    }
   },
 
   render() {
@@ -159,7 +171,9 @@ export default Component({
               </Box>
 
               <Box margin={{horizontal:"medium"}} direction="column">
-                <Meter type="arc" value={this._getCompletionRate()} onActive={() => {}}/>
+                <Meter type="arc" value={this._getCompletionRate()} onActive={() => {}}
+                  colorIndex={this._getCompletionRate() < 25 ? 'critical' :
+                    this._getCompletionRate() >= 25 && this._getCompletionRate() < 50 ? 'warning' : 'ok'}/>
                 <Value value={this._getCompletionRate()} units="%" label="Your completion rate" />
               </Box>
             </Box>
@@ -171,6 +185,9 @@ export default Component({
               {this.props.task.tasks && this.props.task.tasks.length > 3 &&
                 <Label>Great progress so far, we are impressed😺</Label>
               }
+              {this._getCompletionRate() < 50 &&
+                <Label style={{marginTop: "0px"}}>{"Let's try and lift the completion rate a little now 💪"}</Label>
+              }
             </Box>
             <Button primary={false} path="/dashboard/tasks/add" label="Add a new task" icon={<AddIcon />} />
           </Box>
@@ -178,39 +195,39 @@ export default Component({
           <Box direction="column" justify="center" align="center" basis="1/2">
             <Label>Total deposits placed</Label>
             <Box direction="row" flex="grow" justify="between" align="center" separator="bottom">
-              <Box pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+              <Box className={this.state.hideUsd ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.totalUsd} units="$" icon={<MoneyIcon />} label="USD" />
               </Box>
-              <Box pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+              <Box className={this.state.hideEur ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.totalEur} units="€" icon={<MoneyIcon />} label="EUR" />
               </Box>
-              <Box pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+              <Box className={this.state.hideGbp ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.totalGbp} units="£" icon={<MoneyIcon />} label="GBP" />
               </Box>
             </Box>
 
             <Label>Total deposits saved</Label>
             <Box direction="row" flex="grow" justify="between" align="center">
-              <Box pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+              <Box className={this.state.hideUsd ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.savedUsd} units="$" icon={<MoneyIcon />} label="USD" colorIndex="ok"/>
               </Box>
-              <Box pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+              <Box className={this.state.hideEur ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.savedEur} units="€" icon={<MoneyIcon />} label="EUR" colorIndex="ok"/>
               </Box>
-              <Box pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+              <Box className={this.state.hideGbp ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.savedGbp} units="£" icon={<MoneyIcon />} label="GBP" colorIndex="ok"/>
               </Box>
             </Box>
 
             <Label>Total contributions</Label>
             <Box direction="row" flex="grow" justify="between" align="center">
-              <Box pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+              <Box className={this.state.hideUsd ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.depositUsd} units="$" icon={<MoneyIcon />} label="USD" colorIndex="warning"/>
               </Box>
-              <Box pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+              <Box className={this.state.hideEur ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.depositEur} units="€" icon={<MoneyIcon />} label="EUR" colorIndex="warning"/>
               </Box>
-              <Box pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+              <Box className={this.state.hideGbp ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.depositGbp} units="£" icon={<MoneyIcon />} label="GBP" colorIndex="warning"/>
               </Box>
             </Box>
