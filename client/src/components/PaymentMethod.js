@@ -47,8 +47,9 @@ export default Component({
   _renderPaymentMethods() {
     if (this.props.user.paymentMethods.length === 0) {
       return (
-        <Box justify="center" align="center">
+        <Box direction="column" justify="center" align="center">
           <Label>No payment methods have been saved yet.</Label>
+          <Label align="center">You must add a payment method before adding new tasks or connecting to Google Calendar</Label>
         </Box>
       )
     }

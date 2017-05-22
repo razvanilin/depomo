@@ -26,6 +26,12 @@ export default Component({
       selectedCalendar: ""
     }
 
+    if (this.props.user.paymentMethods.length < 1) {
+      Goto({
+        path: "/dashboard/tasks/add/payment"
+      });
+    }
+
     getGoogleCalendarList(this.props.user, (err, response) => {
       if (err) return this.setState({listLoading: false, listError: err});
 
