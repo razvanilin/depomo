@@ -166,7 +166,7 @@ export default Component({
 
             <Box direction="row" justify="between" align="start">
               <Box margin={{horizontal:"medium"}} direction="column">
-                <AnnotatedMeter legend={true} type="circle"
+                <AnnotatedMeter max={this.props.task.tasks.length} legend={true} type="circle"
                   series={this._prepareChart()} />
               </Box>
 
