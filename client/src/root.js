@@ -24,6 +24,7 @@ import PaymentMethod from './components/PaymentMethod'
 import GoogleCalendar from './components/GoogleCalendar'
 import Profile from './components/Profile'
 import History from './components/History'
+import Task from './components/Task'
 
 // Screens
 // import Home from './components/Home'
@@ -43,6 +44,7 @@ Render(states, (
         <Route path='add' component={AddTask}>
           <Route path='payment' component={PaymentMethod} />
         </Route>
+        <Route path=':id' component={Task} />
       </Route>
       <Route path='settings' component={ProfileSettings} />
       <Route path='integration' component={GoogleCalendar} />

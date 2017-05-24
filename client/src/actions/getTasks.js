@@ -39,7 +39,6 @@ export default function getTasks(user, cb) {
       return cb(true, tasks);
     } catch (e) {
       console.log(e);
-      console.log(body);
       return cb(false, body);
     }
   });

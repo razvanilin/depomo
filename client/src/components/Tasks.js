@@ -1,5 +1,5 @@
 import React from 'react'
-import { Component, Link } from 'jumpsuit';
+import { Component, Link, Goto } from 'jumpsuit';
 const moment = require('moment-timezone');
 
 import Section from 'grommet/components/Section'
@@ -159,7 +159,8 @@ export default Component({
                 //let task = this.props.task.tasks[index];
                 if (task.status === 'initial') {
                   return (
-                    <ListItem direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal">
+                    <ListItem direction={this.state.listItemDirection} key={task._id} responsive={false} primary={true} justify="between" separator="horizontal"
+                      onClick={() => {Goto({path:window.location.pathname + "/" + task._id})}}>
                         <Box style={{width:this.state.labelWidth}} justify="center" align="start">
                           <Label truncate={true}>{task.label}</Label>
                         </Box>
