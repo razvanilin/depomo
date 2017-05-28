@@ -16,6 +16,7 @@ import Layer from 'grommet/components/Layer'
 import Heading from 'grommet/components/Heading'
 import FormField from 'grommet/components/FormField'
 import NumberInput from 'grommet/components/NumberInput'
+import ListPlaceholder from 'grommet-addons/components/ListPlaceholder';
 
 import AddIcon from 'grommet/components/icons/base/Add'
 import Checkmark from 'grommet/components/icons/base/Checkmark'
@@ -138,9 +139,11 @@ export default Component({
     if (this.props.task && this.props.task.tasks && this.props.task.tasks.length > 0) {
       var arrangedTasks = [];
       var tasks = this.props.task.tasks;
+      var count = 0;
 
       for (var i=0; i<tasks.length; i++) {
         if (tasks[i].status === 'initial') {
+          count++;
           arrangedTasks.push(tasks[i]);
         }
       }
@@ -154,6 +157,10 @@ export default Component({
           <Label style={{paddingLeft:"20px"}}>Current tasks</Label>
 
           <List selectable={true}>
+            { count === 0 &&
+              <ListPlaceholder unfilteredTotal={count} filteredTotal={count} emptyMessage="You do not have any tasks at the moment. Click on the button above to add one."/>
+            }
+
             {
               arrangedTasks.map((task) => {
                 //let task = this.props.task.tasks[index];

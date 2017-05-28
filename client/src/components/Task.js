@@ -79,7 +79,7 @@ export default Component({
 
   render() {
     return(
-      <Layer closer={true}
+      <Layer closer={true} size="large"
         onClose={() => {
           Goto({
             path:window.location.pathname.substring(0,window.location.pathname.lastIndexOf('/'))
@@ -94,7 +94,7 @@ export default Component({
           <Box direction="row" justify="center" align="center">
             <Box pad="medium">
               { !this.state.completeSuccess && !this.state.removeSuccess &&
-                <Button label="I completed the task" icon={<Checkmark />} onClick={()=>{ this._onTaskCompleted()}}/>
+                <Button label="Complete task" icon={<Checkmark />} onClick={()=>{ this._onTaskCompleted()}}/>
               }
               { this.state.completeSuccess &&
                 <Value value={""} icon={<Checkmark />} colorIndex="ok" label="Task completed" />
