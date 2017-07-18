@@ -59,12 +59,12 @@ export default Component({
   _renderDefaultPayment() {
     let paymentMethods = this.props.user.paymentMethods;
     for (var i=0; i<paymentMethods.length; i++) {
-      if (paymentMethods[i].default) {
+      if (paymentMethods[i].id === this.props.user.defaultSource) {
         return (
           <Anchor primary={false} animateIcon={true}
                 title="Current payment method. Click to change"
-                icon={(paymentMethods[i].cardType && <CreditCard />) || <Paypal />}
-                label={(paymentMethods[i].cardType && paymentMethods[i].cardType + " " + paymentMethods[i].last4) || paymentMethods[i].email} path={{path: "/dashboard/tasks/add/payment"}}
+                icon={<CreditCard />}
+                label={paymentMethods[i].brand + " " + paymentMethods[i].last4} path={{path: "/dashboard/tasks/add/payment"}}
                 onClick={() => {this._methodClicked()}}/>
         )
       }
@@ -119,16 +119,18 @@ export default Component({
             </FormField>
 
             <Footer pad={{"vertical": "medium"}} justify="center">
-                <Box justify="center" direction="column">
+                <Box justify="center" align="center" direction="column">
 
-                  <Box justify="center" align="center" direction="row" margin={{bottom: "small"}} pad="small">
+                  <Box justify="center" align="center" direction="column" margin={{bottom: "small"}} pad="small">
                     {this.props.user && this._renderDefaultPayment()}
+                    <Label align="center" size="small">{"You won't pay anything at the moment"}</Label>
+                    <Label align="center" size="small">{"The amount will be paid only if you don't complete your task in time"}</Label>
                   </Box>
+
                   <Button label='Save task & Place deposit'
                     type='submit'
                     primary={true}
                     align="center"
-                    style={{width:"100%"}}
                     onClick={function() { console.log("track");}}>
                   </Button>
                   {this.state.errorMessage && <Label style={{color:'red'}}>{this.state.errorMessage}</Label>}
