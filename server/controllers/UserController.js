@@ -351,27 +351,14 @@ module.exports = (app, route) => {
         expiresIn: 604800 // a week
       });
 
-      // alternative payment methods
-      app.braintree.customer.find(user.customerId, (err, customer) => {
-        //console.log(customer.paymentMethods);
-
+      userResponse(app, user, (err, response) => {
         if (err) {
           console.log(err);
           customer = {};
         }
 
-        var userResponse = {
-          _id: user._id,
-          email: user.email,
-          name: user.name,
-          timezone: user.timezone,
-          preferedPayment: user.preferedPayment,
-          paymentMethods: customer.paymentMethods || [],
-          token: token
-        }
-
-        return res.status(200).send(userResponse);
-      })
+        return res.status(200).send(response);
+      });
     });
   });
   // ----------------------------------------------------------
@@ -414,25 +401,13 @@ module.exports = (app, route) => {
                 expiresIn: 604800 // a week
               });
 
-              // get the payment methods
-              app.braintree.customer.find(user.customerId, (err, customer) => {
-
+              userResponse(app, user, (err, response) => {
                 if (err) {
                   console.log(err);
                   customer = {};
                 }
 
-                var userResponse = {
-                  _id: user._id,
-                  email: user.email,
-                  name: user.name,
-                  timezone: user.timezone,
-                  preferedPayment: user.preferedPayment,
-                  paymentMethods: customer.paymentMethods || [],
-                  token: token
-                }
-
-                return res.status(200).send(userResponse);
+                return res.status(200).send(response);
               });
             });
           });
