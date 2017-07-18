@@ -59,8 +59,8 @@ module.exports = (app, route) => {
               if (error) return res.status(400).send(error);
 
               // create a customer on braintree
-              app.braintree.customer.create({
-                firstName: user.name,
+              app.stripe.customers.create({
+                description: user.name,
                 email: user.email
               }, (err, result) => {
                 if (err) {
@@ -68,8 +68,10 @@ module.exports = (app, route) => {
                   return res.status(400).send("Could not create a customer ID");
                 }
 
-                if (result && result.customer && result.customer.id) {
-                  User.findByIdAndUpdate(user._id, { $set: { customerId: result.customer.id}}, {new:true}, (err, user) => {
+                console.log(result);
+
+                if (result && result.id) {
+                  User.findByIdAndUpdate(user._id, { $set: { customerId: result.id}}, {new:true}, (err, user) => {
                     if (err) console.log(err);
 
                     // add user to the mailchimp list

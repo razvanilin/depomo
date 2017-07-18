@@ -49,8 +49,8 @@ module.exports = (app, route) => {
             if (error) return res.status(400).send(error);
 
             // create a customer on braintree
-            app.braintree.customer.create({
-              firstName: req.body.name,
+            app.stripe.customers.create({
+              description: req.body.name,
               email: req.body.email
             }, (err, result) => {
               if (err) {
@@ -58,8 +58,10 @@ module.exports = (app, route) => {
                 return;
               }
 
-              if (result && result.customer && result.customer.id) {
-                User.findByIdAndUpdate(user._id, { $set: { customerId: result.customer.id}}, {new:true}, (err, customer) => {
+              console.log(result);
+
+              if (result && result.id) {
+                User.findByIdAndUpdate(user._id, { $set: { customerId: result.id}}, {new:true}, (err, customer) => {
                   if (err) console.log(err);
                 });
               }
@@ -144,7 +146,11 @@ module.exports = (app, route) => {
     if (!req.body.token) return res.status(400).send("Token is missing");
 
     jwt.verify(req.body.token, app.settings.secret, (err, decoded) => {
-      if (err) return res.status(401).send("Unauthorized access.");
+      if (err) {
+        console.log(err);
+        return res.status(401).send("Unauthorized access.");
+      }
+
       User.findOne({
         _id: decoded._doc._id
       }, (err, user) => {

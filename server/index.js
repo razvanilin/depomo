@@ -13,6 +13,7 @@ const moment = require('moment-timezone');
 const mandrill = require('mandrill-api/mandrill');
 const braintreeSdk = require('braintree');
 const google = require('googleapis');
+const stripe = require('stripe');
 var calendar = google.calendar('v3');
 var googleOauth = google.auth.OAuth2;
 
@@ -63,6 +64,9 @@ app.google = new googleOauth(
   app.settings.google.clientSecret,
   app.settings.google.redirectUrl
 );
+
+// configure stripe
+app.stripe = stripe(app.settings.stripe.apiKey);
 
 app.calendar = calendar;
 

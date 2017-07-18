@@ -11,9 +11,12 @@ if (process.env.NODE_ENV == "production") {
 
 module.exports = function(app, user, cb) {
 
-  app.braintree.customer.find(user.customerId, (err, customer) => {
+  app.stripe.customers.retrieve(user.customerId, (err, customer) => {
 
-    if (err) return cb(err);
+    if (err) {
+      console.log(err);
+      return cb(err);
+    }
 
     let token = jwt.sign(user, settings.secret, {
       expiresIn: 604800 // a week
