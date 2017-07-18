@@ -38,16 +38,16 @@ module.exports = (app) => {
               {
                 $set: {
                   status: "failed",
-                  transactionId: result.payment.transaction.id,
-                  transactionStatus: result.payment.transaction.status,
-                  currency: result.payment.transaction.currencyIsoCode,
+                  transactionId: result.payment.id,
+                  transactionStatus: result.payment.status,
+                  currency: result.payment.currency,
                   refund: -1
                 }
               }, (err, task) => {
                 if (err) {
                   console.log(err);
                 }
-                console.log(result.payment.transaction.id + " was " + result.payment.transaction.status);
+                console.log(result.payment.id + " was " + result.payment.status);
             });
           }
         });

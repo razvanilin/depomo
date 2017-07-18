@@ -206,18 +206,15 @@ module.exports = (app, route) => {
 
     // make the transaction
     var transactionOpt = {
+      customer: req.body.customer,
       amount: req.body.amount,
-      paymentMethodToken: req.body.token,
-      options: {
-        submitForSettlement: true
-      }
+      currency: req.body.currency,
+      capture: true,
+      // source: req.body.token,
+      description: req.body.task_id
     };
 
-    if (req.params.type === 'paypal') {
-      transactionOpt.recurring = true;
-    }
-
-    app.braintree.transaction.sale(transactionOpt, (err, result) => {
+    app.stripe.charges.create(transactionOpt, (err, result) => {
       if (err) {
         console.log(err);
         return res.status(400).send(err);
@@ -228,6 +225,6 @@ module.exports = (app, route) => {
   });
 
   return (req, res, next) => {
-
+    next();
   }
 }
