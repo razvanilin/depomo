@@ -13,25 +13,29 @@ module.exports = function(app, user, cb) {
 
   app.stripe.customers.retrieve(user.customerId, (err, customer) => {
 
-    if (err) {
-      console.log(err);
-      return cb(err);
-    }
+    app.stripe.customers.listSources(user.customerId, (err, sources) => {
 
-    let token = jwt.sign(user, settings.secret, {
-      expiresIn: 604800 // a week
-    });
+      if (err) {
+        console.log(err);
+        return cb(err);
+      }
 
-    return cb(null, {
-      _id: user._id,
-      email: user.email,
-      name: user.name,
-      timezone: user.timezone,
-      paymentMethods: customer.paymentMethods || [],
-      googleNotificationChannel: user.googleNotificationChannel,
-      reminderOffset: user.reminderOffset,
-      reminderNotification: user.reminderNotification,
-      token: token
+      let token = jwt.sign(user, settings.secret, {
+        expiresIn: 604800 // a week
+      });
+
+      return cb(null, {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        timezone: user.timezone,
+        paymentMethods: sources.data || [],
+        defaultSource: customer.defaultSource,
+        googleNotificationChannel: user.googleNotificationChannel,
+        reminderOffset: user.reminderOffset,
+        reminderNotification: user.reminderNotification,
+        token: token
+      });
     });
   });
 }

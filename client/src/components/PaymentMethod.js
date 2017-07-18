@@ -10,14 +10,12 @@ import Footer from 'grommet/components/Footer'
 import Box from 'grommet/components/Box'
 import Heading from 'grommet/components/Heading'
 
-import Paypal from 'grommet/components/icons/base/SocialPaypal'
 import Checkmark from 'grommet/components/icons/base/Checkmark'
 import CreditCard from 'grommet/components/icons/base/CreditCard'
 import Spinning from 'grommet/components/icons/Spinning'
 import Add from 'grommet/components/icons/base/Add'
 
 import AddCard from './AddCard'
-import AddPaypal from './AddPaypal'
 import selectPaymentMethod from '../actions/selectPaymentMethod'
 
 export default Component({
@@ -59,13 +57,13 @@ export default Component({
         {this.props.user.paymentMethods && this.props.user.paymentMethods.length > 0 && <Label>Your saved payment methods:</Label>}
         {this.props.user.paymentMethods.map(paymentMethod => {
           return (
-            <ListItem key={paymentMethod.token} responsive={false} justify="between" onClick={()=>{this._selectPaymentMethod(paymentMethod.token)}}>
-              <Anchor primary={paymentMethod.default} animateIcon={true}
-                      icon={(paymentMethod.cardType && <CreditCard />) || <Paypal />}
-                      label={(paymentMethod.cardType && paymentMethod.cardType + " " + paymentMethod.last4) || paymentMethod.email}
+            <ListItem key={paymentMethod.id} responsive={false} justify="between" onClick={()=>{this._selectPaymentMethod(paymentMethod.id)}}>
+              <Anchor primary={this.props.user.defaultSource === paymentMethod.id} animateIcon={true}
+                      icon={ <CreditCard /> }
+                      label={paymentMethod.brand + " - ending in " + paymentMethod.last4}
                       onClick={() => console.log(paymentMethod.cardType + " clicked")}/>
-              {paymentMethod.default && <Checkmark colorIndex="ok" />}
-              {paymentMethod.token === this.state.selectedMethod && <Spinning />}
+              {(this.props.user.defaultSource === paymentMethod.id) && <Checkmark colorIndex="ok" />}
+              {paymentMethod.id === this.state.selectedMethod && <Spinning />}
             </ListItem>
           )
         })}
@@ -87,9 +85,6 @@ export default Component({
 
           <Footer pad={{"vertical": "medium"}} justify="start" direction="column">
               <Box justify="start" align="start" direction="column" pad="small">
-                <Anchor animateIcon={true} icon={<Add />} label="Add Paypal account" onClick={() => this.setState({method:'paypal'})}/>
-              </Box>
-              <Box justify="start" align="start" direction="column" pad="small">
                 <Anchor animateIcon={true} icon={<Add />} label="Add Debit or Credit card" onClick={() => this.setState({method:'card'})} />
               </Box>
           </Footer>
@@ -100,13 +95,6 @@ export default Component({
             <AddCard />
           </Box>
         }
-
-        {this.state.method === 'paypal' &&
-          <Box justify="center" align="center">
-            <AddPaypal />
-          </Box>
-        }
-
       </Box>
     )
   }
