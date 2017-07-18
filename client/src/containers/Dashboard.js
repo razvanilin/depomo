@@ -138,7 +138,6 @@ export default Component({
         </Box>
 
         <Footer pad="medium">
-          <UserIcon />
           <Menu responsive={true} inline={false} label={this.props.user.name} icon={<UserIcon />} primary={true}>
             <Anchor path={{path: "/dashboard/settings", index:true}}>Profile Settings</Anchor>
             <Anchor onClick={this._onLogoutClicked}>Log Out</Anchor>

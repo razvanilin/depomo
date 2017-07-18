@@ -163,7 +163,7 @@ export default React.createClass({
                   <Heading id="how-section" tag="h2">How does it work?</Heading>
 
                   <Box direction="row" justify="center" align="center">
-                    {!this.state.mobile && <Image size="small" full={false} fit="contain" src={CharOne} />}
+                    {!this.state.mobile && <Image size="small" full={false} src={CharOne} />}
                     <Box direction="column" justify="center">
                       <Box pad="large" justify="center" align="start">
                         <Heading tag="h3">Step 1. Create a task 📝</Heading>
@@ -207,7 +207,7 @@ export default React.createClass({
                       </Paragraph>
                     </Box>
                   </Box>
-                  <Image size="small" full={false} fit="contain" src={CharTwo} />
+                  <Image size="small" full={false} src={CharTwo} />
                 </Box>
               </Box>
 
