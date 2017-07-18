@@ -16,7 +16,6 @@ import Anchor from 'grommet/components/Anchor'
 
 import Spinning from 'grommet/components/icons/Spinning'
 import CreditCard from 'grommet/components/icons/base/CreditCard'
-import Paypal from 'grommet/components/icons/base/SocialPaypal'
 import Previous from 'grommet/components/icons/base/FormPrevious'
 
 import addTask from '../actions/addTask'
@@ -45,11 +44,7 @@ export default Component({
   },
 
   componentDidMount() {
-    console.log("testing");
-    for (var i=0; i < this.props.user.paymentMethods.length; i++) {
-      if (this.props.user.paymentMethods[i].default)
-        this.setState({defaultPayment: this.props.user.paymentMethods[i]});
-    }
+
   },
 
   _methodClicked() {
