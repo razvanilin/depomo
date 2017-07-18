@@ -181,18 +181,14 @@ module.exports = (app, route) => {
   // ------------------------------------------------
 
   /** Route to make payment method as default **/
-  app.put("/payment/:userId/method/:token", verifyOwner, (req, res) => {
-    app.braintree.paymentMethod.update(req.params.token, req.body, (err, result) => {
-      if (err) {
-        console.log(err);
-        console.log(req.params.token);
-        return res.status(400).send(err);
-      }
+  app.put("/payment/:userId/method/:id", verifyOwner, (req, res) => {
 
-      User.findOne({_id: req.params.userId}, (err, user) => {
-        if (err || !user) return res.status(400).send("Could not retrieve user information");
+    User.findOne({_id: req.params.userId}, (err, user) => {
+      if (err || !user) return res.status(400).send("Could not retrieve user information");
 
-
+      app.stripe.customers.update(user.customerId, {
+        default_source: req.params.id
+      }, (err, customer) => {
         userResponse(app, user, (err, response) => {
           if (err) return res.status(400).send("Could not retrieve user information.");
 

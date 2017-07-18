@@ -4,13 +4,12 @@ import settings from '../settings'
 import cookie from 'react-cookie'
 import userState from '../state/user'
 
-export default function selectPaymentMethod(token, body, userId, cb) {
-  if (!token || !body || !userId) return cb (false, "Did not receive the necessary information.");
+export default function selectPaymentMethod(token, userId, cb) {
+  if (!token || !userId) return cb (false, "Did not receive the necessary information.");
 
   var requestOpt = {
     url: settings.api_host + "/payment/" + userId + "/method/" + token,
     method: "PUT",
-    form: body,
     headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",

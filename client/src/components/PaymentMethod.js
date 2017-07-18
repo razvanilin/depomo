@@ -25,15 +25,11 @@ export default Component({
     }
   },
 
-  _selectPaymentMethod(token) {
+  _selectPaymentMethod(id) {
 
-    this.setState({selectedMethod: token});
+    this.setState({selectedMethod: id});
 
-    selectPaymentMethod(token, {
-      options: {
-        makeDefault: true
-      }
-    }, this.props.user._id, (success) => {
+    selectPaymentMethod(id, this.props.user._id, (success) => {
       if (!success) return this.setState({selectError: true});
 
       Goto({
@@ -61,7 +57,7 @@ export default Component({
               <Anchor primary={this.props.user.defaultSource === paymentMethod.id} animateIcon={true}
                       icon={ <CreditCard /> }
                       label={paymentMethod.brand + " - ending in " + paymentMethod.last4}
-                      onClick={() => console.log(paymentMethod.cardType + " clicked")}/>
+                      onClick={() => console.log("")}/>
               {(this.props.user.defaultSource === paymentMethod.id) && <Checkmark colorIndex="ok" />}
               {paymentMethod.id === this.state.selectedMethod && <Spinning />}
             </ListItem>

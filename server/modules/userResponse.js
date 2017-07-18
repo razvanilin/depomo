@@ -30,7 +30,7 @@ module.exports = function(app, user, cb) {
         name: user.name,
         timezone: user.timezone,
         paymentMethods: sources.data || [],
-        defaultSource: customer.defaultSource,
+        defaultSource: customer.default_source,
         googleNotificationChannel: user.googleNotificationChannel,
         reminderOffset: user.reminderOffset,
         reminderNotification: user.reminderNotification,
