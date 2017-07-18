@@ -48,7 +48,7 @@ module.exports = (app, route) => {
         User.create(req.body, (error, user) => {
             if (error) return res.status(400).send(error);
 
-            // create a customer on braintree
+            // create a customer on stripe
             app.stripe.customers.create({
               description: req.body.name,
               email: req.body.email
@@ -108,9 +108,9 @@ module.exports = (app, route) => {
         }
 
         if (!user.customerId) {
-          // create a customer on braintree
-          app.braintree.customer.create({
-            firstName: user.name,
+          // create a customer on stripe
+          app.stripe.customers.create({
+            description: user.name,
             email: user.email
           }, (err, result) => {
             if (err) {
@@ -118,8 +118,8 @@ module.exports = (app, route) => {
               return;
             }
 
-            if (result && result.customer && result.customer.id) {
-              User.findByIdAndUpdate(user._id, { $set: { customerId: result.customer.id}}, {new:true}, (err, customer) => {
+            if (result && result.id) {
+              User.findByIdAndUpdate(user._id, { $set: { customerId: result.id}}, {new:true}, (err, customer) => {
                 if (err) console.log(err);
               });
             }

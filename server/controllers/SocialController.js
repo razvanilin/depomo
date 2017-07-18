@@ -58,7 +58,7 @@ module.exports = (app, route) => {
             User.create(newUser, (error, user) => {
               if (error) return res.status(400).send(error);
 
-              // create a customer on braintree
+              // create a customer on stripe
               app.stripe.customers.create({
                 description: user.name,
                 email: user.email
