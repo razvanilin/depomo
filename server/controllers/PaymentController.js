@@ -141,7 +141,7 @@ module.exports = (app, route) => {
 
   /** ROUTE to create a new payment method for an existing customer **/
   app.post('/payment/:userId/method', verifyOwner, (req, res) => {
-    if (!req.body.nonce) return res.status(400).send("Nonce missing from the request body");
+    if (!req.body.stripeToken) return res.status(400).send("Nonce missing from the request body");
 
     User.findOne({_id: req.params.userId}, (err, user) => {
       if (err) return res.status(400).send(err);
@@ -149,26 +149,16 @@ module.exports = (app, route) => {
         return res.status(404).send("Could not retrieve user information");
       }
 
-      app.braintree.paymentMethod.create({
-        customerId: user.customerId,
-        paymentMethodNonce: req.body.nonce,
-        options: {
-          makeDefault: true
+      app.stripe.customers.createSource(user.customerId, {
+        source: req.body.stripeToken.id,
+        metadata: {
+          client_ip: req.body.stripeToken.client_ip
         }
-      }, (err, result) => {
+      }, (err, card) => {
         if (err) {
           console.log(err);
           return res.status(400).send(err);
         }
-
-        var paymentMethodFields = {
-          owner: user._id,
-          token: result.paymentMethod.token,
-          cardType: req.body.details.cardType || "",
-          type: req.body.type,
-          lastTwo: req.body.details.lastTwo || "",
-          description: req.body.description || ""
-        };
 
         userResponse(app, user, (err, response) => {
           if (err) return res.status(400).send("Could not retrieve user information.");
@@ -176,7 +166,7 @@ module.exports = (app, route) => {
           return res.status(200).send(response);
         });
       });
-    })
+    });
   });
   // ------------------------------------------------
 

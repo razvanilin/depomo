@@ -21,10 +21,12 @@ module.exports = (req, res, next) => {
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
   var requestedOwner = req.params.userId || req.body.userId || req.query.userId;
   if (!requestedOwner) return res.status(401).send("Unauthorized access.")
-
   if (token) {
     jwt.verify(token, settings.secret, (err, decoded) => {
-      if (err) return res.status(401).send("Unauthorized access.");
+      if (err) {
+        console.log(err);
+        return res.status(401).send("Unauthorized access.");
+      }
 
       User.findOne({
         _id: decoded._doc._id

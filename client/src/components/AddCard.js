@@ -1,14 +1,9 @@
 import React from 'react'
 import { Component } from 'jumpsuit'
 
-const braintree = require('braintree-web');
-var hostedFields;
-
-import Label from 'grommet/components/Label'
-import Button from 'grommet/components/Button'
 import Box from 'grommet/components/Box'
+import Spinning from 'grommet/components/icons/Spinning'
 
-import getClientAuthorization from '../actions/getClientAuthorization'
 import addPaymentMethod from '../actions/addPaymentMethod'
 
 export default Component({
@@ -18,95 +13,97 @@ export default Component({
       errorMessage: ""
     }
 
-    getClientAuthorization(this.props.user._id, (success, data) => {
-      if (!success) {
-        this.setState({errorMessage: data});
-        return;
-      }
+    setTimeout(() => {
+      // Create a Stripe client
+      var stripe = window.Stripe('pk_test_pVjsEbg6KUNJTCdoAnvK1ViN');
 
-      var authorization = data.clientToken;
+      // Create an instance of Elements
+      var elements = stripe.elements();
 
-      braintree.client.create({
-        authorization: authorization
-      }, function (clientErr, clientInstance) {
-        if (clientErr) {
-          // Handle error in client creation
-          return;
+      // Custom styling can be passed to options when creating an Element.
+      // (Note that this demo uses a wider set of styles than the guide below.)
+      var style = {
+        base: {
+          color: '#32325d',
+          lineHeight: '24px',
+          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+          fontSmoothing: 'antialiased',
+          fontSize: '16px',
+          '::placeholder': {
+            color: '#aab7c4'
+          }
+        },
+        invalid: {
+          color: '#fa755a',
+          iconColor: '#fa755a'
         }
+      };
 
-        braintree.hostedFields.create({
-          client: clientInstance,
-          styles: {
-            'input': {
-              'font-size': '14pt'
-            },
-            'input.invalid': {
-              'color': 'red'
-            },
-            'input.valid': {
-              'color': 'green'
-            }
-          },
-          fields: {
-            number: {
-              selector: '#card-number',
-              placeholder: '4111 1111 1111 1111'
-            },
-            cvv: {
-              selector: '#cvv',
-              placeholder: '123'
-            },
-            expirationDate: {
-              selector: '#expiration-date',
-              placeholder: '10/2019'
-            },
-            postalCode: {
-              selector: '#postal-code',
-              placeholder: '11111'
-            }
+      // Create an instance of the card Element
+      var card = elements.create('card', {style: style});
+
+      // Add an instance of the card Element into the `card-element` <div>
+      card.mount('#card-element');
+
+      // Handle real-time validation errors from the card Element.
+      card.addEventListener('change', function(event) {
+        var displayError = document.getElementById('card-errors');
+        if (event.error) {
+          displayError.textContent = event.error.message;
+        } else {
+          displayError.textContent = '';
+        }
+      });
+
+      // save user's id to be accessible in the form event
+      var userId = this.props.user._id;
+
+      // Handle form submission
+      var form = document.getElementById('payment-form');
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        stripe.createToken(card).then(function(result) {
+          if (result.error) {
+            // Inform the user if there was an error
+            var errorElement = document.getElementById('card-errors');
+            errorElement.textContent = result.error.message;
+          } else {
+            // Send the token to your server
+            addPaymentMethod("card", result.token, userId, (error, data) => {
+              if (error) {
+                //this.parent.setState({errorMessage: error});
+                return;
+              }
+              // this.parent.setState({addSuccess: true});
+            });
           }
-        }, function (hostedFieldsErr, hostedFieldsInstance) {
-          if (hostedFieldsErr) {
-            // Handle error in Hosted Fields creation
-            return;
-          }
-          hostedFields = hostedFieldsInstance
         });
       });
     });
   },
 
-  _sendNonce() {
-    addPaymentMethod("card", hostedFields, this.props.user._id, (success, data) => {
-      if (!success) {
-        this.setState({errorMessage: data});
-        return;
-      }
-
-      this.setState({addSuccess: true});
-      console.log(data);
-    });
-  },
-
   render() {
     return (
-      <form id="cardForm" action="http://localhost:3010/payment/customer" method="post" onSubmit={e=>e.preventDefault()}>
-        <Box id="error-message"></Box>
+      <Box pad="medium" justify="center">
+        <form action="/charge" method="post" id="payment-form">
+          <div className="form-row">
+            <label htmlFor="card-element">
+              Credit or debit card
+            </label>
+            <div id="card-element">
 
-        <Label labelFor="card-number">Card number</Label>
-        <Box className="hosted-field" id="card-number"></Box>
+            </div>
 
-        <Label labelFor="cvv">CVV</Label>
-        <Box className="hosted-field" id="cvv"></Box>
+            <div id="card-errors" role="alert"></div>
+          </div>
 
-        <Label labelFor="expiration-date">Expiration Date</Label>
-        <Box className="hosted-field" id="expiration-date"></Box>
-
-        <Label labelFor="postal-code">Postal Code</Label>
-        <Box className="hosted-field" id="postal-code"></Box>
-
-        <Button type="submit" label="Save card" onClick={()=>this._sendNonce()} />
-      </form>
+          <Box pad="medium" justify="center" align="center" direction="column">
+            <button onClick={() => { this.setState({loading: true})}}>Save payment method</button>
+            {this.state.loading && <Spinning />}
+          </Box>
+        </form>
+      </Box>
     )
   }
 }, state => ({
