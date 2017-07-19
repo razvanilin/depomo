@@ -31,7 +31,7 @@ export default Component({
         var totalEur = 0, totalGbp = 0, totalUsd = 0;
         this.props.task.tasks.map(task => {
           if (task.status === 'completed') {
-            switch (task.currency) {
+            switch (task.currency.toUpperCase()) {
               case 'USD':
                 savedUsd += task.deposit;
                 break;
@@ -45,9 +45,10 @@ export default Component({
                 break;
             }
           } else if (task.status !== 'initial' && task.status !== 'deleted') {
-            switch (task.currency) {
+            switch (task.currency.toUpperCase()) {
               case 'USD':
                 depositUsd += task.deposit;
+                console.log(depositUsd);
                 break;
               case 'EUR':
                 depositEur += task.deposit;
@@ -59,7 +60,7 @@ export default Component({
                 break;
             }
           } else if (task.status === 'initial') {
-            switch (task.currency) {
+            switch (task.currency.toUpperCase()) {
               case 'USD':
                 totalUsd += task.deposit;
                 break;
@@ -93,9 +94,9 @@ export default Component({
           totalUsd: totalUsd
         });
 
-        if (totalEur === 0) this.setState({hideEur: true});
-        if (totalGbp === 0) this.setState({hideGbp: true});
-        if (totalUsd === 0) this.setState({hideUsd: true});
+        if (totalEur === 0 && depositEur === 0) this.setState({hideEur: true});
+        if (totalGbp === 0 && depositGbp === 0) this.setState({hideGbp: true});
+        if (totalUsd === 0 && depositUsd === 0) this.setState({hideUsd: true});
       });
     }
   },
@@ -193,7 +194,7 @@ export default Component({
           </Box>
 
           <Box direction="column" justify="center" align="center" basis="1/2">
-            <Label>Total deposits placed</Label>
+            <Label>Total deposits waiting</Label>
             <Box direction="row" flex="grow" justify="between" align="center" separator="bottom">
               <Box className={this.state.hideUsd ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
                 <Value value={this.state.totalUsd} units="$" icon={<MoneyIcon />} label="USD" />
