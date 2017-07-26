@@ -119,7 +119,7 @@ export default Component({
                   <Box justify="center" align="center" direction="column" margin={{bottom: "small"}} pad="small">
                     {this.props.user && this._renderDefaultPayment()}
                     <Label align="center" size="small">{"You won't pay anything at the moment"}</Label>
-                    <Label align="center" size="small">{"The amount will be paid only if you don't complete your task in time"}</Label>
+                    <Label align="center" size="small">{"The amount will be paid when the task is not completed in time"}</Label>
                   </Box>
 
                   <Button label='Save task & Place deposit'

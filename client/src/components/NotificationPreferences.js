@@ -99,7 +99,7 @@ export default Component({
             <RadioButton checked={this.state.user.offsetType === 'minutes'} value="minutes"
               id="radio-minutes"
               disabled={!this.state.user.reminderNotification}
-              label="minutes"
+              label="minutes before"
               onChange={event => {
                 var user = this.state.user;
                 user.offsetType = event.target.value;
@@ -108,7 +108,7 @@ export default Component({
             <RadioButton checked={this.state.user.offsetType === 'hours'} value="hours"
               id="radio-hours"
               disabled={!this.state.user.reminderNotification}
-              label="hours"
+              label="hours before"
               onChange={event => {
                 var user = this.state.user;
                 user.offsetType = event.target.value;
@@ -117,7 +117,7 @@ export default Component({
             <RadioButton checked={this.state.user.offsetType === 'days'} value="days"
               id="radio-days"
               disabled={!this.state.user.reminderNotification}
-              label="days"
+              label="days before"
               onChange={event => {
                 var user = this.state.user;
                 user.offsetType = event.target.value;

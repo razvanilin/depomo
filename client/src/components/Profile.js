@@ -94,9 +94,9 @@ export default Component({
           totalUsd: totalUsd
         });
 
-        if (totalEur === 0 && depositEur === 0) this.setState({hideEur: true});
-        if (totalGbp === 0 && depositGbp === 0) this.setState({hideGbp: true});
-        if (totalUsd === 0 && depositUsd === 0) this.setState({hideUsd: true});
+        if (totalEur === 0 && depositEur === 0 && savedEur === 0) this.setState({hideEur: true});
+        if (totalGbp === 0 && depositGbp === 0 && savedGbp === 0) this.setState({hideGbp: true});
+        if (totalUsd === 0 && depositUsd === 0 && savedUsd === 0) this.setState({hideUsd: true});
       });
     }
   },
@@ -151,7 +151,7 @@ export default Component({
     }
 
     try {
-      return parseInt((completed * 100) / (completed+failed),10);
+      return parseInt((completed * 100) / (completed+failed),10) || 0;
     } catch (e) {
       return (completed * 100) / (completed+failed);
     }
@@ -181,31 +181,32 @@ export default Component({
 
             <Box direction="column" justify="center" align="center">
               {(!this.props.task.tasks || this.props.task.tasks.length < 3) &&
-                <Label>Start recording more tasks to make yourself a productive super hero 🏃</Label>
+                <Label align="center">Start recording more tasks to make yourself a productive super hero 🏃</Label>
               }
               {this.props.task.tasks && this.props.task.tasks.length > 3 &&
-                <Label>Great progress so far, we are impressed😺</Label>
+                <Label align="center">Great progress so far, we are impressed😺</Label>
               }
               {this._getCompletionRate() < 50 &&
-                <Label style={{marginTop: "0px"}}>{"Let's try and lift the completion rate a little now 💪"}</Label>
+                <Label style={{marginTop: "0px"}} align="center">{"Let's try and lift the completion rate a little now 💪"}</Label>
               }
             </Box>
             <Button primary={false} path="/dashboard/tasks/add" label="Add a new task" icon={<AddIcon />} />
           </Box>
 
+          { (!this.state.hideUsd || !this.state.hideEur || !this.state.hideGbp) &&
           <Box direction="column" justify="center" align="center" basis="1/2">
             <Label>Total deposits waiting</Label>
-            <Box direction="row" flex="grow" justify="between" align="center" separator="bottom">
-              <Box className={this.state.hideUsd ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
-                <Value value={this.state.totalUsd} units="$" icon={<MoneyIcon />} label="USD" />
+              <Box direction="row" flex="grow" justify="between" align="center" separator="bottom">
+                <Box className={this.state.hideUsd ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+                  <Value value={this.state.totalUsd} units="$" icon={<MoneyIcon />} label="USD" />
+                </Box>
+                <Box className={this.state.hideEur ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+                  <Value value={this.state.totalEur} units="€" icon={<MoneyIcon />} label="EUR" />
+                </Box>
+                <Box className={this.state.hideGbp ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
+                  <Value value={this.state.totalGbp} units="£" icon={<MoneyIcon />} label="GBP" />
+                </Box>
               </Box>
-              <Box className={this.state.hideEur ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
-                <Value value={this.state.totalEur} units="€" icon={<MoneyIcon />} label="EUR" />
-              </Box>
-              <Box className={this.state.hideGbp ? 'hidden' : ''} pad={{horizontal:"medium"}} margin={{bottom:"medium"}} justify="center" align="center">
-                <Value value={this.state.totalGbp} units="£" icon={<MoneyIcon />} label="GBP" />
-              </Box>
-            </Box>
 
             <Label>Total deposits saved</Label>
             <Box direction="row" flex="grow" justify="between" align="center">
@@ -233,6 +234,14 @@ export default Component({
               </Box>
             </Box>
           </Box>
+        }
+
+        {this.state.hideGbp && this.state.hideEur && this.state.hideUsd &&
+          <Box direction="column" justify="center" align="center" basis="1/2">
+            <Label align="center" size="large">No deposits placed yet.</Label>
+          </Box>
+        }
+
         </Box>
       }
       </Section>

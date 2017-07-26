@@ -136,7 +136,7 @@ export default Component({
   },
 
   _renderTasks() {
-    if (this.props.task && this.props.task.tasks && this.props.task.tasks.length > 0) {
+    if (this.props.task && this.props.task.tasks) {
       var arrangedTasks = [];
       var tasks = this.props.task.tasks;
       var count = 0;
