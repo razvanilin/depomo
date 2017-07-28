@@ -66,7 +66,11 @@ var UserSchema = new mongoose.Schema({
   reminderOffset: {
     type: Number,
     default: 30
-  }
+  },
+  achievements: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Achievement"
+  }]
 });
 
 UserSchema.plugin(timestamp);

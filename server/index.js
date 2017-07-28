@@ -14,6 +14,7 @@ const mandrill = require('mandrill-api/mandrill');
 const braintreeSdk = require('braintree');
 const google = require('googleapis');
 const stripe = require('stripe');
+const AchievementsMigration = require('./migrations/AchievementsMigration');
 var calendar = google.calendar('v3');
 var googleOauth = google.auth.OAuth2;
 
@@ -89,6 +90,7 @@ _.each(routes, function(controller, route) {
 })
 
 var server = app.listen(app.settings.port, function() {
+  AchievementsMigration(app);
   // starting the cron-job to check out tasks
   console.log("Starting cron...");
   new CronJob('0 */1 * * * *', () => {
