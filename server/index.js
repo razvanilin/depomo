@@ -75,7 +75,7 @@ app.calendar = calendar;
 app.mandrill = new mandrill.Mandrill(app.settings.mandrill.api_key);
 
 // Connect to mongodb
-var mongoDB = mongoose.connect(app.settings.dbhost);
+var mongoDB = mongoose.connect(app.settings.dbhost, {useMongoClient: true});
 mongoose.connection.once('open', function() {
 
 });
