@@ -3,7 +3,7 @@ const checkAccess = require('../modules/checkAccess');
 
 module.exports = (app, route) => {
 
-  Achievement = mongoose.model('achievement', app.models.achievement);
+  var Achievement = mongoose.model('achievement', app.models.achievement);
 
   /** Get all achievements **/
   app.get("/achievement", checkAccess, (req, res) => {

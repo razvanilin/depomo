@@ -7,6 +7,7 @@ const getPaypalToken = require('../modules/getPaypalToken');
 const makePayment = require('../modules/makePayment');
 const fs = require('fs');
 const uuid = require('uuid/v4');
+const updateUserAchievements = require('../modules/updateUserAchievements');
 
 module.exports = (app, route) => {
 
@@ -124,6 +125,17 @@ module.exports = (app, route) => {
 
       if (!task) return res.status(404).send("No task was found");
 
+      // handle achievements
+      Task.find({owner: task.owner}, (err, totalTasks) => {
+        if (err) {
+          console.log(err);
+        } else {
+          updateUserAchievements
+            .awardAchievementLevels(app, task.owner, "Completionist", totalTasks.length);
+        }
+      });
+
+      // handle donations
       if (req.body.donation && req.body.donation > 0) {
         task.deposit = req.body.donation;
 
@@ -182,6 +194,16 @@ module.exports = (app, route) => {
         }
 
         if (!task) return res.status(404).send("The task ID is invalid");
+
+        // handle achievements
+        Task.find({owner: req.decoded._id}, (err, totalTasks) => {
+          if (err) {
+            console.log(err);
+          } else {
+            updateUserAchievements
+              .awardAchievementLevels(app, req.decoded._id, "Completionist", totalTasks.length);
+          }
+        });
 
         // change the token for the user
         User.findByIdAndUpdate(user._id, {

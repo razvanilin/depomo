@@ -32,46 +32,145 @@ module.exports = (app) => {
     var ben6 = new ObjectId("597bb3e00000000000000000");
 
     var achievements = [{
+      // COMPLETIONIST
       _id: comp1,
       label: "Completionist",
+      value: 1,
       description: "Completed your first task",
       nextLevel: comp2,
       imageFileName: "something.png",
+      primary: true,
     }, {
       _id: comp2,
       label: "Completionist 10",
+      value: 10,
       description: "Completed 10 tasks",
       nextLevel: comp3,
       imageFileName: "something.png",
-      primary: false,
     }, {
       _id: comp3,
       label: "Completionist 25",
+      value: 25,
       description: "Completed 25 tasks",
       nextLevel: comp4,
       imageFileName: "something.png",
-      primary: false,
     }, {
       _id: comp4,
       label: "Completionist 50",
+      value: 50,
       description: "Completed 50 tasks",
       nextLevel: comp5,
       imageFileName: "something.png",
-      primary: false,
     }, {
       _id: comp5,
       label: "Completionist 100",
+      value: 100,
       description: "Completed 100 tasks",
       nextLevel: comp6,
       imageFileName: "something.png",
-      primary: false
     }, {
       _id: comp6,
       label: "Completionist 500",
+      value: 500,
       description: "Completed 500 tasks",
       imageFileName: "something.png",
-      primary: false
+    },
+    // -----------------------------------------------
+
+    // SAVIOUR
+    {
+      _id: saved1,
+      label: "Saviour 50",
+      value: 50,
+      description: "Saved $50 worth of deposits",
+      nextLevel: saved2,
+      imageFileName: "something.png",
     }, {
+      _id: saved2,
+      label: "Saviour 100",
+      value: 100,
+      description: "Saved $100 worth of deposits",
+      nextLevel: saved3,
+      imageFileName: "something.png",
+      primary: false,
+    }, {
+      _id: saved3,
+      label: "Saviour 500",
+      value: 500,
+      description: "Saved $500 worth of deposits",
+      nextLevel: saved4,
+      imageFileName: "something.png",
+      primary: false,
+    }, {
+      _id: saved4,
+      label: "Saviour 1000",
+      value: 1000,
+      description: "Saved $1000 worth of deposits",
+      nextLevel: saved5,
+      imageFileName: "something.png",
+      primary: false,
+    }, {
+      _id: saved5,
+      label: "Saviour 5000",
+      value: 5000,
+      description: "Saved $5000 worth of deposits",
+      imageFileName: "something.png",
+      primary: false,
+    },
+    // -----------------------------------------------
+
+    // BENEFACTOR
+    {
+      _id: ben1,
+      label: "Benefactor 10",
+      value: 10,
+      description: "Donated $10 worth of deposits",
+      nextLevel: ben2,
+      imageFileName: "something.png",
+    }, {
+      _id: ben2,
+      label: "Benefactor 25",
+      value: 25,
+      description: "Donated $25 worth of deposits",
+      nextLevel: ben3,
+      imageFileName: "something.png",
+      primary: false,
+    }, {
+      _id: ben3,
+      label: "Benefactor 50",
+      value: 50,
+      description: "Donated $50 worth of deposits",
+      nextLevel: ben4,
+      imageFileName: "something.png",
+      primary: false,
+    }, {
+      _id: ben4,
+      label: "Benefactor 100",
+      value: 100,
+      description: "Donated $100 worth of deposits",
+      nextLevel: ben5,
+      imageFileName: "something.png",
+      primary: false,
+    }, {
+      _id: ben5,
+      label: "Benefactor 250",
+      value: 250,
+      description: "Donated $250 worth of deposits",
+      nextLevel: ben6,
+      imageFileName: "something.png",
+      primary: false,
+    }, {
+      _id: ben6,
+      label: "Benefactor 500",
+      value: 500,
+      description: "Donated $500 worth of deposits",
+      imageFileName: "something.png",
+      primary: false,
+    },
+    // -----------------------------------------------
+
+    // OTHERS
+    {
       label: "Dreamer",
       description: "Failed a task",
       imageFileName: "something.png",
@@ -83,79 +182,6 @@ module.exports = (app) => {
       label: "Banker",
       description: "Added the first payment method",
       imageFileName: "something.png",
-    }, {
-      _id: saved1,
-      label: "Saviour 50",
-      description: "Saved $50 worth of deposits",
-      nextLevel: saved2,
-      imageFileName: "something.png",
-    }, {
-      _id: saved2,
-      label: "Saviour 100",
-      description: "Saved $100 worth of deposits",
-      nextLevel: saved3,
-      imageFileName: "something.png",
-      primary: false,
-    }, {
-      _id: saved3,
-      label: "Saviour 500",
-      description: "Saved $500 worth of deposits",
-      nextLevel: saved4,
-      imageFileName: "something.png",
-      primary: false,
-    }, {
-      _id: saved4,
-      label: "Saviour 1000",
-      description: "Saved $1000 worth of deposits",
-      nextLevel: saved5,
-      imageFileName: "something.png",
-      primary: false,
-    }, {
-      _id: saved5,
-      label: "Saviour 5000",
-      description: "Saved $5000 worth of deposits",
-      imageFileName: "something.png",
-      primary: false,
-    }, {
-      _id: ben1,
-      label: "Benefactor 10",
-      description: "Donated $10 worth of deposits",
-      nextLevel: ben2,
-      imageFileName: "something.png",
-    }, {
-      _id: ben2,
-      label: "Benefactor 25",
-      description: "Donated $25 worth of deposits",
-      nextLevel: ben3,
-      imageFileName: "something.png",
-      primary: false,
-    }, {
-      _id: ben3,
-      label: "Benefactor 50",
-      description: "Donated $50 worth of deposits",
-      nextLevel: ben4,
-      imageFileName: "something.png",
-      primary: false,
-    }, {
-      _id: ben4,
-      label: "Benefactor 100",
-      description: "Donated $100 worth of deposits",
-      nextLevel: ben5,
-      imageFileName: "something.png",
-      primary: false,
-    }, {
-      _id: ben5,
-      label: "Benefactor 250",
-      description: "Donated $250 worth of deposits",
-      nextLevel: ben6,
-      imageFileName: "something.png",
-      primary: false,
-    }, {
-      _id: ben6,
-      label: "Benefactor 500",
-      description: "Donated $500 worth of deposits",
-      imageFileName: "something.png",
-      primary: false,
     }, {
       label: "Living on the edge",
       description: "Completed a task 1 minute before the deadline",
