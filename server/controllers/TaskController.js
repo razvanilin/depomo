@@ -126,7 +126,7 @@ module.exports = (app, route) => {
       if (!task) return res.status(404).send("No task was found");
 
       // handle achievements
-      Task.find({owner: task.owner}, (err, totalTasks) => {
+      Task.find({owner: task.owner, status: "completed"}, (err, totalTasks) => {
         if (err) {
           console.log(err);
         } else {
@@ -196,12 +196,12 @@ module.exports = (app, route) => {
         if (!task) return res.status(404).send("The task ID is invalid");
 
         // handle achievements
-        Task.find({owner: req.decoded._id}, (err, totalTasks) => {
+        Task.find({owner: task.owner, status: "completed"}, (err, totalTasks) => {
           if (err) {
             console.log(err);
           } else {
             updateUserAchievements
-              .awardAchievementLevels(app, req.decoded._id, "Completionist", totalTasks.length);
+              .awardAchievementLevels(app, task.owner, "Completionist", totalTasks.length);
           }
         });
 

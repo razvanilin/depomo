@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
 const makePayment = require('./makePayment');
+const updateUserAchievements = require('./updateUserAchievements');
 
 module.exports = (app) => {
   var Task = mongoose.model('task', app.models.task);
@@ -29,8 +30,19 @@ module.exports = (app) => {
                 transactionStatus: "payment_failed",
                 status: "failed"
               }
-            }, (err, task) => {
+            }, { new: true }, (err, task) => {
+              if (!err && task) {
+                Task.find({owner: task.owner, status: "failed"}, (err, totalTasks) => {
+                  if (!err && totalTasks) {
+                    var totalDeposit = 0;
+                    for (var index in totalTasks) {
+                      totalDeposit += totalTasks[index].deposit;
+                    }
 
+                    updateUserAchievements.awardAchievementLevels(app, task.owner, "Benefactor", totalDeposit);
+                  }
+                });
+              }
             });
           } else {
             // update the status of the document
@@ -43,11 +55,24 @@ module.exports = (app) => {
                   currency: result.payment.currency,
                   refund: -1
                 }
-              }, (err, task) => {
+              }, {new: true}, (err, task) => {
                 if (err) {
                   console.log(err);
                 }
                 console.log(result.payment.id + " was " + result.payment.status);
+
+                if (!err && task) {
+                  Task.find({owner: task.owner, status: "failed"}, (err, totalTasks) => {
+                    if (!err && totalTasks) {
+                      var totalDeposit = 0;
+                      for (var index in totalTasks) {
+                        totalDeposit += totalTasks[index].deposit;
+                      }
+
+                      updateUserAchievements.awardAchievementLevels(app, task.owner, "Benefactor", totalDeposit);
+                    }
+                  });
+                }
             });
           }
         });
