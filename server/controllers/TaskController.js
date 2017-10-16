@@ -130,8 +130,14 @@ module.exports = (app, route) => {
         if (err) {
           console.log(err);
         } else {
-          updateUserAchievements
-            .awardAchievementLevels(app, task.owner, "Completionist", totalTasks.length);
+          updateUserAchievements.awardAchievementLevels(app, task.owner, "Completionist", totalTasks.length);
+
+          // handle the saviour achievement
+          var totalDeposits = 0;
+          for (var i in totalTasks) {
+            totalDeposits += totalTasks[i].deposit;
+          }
+          updateUserAchievements.awardAchievementLevels(app, task.owner, "Saviour", totalDeposits);
         }
       });
 
@@ -202,6 +208,13 @@ module.exports = (app, route) => {
           } else {
             updateUserAchievements
               .awardAchievementLevels(app, task.owner, "Completionist", totalTasks.length);
+
+            // handle the saviour achievement
+            var totalDeposits = 0;
+            for (var i in totalTasks) {
+              totalDeposits += totalTasks[i].deposit;
+            }
+            updateUserAchievements.awardAchievementLevels(app, task.owner, "Saviour", totalDeposits);
           }
         });
 
